@@ -25,11 +25,11 @@
     <distributionManagement>
         <repository>
             <id>repo</id>
-            <url>http://seratch.github.com/mvn-repo/releases</url>
+            <url>http://m3dev.github.com/mvn-repo/releases</url>
         </repository>
         <snapshotRepository>
             <id>snapshot-repo</id>
-            <url>http://seratch.github.com/mvn-repo/snapshots</url>
+            <url>http://m3dev.github.com/mvn-repo/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
