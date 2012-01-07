@@ -616,18 +616,6 @@ public class Snippets {
         assertThat(result, is(equalTo("ok")));
     }
 
-    class Csv {
-        final String line;
-
-        public Csv(String line) {
-            this.line = line;
-        }
-
-        String[] values() {
-            return line.split(",");
-        }
-    }
-
     class Name {
         String first;
         String last;
