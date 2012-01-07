@@ -552,7 +552,7 @@ SMap<String, Integer> newMap = sMap.update("Denis", 24);
 
 ```java
 // val oneToFile: Seq[Int] = 1 to 5
-// val oneUntilFour: Seq[Int] = 1 until 5
+// val oneUntilFive: Seq[Int] = 1 until 5
 
 Seq<Integer> oneToFive = SInt._(1).to(5); 
 // -> oneToFive : Seq._(1, 2, 3, 4, 5)
@@ -561,7 +561,7 @@ Seq<Integer> oneUntilFive = SInt._(1).until(5);
 // oneUntilFive : Seq._(1, 2, 3, 4)
 ```
 
-## ExceptionControl
+Five ExceptionControl
 
 Provides `scala.util.control.Exception.*`.
 
@@ -649,7 +649,7 @@ Returns Option or Either. Either implementation is little bit different from Sca
 ```java
 // val opt = catchingNPE opt { "foo" }
 
-Option[String] opt = catchingNPE.opt(new F0<String>() {
+Option<String> opt = catchingNPE.opt(new F0<String>() {
   public String _() {
     return "foo";
   }
@@ -657,7 +657,7 @@ Option[String] opt = catchingNPE.opt(new F0<String>() {
 
 // val either = catchingNPE either { "foo" }
 
-Either[Throwbale, String] either = catchginNPE.either(new F0<String>() {
+Either<Throwbale, String> either = catchginNPE.either(new F0<String>() {
   public String _() {
     return "foo";
   }
@@ -821,6 +821,7 @@ largeStrAndName.apply(new Name("Martin", "Odersky")); // "name object"
 PartialFunction<Void> intAndLargeStrAndName = intOnly.orElse(largeStrAndName);
 PartialFunction<Void> all = intAndLargeStrAndName.orElse(PartialF.<Void>_(objectCase));
 ```
+
 
 # License
 
