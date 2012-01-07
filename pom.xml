@@ -4,7 +4,7 @@
 
     <groupId>com.m3.scalaflavor4j</groupId>
     <artifactId>scalaflavor4j</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -22,24 +22,16 @@
         </pluginRepository>
     </pluginRepositories>
 
-	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<name>latest</name>
-			<url>http://maven:8081/artifactory/libs-releases/</url>
-			<uniqueVersion>true</uniqueVersion>
-		</repository>
-		<snapshotRepository>
-			<id>snapshot</id>
-			<name>snapshot</name>
-			<url>http://maven:8081/artifactory/libs-snapshots/</url>
-			<uniqueVersion>false</uniqueVersion>
-		</snapshotRepository>
-		<site>
-			<id>website</id>
-			<url>scp://engdocs/usr/local/apache/htdocs/projects/m3commons/auth</url>
-		</site>
-	</distributionManagement>
+    <distributionManagement>
+        <repository>
+            <id>repo</id>
+            <url>http://seratch.github.com/mvn-repo/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshot-repo</id>
+            <url>http://seratch.github.com/mvn-repo/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <dependencies>
         <dependency>
