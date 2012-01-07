@@ -1,0 +1,90 @@
+/*
+ * Copyright 2012 M3, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+package com.m3.scalaflavor4j;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * scala.runtime.RichInt
+ * 
+ * @see "http://www.scala-lang.org/api/2.9.1/index.html#scala.runtime.RichInt"
+ */
+public class SInt {
+
+    private final Integer value;
+
+    public static SInt apply(Integer i) {
+        return _(i);
+    }
+
+    public static SInt _(Integer i) {
+        return new SInt(i);
+    }
+
+    public Integer getOrElse(Integer defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        } else {
+            return value;
+        }
+    }
+
+    private SInt(Integer i) {
+        if (i == null) {
+            throw new IllegalArgumentException("Integer value should not be null.");
+        }
+        this.value = i;
+    }
+
+    public IndexedSeq<Integer> to(Integer j) {
+        List<Integer> range = new ArrayList<Integer>();
+        for (int i = value; i <= j; i++) {
+            range.add(i);
+        }
+        return IndexedSeq._(range);
+    }
+
+    public IndexedSeq<Integer> to(Integer j, Integer step) {
+        List<Integer> range = new ArrayList<Integer>();
+        for (int i = value; i <= j; i += step) {
+            range.add(i);
+        }
+        return IndexedSeq._(range);
+    }
+
+    public IndexedSeq<Integer> until(Integer j) {
+        List<Integer> range = new ArrayList<Integer>();
+        for (int i = value; i < j; i++) {
+            range.add(i);
+        }
+        return IndexedSeq._(range);
+    }
+
+    public IndexedSeq<Integer> until(Integer j, Integer step) {
+        List<Integer> range = new ArrayList<Integer>();
+        for (int i = value; i < j; i += step) {
+            range.add(i);
+        }
+        return IndexedSeq._(range);
+    }
+
+    @Override
+    public String toString() {
+        return "SInt(" + value + ")";
+    }
+
+}
