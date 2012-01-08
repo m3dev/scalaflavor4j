@@ -760,7 +760,7 @@ String result = ultimately.apply(new F0<String>() {
 //     case i: Int => println("int value")
 //     case str: String if str.length > 100 => println("large str")
 //     case name: Name => println("name object")
-//    case _ => println("object")
+//     case _ => println("object")
 //   }
 // }
 // example(123) 
