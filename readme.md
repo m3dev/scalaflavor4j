@@ -86,7 +86,7 @@ If your function might throw checked exceptions, add `throws Exception` or try/c
 
 ```java
 // import java.io._
-// val getIO: (String) => InputStream = (filename: String) => { new FileInputStream(new File(filename)) }
+// val getStream: (String) => InputStream = (filename: String) => { new FileInputStream(new File(filename)) }
 
 import java.io.*;
 new F1<String, InputStream>() {
@@ -552,6 +552,7 @@ SMap<String, Integer> newMap = sMap.update("Denis", 24);
 // -> newMap : ("Andy" -> 21, "Brian" -> 18, "Charley" -> 27, "Denis" -> 24)
 ```
 
+
 ## SInt
 
 ```java
@@ -565,7 +566,8 @@ Seq<Integer> oneUntilFive = SInt._(1).until(5);
 // oneUntilFive : Seq._(1, 2, 3, 4)
 ```
 
-Five ExceptionControl
+
+## ExceptionControl
 
 Provides `scala.util.control.Exception.*`.
 
@@ -748,6 +750,7 @@ String result = ultimately.apply(new F0<String>() {
 });
 // -> result : "foo"
 ```
+
 
 ## Appendix
 
