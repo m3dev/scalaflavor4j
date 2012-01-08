@@ -315,6 +315,9 @@ public class IndexedSeq<T> extends Seq<T> {
 
     @Override
     public Seq<T> init() {
+        if (isEmpty()) {
+            return NIL.init();
+        }
         return slice(0, size() - 1);
     }
 
