@@ -85,6 +85,11 @@ public abstract class Seq<T> implements CollectionLike<T> {
     public abstract Seq<T> drop(int n);
 
     /**
+     * [Original] Drops null elements
+     */
+    public abstract Seq<T> dropNull();
+
+    /**
      * Selects all elements except last n ones.
      */
     public abstract Seq<T> dropRight(int n);

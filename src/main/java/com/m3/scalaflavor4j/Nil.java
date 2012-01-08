@@ -356,4 +356,9 @@ public class Nil<T> extends Seq<T> {
         return "Seq()";
     }
 
+    @Override
+    public Seq<T> dropNull() {
+        return Nil._();
+    }
+
 }

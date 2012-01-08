@@ -683,4 +683,12 @@ public class NilTest {
         assertThat(actual, is(equalTo(expected)));
     }
 
+    @Test
+    public void dropNull_A$() throws Exception {
+        Seq<Integer> seq = Nil._();
+        Seq<Integer> actual = seq.dropNull();
+        String expected = "Seq()";
+        assertThat(actual.toString(), is(equalTo(expected)));
+    }
+
 }

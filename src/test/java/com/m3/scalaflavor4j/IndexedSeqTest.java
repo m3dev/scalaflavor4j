@@ -1515,4 +1515,12 @@ public class IndexedSeqTest {
         assertThat(actual, is(equalTo(expected)));
     }
 
+    @Test
+    public void dropNull_A$() throws Exception {
+        Seq<String> seq = Seq._("foo", null, null, "bar", null, "baz", null);
+        Seq<String> withoutNull = seq.dropNull();
+        assertThat(withoutNull.size(), is(equalTo(3)));
+        assertThat(withoutNull.toString(), is(equalTo("Seq(foo,bar,baz)")));
+    }
+
 }

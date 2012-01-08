@@ -65,45 +65,107 @@ public class IndexedSeq<T> extends Seq<T> {
     }
 
     @Override
-    public List<T> toList() {
-        return list;
+    public IndexedSeq<T> append(T... that) {
+        List<T> newList = new ArrayList<T>();
+        newList.addAll(toList());
+        newList.addAll(Arrays.asList(that));
+        return IndexedSeq._(newList);
     }
 
     @Override
-    public boolean isEmpty() {
-        return size() == 0;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <U> IndexedSeq<U> map(final Function1<T, U> f) {
-        return foldLeft(IndexedSeq.<U> _(), new FoldLeftF2<IndexedSeq<U>, T>() {
-            public IndexedSeq<U> _(IndexedSeq<U> mapped, T element) throws Exception {
-                return mapped.append(f.apply(element));
+    public boolean contains(final T elem) {
+        return dropNull().foldLeft(false, new FoldLeftF2<Boolean, T>() {
+            public Boolean _(Boolean contains, T exist) {
+                if (!contains) {
+                    return exist.equals(elem);
+                }
+                return contains;
             }
         });
     }
 
     @Override
-    public void foreach(VoidFunction1<T> f) {
-        try {
-            for (T element : list) {
-                f.apply(element);
+    public int count(final Function1<T, Boolean> predicate) {
+        return foldLeft(0, new FoldLeftF2<Integer, T>() {
+            public Integer _(Integer count, T element) throws Exception {
+                if (predicate.apply(element)) {
+                    return count + 1;
+                }
+                return count;
             }
-        } catch (Exception e) {
-            throw new ScalaFlavor4JException(e);
+        });
+    }
+
+    @Override
+    public IndexedSeq<T> diff(final Seq<T> that) {
+        return this.filterNot(new PredicateF1<T>() {
+            public Boolean _(final T thisValue) {
+                return that.foldLeft(false, new FoldLeftF2<Boolean, T>() {
+                    public Boolean _(Boolean isFound, T thatValue) {
+                        if (!isFound) {
+                            if (thisValue == null) {
+                                return thatValue == null;
+                            }
+                            if (thisValue.equals(thatValue)) {
+                                return true;
+                            }
+                        }
+                        return isFound;
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public IndexedSeq<T> distinct() {
+        return foldLeft(IndexedSeq.<T> _(), new FoldLeftF2<IndexedSeq<T>, T>() {
+            public IndexedSeq<T> _(IndexedSeq<T> distinct, T element) {
+                if (!distinct.contains(element)) {
+                    return distinct.append(element);
+                }
+                return distinct;
+            }
+        });
+    }
+
+    @Override
+    public IndexedSeq<T> drop(int n) {
+        return slice(n, size());
+    }
+
+    @Override
+    public Seq<T> dropNull() {
+        return filter(new PredicateF1<T>() {
+            public Boolean _(T element) {
+                return element != null;
+            }
+        });
+    }
+
+    @Override
+    public IndexedSeq<T> dropRight(int n) {
+        return reverse().drop(n).reverse();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public IndexedSeq<T> dropWhile(Function1<T, Boolean> predicate) {
+        if (isEmpty()) {
+            return IndexedSeq._();
         }
+        return (IndexedSeq<T>) span(predicate)._2();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <U> IndexedSeq<U> flatMap(final Function1<T, CollectionLike<U>> f) {
-        return foldLeft(IndexedSeq.<U> _(), new FoldLeftF2<IndexedSeq<U>, T>() {
-            public IndexedSeq<U> _(final IndexedSeq<U> seq, final T element) throws Exception {
-                CollectionLike<U> col = f.apply(element);
-                return seq.union(IndexedSeq._(col.toList()));
-            }
-        });
+    public boolean endsWith(Seq<T> that) {
+        return reverse().startsWith(that.reverse());
+    }
+
+    @Override
+    public boolean exists(Function1<T, Boolean> predicate) {
+        return span(predicate)._1().size() > 0;
     }
 
     @Override
@@ -133,6 +195,88 @@ public class IndexedSeq<T> extends Seq<T> {
     }
 
     @Override
+    public Option<T> find(final Function1<T, Boolean> predicate) {
+        return foldLeft(Option.<T> none(), new FoldLeftF2<Option<T>, T>() {
+            public Option<T> _(Option<T> found, T element) throws Exception {
+                if (!found.isDefined() && predicate.apply(element)) {
+                    return Option._(element);
+                }
+                return found;
+            }
+        });
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <U> IndexedSeq<U> flatMap(final Function1<T, CollectionLike<U>> f) {
+        return foldLeft(IndexedSeq.<U> _(), new FoldLeftF2<IndexedSeq<U>, T>() {
+            public IndexedSeq<U> _(final IndexedSeq<U> seq, final T element) throws Exception {
+                CollectionLike<U> col = f.apply(element);
+                return seq.union(IndexedSeq._(col.toList()));
+            }
+        });
+    }
+
+    @Override
+    public <U> U foldLeft(U z, Function2<U, T, U> operator) {
+        try {
+            for (T element : list) {
+                z = operator.apply(z, element);
+            }
+            return z;
+        } catch (Exception e) {
+            throw new ScalaFlavor4JException(e);
+        }
+    }
+
+    @Override
+    public <U> U foldRight(U z, Function2<T, U, U> operator) {
+        try {
+            if (isEmpty()) {
+                return NIL.foldRight(z, operator);
+            }
+            int lastIndex = list.size() - 1;
+            for (int i = lastIndex; i >= 0; i--) {
+                z = operator.apply(list.get(i), z);
+            }
+            return z;
+        } catch (Exception e) {
+            throw new ScalaFlavor4JException(e);
+        }
+    }
+
+    @Override
+    public boolean forall(Function1<T, Boolean> predicate) {
+        return span(predicate)._2().size() == 0;
+    }
+
+    @Override
+    public void foreach(VoidFunction1<T> f) {
+        try {
+            for (T element : list) {
+                f.apply(element);
+            }
+        } catch (Exception e) {
+            throw new ScalaFlavor4JException(e);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <U> SMap<U, Seq<T>> groupBy(final Function1<T, U> getGroupName) {
+        if (isEmpty()) {
+            return NIL.groupBy(getGroupName);
+        }
+        return foldLeft(SMap.<U, Seq<T>> _(), new FoldLeftF2<SMap<U, Seq<T>>, T>() {
+            public SMap<U, Seq<T>> _(SMap<U, Seq<T>> map, T element) throws Exception {
+                U groupName = getGroupName.apply(element);
+                Seq<T> groupMembers = map.getOrElse(groupName, Seq.<T> _());
+                return map.update(groupName, groupMembers.append(element));
+            };
+        });
+    }
+
+    @Override
     public T head() {
         if (isEmpty()) {
             return NIL.head();
@@ -143,6 +287,60 @@ public class IndexedSeq<T> extends Seq<T> {
     @Override
     public Option<T> headOption() {
         return Option._(head());
+    }
+
+    @Override
+    public int indexOf(final T elem) {
+        if (isEmpty()) {
+            return NIL.indexOf(elem);
+        }
+        final int DEFAULT = -1;
+        return SInt._(0).until(size()).foldLeft(DEFAULT, new FoldLeftF2<Integer, Integer>() {
+            public Integer _(Integer found, Integer i) {
+                if (found == DEFAULT) {
+                    T element = list.get(i);
+                    if (element != null && element.equals(elem)) {
+                        return i;
+                    }
+                }
+                return found;
+            }
+        });
+    }
+
+    @Override
+    public Seq<Integer> indices() {
+        return SInt._(0).until(size());
+    }
+
+    @Override
+    public IndexedSeq<T> intersect(final Seq<T> that) {
+        return flatMap(new F1<T, CollectionLike<T>>() {
+            public CollectionLike<T> _(T thisElement) {
+                if (that.contains(thisElement)) {
+                    return Option._(thisElement);
+                } else {
+                    return Option.none();
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean isDefinedAt(int idx) {
+        if (isEmpty()) {
+            return NIL.isDefinedAt(idx);
+        }
+        try {
+            return list.get(idx) != null;
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size() == 0;
     }
 
     @Override
@@ -159,8 +357,55 @@ public class IndexedSeq<T> extends Seq<T> {
     }
 
     @Override
-    public IndexedSeq<T> tail() {
-        return slice(1, size());
+    @SuppressWarnings("unchecked")
+    public <U> IndexedSeq<U> map(final Function1<T, U> f) {
+        return foldLeft(IndexedSeq.<U> _(), new FoldLeftF2<IndexedSeq<U>, T>() {
+            public IndexedSeq<U> _(IndexedSeq<U> mapped, T element) throws Exception {
+                return mapped.append(f.apply(element));
+            }
+        });
+    }
+
+    @Override
+    public SNum max() {
+        if (isEmpty()) {
+            return NIL.max();
+        }
+        try {
+            return dropNull().foldLeft(SNum._(0), new FoldLeftF2<SNum, T>() {
+                public SNum _(SNum max, T element) {
+                    BigDecimal bd = new BigDecimal(element.toString());
+                    if (max.toBigDecimal().compareTo(bd) == 1) {
+                        return max;
+                    } else {
+                        return SNum._(bd);
+                    }
+                }
+            });
+        } catch (NumberFormatException e) {
+            throw new UnsupportedOperationException("This operation is not supported.");
+        }
+    }
+
+    @Override
+    public SNum min() {
+        if (isEmpty()) {
+            return NIL.min();
+        }
+        try {
+            return dropNull().foldLeft(SNum._(Integer.MAX_VALUE), new FoldLeftF2<SNum, T>() {
+                public SNum _(SNum min, T v) {
+                    BigDecimal bd = new BigDecimal(v.toString());
+                    if (min.toBigDecimal().compareTo(bd) == -1) {
+                        return min;
+                    } else {
+                        return SNum._(bd);
+                    }
+                }
+            });
+        } catch (NumberFormatException e) {
+            throw new UnsupportedOperationException("This operation is not supported.");
+        }
     }
 
     @Override
@@ -193,162 +438,12 @@ public class IndexedSeq<T> extends Seq<T> {
     }
 
     @Override
-    public IndexedSeq<T> sortWith(final Function2<T, T, Boolean> lessThan) {
-        List<T> copied = foldLeft(new ArrayList<T>(), new FoldLeftF2<List<T>, T>() {
-            public List<T> _(List<T> copied, T element) {
-                copied.add(element);
-                return copied;
+    public IndexedSeq<T> padTo(int len, final T elem) {
+        return this.union(SInt._(size()).until(len).map(new F1<Integer, T>() {
+            public T _(Integer i) {
+                return elem;
             }
-        });
-        Collections.sort(copied, new Comparator<T>() {
-            public int compare(T o1, T o2) {
-                try {
-                    return lessThan.apply(o1, o2) ? 0 : 1;
-                } catch (Exception e) {
-                    throw new ScalaFlavor4JException(e);
-                }
-            };
-        });
-        return IndexedSeq._(copied);
-    }
-
-    @Override
-    public IndexedSeq<T> take(int n) {
-        return slice(0, n);
-    }
-
-    @Override
-    public IndexedSeq<T> takeRight(int n) {
-        return reverse().take(n).reverse();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public IndexedSeq<T> takeWhile(Function1<T, Boolean> predicate) {
-        if (isEmpty()) {
-            return IndexedSeq._();
-        }
-        return (IndexedSeq<T>) span(predicate)._1();
-    }
-
-    @Override
-    public IndexedSeq<T> drop(int n) {
-        return slice(n, size());
-    }
-
-    @Override
-    public IndexedSeq<T> dropRight(int n) {
-        return reverse().drop(n).reverse();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public IndexedSeq<T> dropWhile(Function1<T, Boolean> predicate) {
-        if (isEmpty()) {
-            return IndexedSeq._();
-        }
-        return (IndexedSeq<T>) span(predicate)._2();
-    }
-
-    @Override
-    public <U> U foldLeft(U z, Function2<U, T, U> operator) {
-        try {
-            for (T element : list) {
-                z = operator.apply(z, element);
-            }
-            return z;
-        } catch (Exception e) {
-            throw new ScalaFlavor4JException(e);
-        }
-    }
-
-    @Override
-    public <U> U foldRight(U z, Function2<T, U, U> operator) {
-        try {
-            if (isEmpty()) {
-                return NIL.foldRight(z, operator);
-            }
-            int lastIndex = list.size() - 1;
-            for (int i = lastIndex; i >= 0; i--) {
-                z = operator.apply(list.get(i), z);
-            }
-            return z;
-        } catch (Exception e) {
-            throw new ScalaFlavor4JException(e);
-        }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public IndexedSeq<T> distinct() {
-        return foldLeft(IndexedSeq.<T> _(), new FoldLeftF2<IndexedSeq<T>, T>() {
-            public IndexedSeq<T> _(IndexedSeq<T> distinct, T element) {
-                if (!distinct.contains(element)) {
-                    return distinct.append(element);
-                }
-                return distinct;
-            }
-        });
-    }
-
-    @Override
-    public int size() {
-        if (list.size() == 1 && list.get(0) instanceof Seq) {
-            Seq<?> head = (Seq<?>) list.get(0);
-            return head.isEmpty() ? 0 : 1;
-        }
-        return list.size();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <U> SMap<U, Seq<T>> groupBy(final Function1<T, U> getGroupName) {
-        if (isEmpty()) {
-            return NIL.groupBy(getGroupName);
-        }
-        return foldLeft(SMap.<U, Seq<T>> _(), new FoldLeftF2<SMap<U, Seq<T>>, T>() {
-            public SMap<U, Seq<T>> _(SMap<U, Seq<T>> map, T element) throws Exception {
-                U groupName = getGroupName.apply(element);
-                Seq<T> groupMembers = map.getOrElse(groupName, Seq.<T> _());
-                return map.update(groupName, groupMembers.append(element));
-            };
-        });
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <U> IndexedSeq<Tuple2<T, U>> zip(final Seq<U> that) {
-        int len = this.size();
-        if (this.size() > that.size()) {
-            len = that.size();
-        }
-        Seq<Integer> indices = SInt._(0).until(len);
-        if (indices.isEmpty()) {
-            return IndexedSeq._();
-        } else {
-            return (IndexedSeq<Tuple2<T, U>>) indices.map(new F1<Integer, Tuple2<T, U>>() {
-                public Pair<T, U> _(Integer i) {
-                    return Pair._(toList().get(i), that.toList().get(i));
-                }
-            });
-        }
-    }
-
-    @Override
-    public IndexedSeq<Tuple2<T, Integer>> zipWithIndex() {
-        return zip(indices());
-    }
-
-    @Override
-    public Option<T> find(final Function1<T, Boolean> predicate) {
-        return foldLeft(Option.<T> none(), new FoldLeftF2<Option<T>, T>() {
-            public Option<T> _(Option<T> found, T element) throws Exception {
-                if (!found.isDefined() && predicate.apply(element)) {
-                    return Option._(element);
-                }
-                return found;
-            }
-        });
+        }));
     }
 
     @Override
@@ -368,8 +463,10 @@ public class IndexedSeq<T> extends Seq<T> {
     }
 
     @Override
-    public Tuple2<Seq<T>, Seq<T>> splitAt(int n) {
-        return Pair.<Seq<T>, Seq<T>> _(take(n), drop(n));
+    public IndexedSeq<T> patch(int from, Seq<T> patch, int replaced) {
+        IndexedSeq<T> prefix = slice(0, from);
+        IndexedSeq<T> suffix = drop(from + replaced);
+        return prefix.union(patch).union(suffix);
     }
 
     @Override
@@ -380,6 +477,65 @@ public class IndexedSeq<T> extends Seq<T> {
                 return reversed.append(element);
             };
         });
+    }
+
+    @Override
+    public <U> IndexedSeq<U> reverseMap(Function1<T, U> f) {
+        return reverse().map(f);
+    }
+
+    @Override
+    public boolean sameElements(final Seq<T> that) {
+        if (isEmpty()) {
+            return NIL.sameElements(that);
+        }
+        if (size() != that.size()) {
+            return false;
+        }
+        return zip(that).foldLeft(true, new FoldLeftF2<Boolean, Tuple2<T, T>>() {
+            public Boolean _(Boolean sameElements, Tuple2<T, T> thisAndThat) {
+                if (sameElements) {
+                    if (thisAndThat._1() == null && thisAndThat._2() == null) {
+                        return true;
+                    }
+                    if (!thisAndThat._1().equals(thisAndThat._2())) {
+                        return false;
+                    }
+                }
+                return sameElements;
+            }
+        });
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <U> IndexedSeq<U> scanLeft(U z, final Function2<U, T, U> op) {
+        return foldLeft(IndexedSeq._(z), new FoldLeftF2<IndexedSeq<U>, T>() {
+            public IndexedSeq<U> _(IndexedSeq<U> scanResult, T element) throws Exception {
+                U result = op.apply(scanResult.last(), element);
+                return scanResult.append(result);
+            }
+        });
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <U> IndexedSeq<U> scanRight(U z, final Function2<T, U, U> op) {
+        return foldRight(IndexedSeq._(z), new FoldRightF2<T, IndexedSeq<U>>() {
+            public IndexedSeq<U> _(T element, IndexedSeq<U> scanResult) throws Exception {
+                U result = op.apply(element, scanResult.last());
+                return scanResult.append(result);
+            }
+        }).reverse();
+    }
+
+    @Override
+    public int size() {
+        if (list.size() == 1 && list.get(0) instanceof Seq<?>) {
+            Seq<?> head = (Seq<?>) list.get(0);
+            return head.isEmpty() ? 0 : 1;
+        }
+        return list.size();
     }
 
     @Override
@@ -432,6 +588,26 @@ public class IndexedSeq<T> extends Seq<T> {
     }
 
     @Override
+    public IndexedSeq<T> sortWith(final Function2<T, T, Boolean> lessThan) {
+        List<T> copied = foldLeft(new ArrayList<T>(), new FoldLeftF2<List<T>, T>() {
+            public List<T> _(List<T> copied, T element) {
+                copied.add(element);
+                return copied;
+            }
+        });
+        Collections.sort(copied, new Comparator<T>() {
+            public int compare(T o1, T o2) {
+                try {
+                    return lessThan.apply(o1, o2) ? 0 : 1;
+                } catch (Exception e) {
+                    throw new ScalaFlavor4JException(e);
+                }
+            };
+        });
+        return IndexedSeq._(copied);
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public Tuple2<Seq<T>, Seq<T>> span(final Function1<T, Boolean> predicate) {
         Triple<Boolean, Seq<T>, Seq<T>> spanned = foldLeft(Triple._(false, Seq.<T> _(), Seq.<T> _()),
@@ -454,62 +630,8 @@ public class IndexedSeq<T> extends Seq<T> {
     }
 
     @Override
-    public boolean exists(Function1<T, Boolean> predicate) {
-        return span(predicate)._1().size() > 0;
-    }
-
-    @Override
-    public boolean forall(Function1<T, Boolean> predicate) {
-        return span(predicate)._2().size() == 0;
-    }
-
-    @Override
-    public int count(final Function1<T, Boolean> predicate) {
-        return foldLeft(0, new FoldLeftF2<Integer, T>() {
-            public Integer _(Integer count, T element) throws Exception {
-                if (predicate.apply(element)) {
-                    return count + 1;
-                }
-                return count;
-            }
-        });
-    }
-
-    @Override
-    public boolean contains(final T elem) {
-        return filter(new PredicateF1<T>() {
-            public Boolean _(T element) {
-                return element != null;
-            }
-        }).foldLeft(false, new FoldLeftF2<Boolean, T>() {
-            public Boolean _(Boolean contains, T exist) {
-                if (!contains) {
-                    return exist.equals(elem);
-                }
-                return contains;
-            }
-        });
-    }
-
-    @Override
-    public IndexedSeq<T> diff(final Seq<T> that) {
-        return this.filterNot(new PredicateF1<T>() {
-            public Boolean _(final T thisValue) {
-                return that.foldLeft(false, new FoldLeftF2<Boolean, T>() {
-                    public Boolean _(Boolean isFound, T thatValue) {
-                        if (!isFound) {
-                            if (thisValue == null) {
-                                return thatValue == null;
-                            }
-                            if (thisValue.equals(thatValue)) {
-                                return true;
-                            }
-                        }
-                        return isFound;
-                    }
-                });
-            }
-        });
+    public Tuple2<Seq<T>, Seq<T>> splitAt(int n) {
+        return Pair.<Seq<T>, Seq<T>> _(take(n), drop(n));
     }
 
     @Override
@@ -542,56 +664,65 @@ public class IndexedSeq<T> extends Seq<T> {
     }
 
     @Override
-    public boolean endsWith(Seq<T> that) {
-        return reverse().startsWith(that.reverse());
-    }
-
-    @Override
-    public int indexOf(final T elem) {
+    public SNum sum() {
         if (isEmpty()) {
-            return NIL.indexOf(elem);
-        }
-        final int DEFAULT = -1;
-        return SInt._(0).until(size()).foldLeft(DEFAULT, new FoldLeftF2<Integer, Integer>() {
-            public Integer _(Integer found, Integer i) {
-                if (found == DEFAULT) {
-                    T element = list.get(i);
-                    if (element != null && element.equals(elem)) {
-                        return i;
-                    }
-                }
-                return found;
-            }
-        });
-    }
-
-    @Override
-    public boolean isDefinedAt(int idx) {
-        if (isEmpty()) {
-            return NIL.isDefinedAt(idx);
+            return NIL.sum();
         }
         try {
-            return list.get(idx) != null;
-        } catch (IndexOutOfBoundsException e) {
-            return false;
+            return dropNull().foldLeft(SNum._(0), new FoldLeftF2<SNum, T>() {
+                public SNum _(SNum sum, T element) {
+                    BigDecimal added = sum.toBigDecimal().add(new BigDecimal(element.toString()));
+                    return SNum._(added);
+                }
+            });
+        } catch (NumberFormatException e) {
+            throw new UnsupportedOperationException("This operation is not supported.");
         }
     }
 
     @Override
-    public Seq<Integer> indices() {
-        return SInt._(0).until(size());
+    public IndexedSeq<T> tail() {
+        return slice(1, size());
     }
 
     @Override
-    public <U> IndexedSeq<U> reverseMap(Function1<T, U> f) {
-        return reverse().map(f);
+    public IndexedSeq<T> take(int n) {
+        return slice(0, n);
     }
 
     @Override
-    public IndexedSeq<T> patch(int from, Seq<T> patch, int replaced) {
-        IndexedSeq<T> prefix = slice(0, from);
-        IndexedSeq<T> suffix = drop(from + replaced);
-        return prefix.union(patch).union(suffix);
+    public IndexedSeq<T> takeRight(int n) {
+        return reverse().take(n).reverse();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public IndexedSeq<T> takeWhile(Function1<T, Boolean> predicate) {
+        if (isEmpty()) {
+            return IndexedSeq._();
+        }
+        return (IndexedSeq<T>) span(predicate)._1();
+    }
+
+    @Override
+    public List<T> toList() {
+        return list;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Seq(");
+        sb.append(mkString(","));
+        sb.append(")");
+        return sb.toString();
+    }
+
+    @Override
+    public IndexedSeq<T> union(Seq<T> that) {
+        List<T> list = toList();
+        list.addAll(that.toList());
+        return IndexedSeq._(list);
     }
 
     @Override
@@ -606,164 +737,27 @@ public class IndexedSeq<T> extends Seq<T> {
     }
 
     @Override
-    public IndexedSeq<T> union(Seq<T> that) {
-        List<T> list = toList();
-        list.addAll(that.toList());
-        return IndexedSeq._(list);
-    }
-
-    @Override
-    public IndexedSeq<T> append(T... that) {
-        List<T> newList = new ArrayList<T>();
-        newList.addAll(toList());
-        newList.addAll(Arrays.asList(that));
-        return IndexedSeq._(newList);
-    }
-
-    @Override
-    public SNum sum() {
-        if (isEmpty()) {
-            return NIL.sum();
-        }
-        try {
-            return filter(new PredicateF1<T>() {
-                public Boolean _(T element) {
-                    return element != null;
-                }
-            }).foldLeft(SNum._(0), new FoldLeftF2<SNum, T>() {
-                public SNum _(SNum sum, T element) {
-                    BigDecimal added = sum.toBigDecimal().add(new BigDecimal(element.toString()));
-                    return SNum._(added);
-                }
-            });
-        } catch (NumberFormatException e) {
-            throw new UnsupportedOperationException("This operation is not supported.");
-        }
-    }
-
-    @Override
-    public SNum max() {
-        if (isEmpty()) {
-            return NIL.max();
-        }
-        try {
-            return filter(new PredicateF1<T>() {
-                public Boolean _(T element) {
-                    return element != null;
-                }
-            }).foldLeft(SNum._(0), new FoldLeftF2<SNum, T>() {
-                public SNum _(SNum max, T element) {
-                    BigDecimal bd = new BigDecimal(element.toString());
-                    if (max.toBigDecimal().compareTo(bd) == 1) {
-                        return max;
-                    } else {
-                        return SNum._(bd);
-                    }
-                }
-            });
-        } catch (NumberFormatException e) {
-            throw new UnsupportedOperationException("This operation is not supported.");
-        }
-    }
-
-    @Override
-    public SNum min() {
-        if (isEmpty()) {
-            return NIL.min();
-        }
-        try {
-            return filter(new PredicateF1<T>() {
-                public Boolean _(T element) {
-                    return element != null;
-                }
-            }).foldLeft(SNum._(Integer.MAX_VALUE), new FoldLeftF2<SNum, T>() {
-                public SNum _(SNum min, T v) {
-                    BigDecimal bd = new BigDecimal(v.toString());
-                    if (min.toBigDecimal().compareTo(bd) == -1) {
-                        return min;
-                    } else {
-                        return SNum._(bd);
-                    }
-                }
-            });
-        } catch (NumberFormatException e) {
-            throw new UnsupportedOperationException("This operation is not supported.");
-        }
-    }
-
-    @Override
-    public boolean sameElements(final Seq<T> that) {
-        if (isEmpty()) {
-            return NIL.sameElements(that);
-        }
-        if (size() != that.size()) {
-            return false;
-        }
-        return zip(that).foldLeft(true, new FoldLeftF2<Boolean, Tuple2<T, T>>() {
-            public Boolean _(Boolean sameElements, Tuple2<T, T> thisAndThat) {
-                if (sameElements) {
-                    if (thisAndThat._1() == null && thisAndThat._2() == null) {
-                        return true;
-                    }
-                    if (!thisAndThat._1().equals(thisAndThat._2())) {
-                        return false;
-                    }
-                }
-                return sameElements;
-            }
-        });
-    }
-
-    @Override
-    public IndexedSeq<T> intersect(final Seq<T> that) {
-        return flatMap(new F1<T, CollectionLike<T>>() {
-            public CollectionLike<T> _(T thisElement) {
-                if (that.contains(thisElement)) {
-                    return Option._(thisElement);
-                } else {
-                    return Option.none();
-                }
-            }
-        });
-    }
-
-    @Override
-    public IndexedSeq<T> padTo(int len, final T elem) {
-        return this.union(SInt._(size()).until(len).map(new F1<Integer, T>() {
-            public T _(Integer i) {
-                return elem;
-            }
-        }));
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
-    public <U> IndexedSeq<U> scanLeft(U z, final Function2<U, T, U> op) {
-        return foldLeft(IndexedSeq._(z), new FoldLeftF2<IndexedSeq<U>, T>() {
-            public IndexedSeq<U> _(IndexedSeq<U> scanResult, T element) throws Exception {
-                U result = op.apply(scanResult.last(), element);
-                return scanResult.append(result);
-            }
-        });
+    public <U> IndexedSeq<Tuple2<T, U>> zip(final Seq<U> that) {
+        int len = this.size();
+        if (this.size() > that.size()) {
+            len = that.size();
+        }
+        Seq<Integer> indices = SInt._(0).until(len);
+        if (indices.isEmpty()) {
+            return IndexedSeq._();
+        } else {
+            return (IndexedSeq<Tuple2<T, U>>) indices.map(new F1<Integer, Tuple2<T, U>>() {
+                public Pair<T, U> _(Integer i) {
+                    return Pair._(toList().get(i), that.toList().get(i));
+                }
+            });
+        }
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <U> IndexedSeq<U> scanRight(U z, final Function2<T, U, U> op) {
-        return foldRight(IndexedSeq._(z), new FoldRightF2<T, IndexedSeq<U>>() {
-            public IndexedSeq<U> _(T element, IndexedSeq<U> scanResult) throws Exception {
-                U result = op.apply(element, scanResult.last());
-                return scanResult.append(result);
-            }
-        }).reverse();
+    public IndexedSeq<Tuple2<T, Integer>> zipWithIndex() {
+        return zip(indices());
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("Seq(");
-        sb.append(mkString(","));
-        sb.append(")");
-        return sb.toString();
-    }
 }
