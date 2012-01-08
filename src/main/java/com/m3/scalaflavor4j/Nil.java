@@ -361,4 +361,24 @@ public class Nil<T> extends Seq<T> {
         return Nil._();
     }
 
+    @Override
+    public <U> U reduceLeft(Function2<U, T, U> op) {
+        return null;
+    }
+
+    @Override
+    public <U> Option<U> reduceLeftOption(Function2<U, T, U> op) {
+        return Option.none();
+    }
+
+    @Override
+    public <U> U reduceRight(Function2<T, U, U> op) {
+        return null;
+    }
+
+    @Override
+    public <U> Option<U> reduceRightOption(Function2<T, U, U> op) {
+        return Option.none();
+    }
+
 }

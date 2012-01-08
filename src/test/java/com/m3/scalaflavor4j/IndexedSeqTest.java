@@ -1523,4 +1523,50 @@ public class IndexedSeqTest {
         assertThat(withoutNull.toString(), is(equalTo("Seq(foo,bar,baz)")));
     }
 
+    @Test
+    public void reduceLeft_A$Function2() throws Exception {
+        Seq<String> seq = Seq._("foo", "bar", "baz");
+        Integer actual = seq.reduceLeft(new FoldLeftF2<Integer, String>() {
+            public Integer _(Integer z, String e) throws Exception {
+                return z != null ? z + e.length() : e.length();
+            }
+        });
+        assertThat(actual, is(equalTo(9)));
+    }
+
+    @Test
+    public void reduceLeftOption_A$Function2() throws Exception {
+        Seq<String> seq = Seq._("foo", "bar", "baz");
+        Option<Integer> actual = seq.reduceLeftOption(new FoldLeftF2<Integer, String>() {
+            public Integer _(Integer z, String e) throws Exception {
+                return z != null ? z + e.length() : e.length();
+            }
+        });
+        assertThat(actual.isDefined(), is(true));
+        assertThat(actual.getOrNull(), is(equalTo(9)));
+    }
+
+    @Test
+    public void reduceRight_A$Function2() throws Exception {
+        Seq<String> seq = Seq._("foo", "bar", "baz");
+        Integer actual = seq.reduceRight(new FoldRightF2<String, Integer>() {
+            public Integer _(String e, Integer z) throws Exception {
+                return z != null ? z + e.length() : e.length();
+            }
+        });
+        assertThat(actual, is(equalTo(9)));
+    }
+
+    @Test
+    public void reduceRightOption_A$Function2() throws Exception {
+        Seq<String> seq = Seq._("foo", "bar", "baz");
+        Option<Integer> actual = seq.reduceRightOption(new FoldRightF2<String, Integer>() {
+            public Integer _(String e, Integer z) throws Exception {
+                return z != null ? z + e.length() : e.length();
+            }
+        });
+        assertThat(actual.isDefined(), is(true));
+        assertThat(actual.getOrNull(), is(equalTo(9)));
+    }
+
 }

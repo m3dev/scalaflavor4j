@@ -195,14 +195,38 @@ public class Snippets {
 
     /**
      * {@link com.m3.scalaflavor4j.Seq#foldLeft(Object, Function2)}
+     * {@link com.m3.scalaflavor4j.Seq#foldRight(Object, Function2)}
      */
     @Test
-    public void foldLeft() {
-        assertThat(Seq._(1, 2, 3, 4, 5).foldLeft(0, new FoldLeftF2<Integer, Integer>() {
-            public Integer _(Integer sum, Integer i) {
-                return sum + i;
+    public void fold() {
+        assertThat(Seq._('b', 'c', 'd').foldLeft("a", new FoldLeftF2<String, Character>() {
+            public String _(String z, Character c) {
+                return z + c;
             }
-        }), is(equalTo(15)));
+        }), is(equalTo("abcd")));
+        assertThat(Seq._('b', 'c', 'd').foldRight("a", new FoldRightF2<Character, String>() {
+            public String _(Character c, String z) {
+                return z + c;
+            }
+        }), is(equalTo("adcb")));
+    }
+
+    /**
+     * {@link com.m3.scalaflavor4j.Seq#reduceLeft(Function2)}
+     * {@link com.m3.scalaflavor4j.Seq#reduceRight(Function2)}
+     */
+    @Test
+    public void reduce() {
+        assertThat(Seq._('b', 'c', 'd').reduceLeft(new FoldLeftF2<String, Character>() {
+            public String _(String z, Character c) {
+                return z != null ? z + c : c.toString();
+            }
+        }), is(equalTo("bcd")));
+        assertThat(Seq._('b', 'c', 'd').reduceRight(new FoldRightF2<Character, String>() {
+            public String _(Character c, String z) {
+                return z != null ? z + c : c.toString();
+            }
+        }), is(equalTo("dcb")));
     }
 
     /**
@@ -627,15 +651,23 @@ public class Snippets {
     }
 
     @Test
-    @SuppressWarnings({ "unused", "unchecked" })
+    @SuppressWarnings( { "unused", "unchecked" })
     public void patternMatching() throws Exception {
+
         /**
          * <pre>
-         * str match {
-         *   case str: String if str.legnth > 100 => println("large")
-         *   case str: String if str.matches(".*[0-9]+.*") => println("has num")
-         *   case str: String => println("anyway string")
+         * case class Name(first: String, last: String)
+         * def example(arg: Any) = {
+         *   arg match {
+         *     case i: Int => println("int value")
+         *     case str: String if str.length > 100 => println("large str")
+         *     case name: Name => println("name object")
+         *     case _ => println("object")
+         *   }
          * }
+         * example(123)
+         * example("aaaa....")
+         * example(Name("Martin", "Odersky"))
          * </pre>
          */
 

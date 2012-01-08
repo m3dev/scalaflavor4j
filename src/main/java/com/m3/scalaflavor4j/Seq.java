@@ -248,6 +248,30 @@ public abstract class Seq<T> implements CollectionLike<T> {
     public abstract Seq<T> patch(int from, Seq<T> patch, int replaced);
 
     /**
+     * Applies a binary operator to all elements of this immutable sequence,
+     * going left to right.
+     */
+    public abstract <U> U reduceLeft(Function2<U, T, U> op);
+
+    /**
+     * Optionally applies a binary operator to all elements of this immutable
+     * sequence, going left to right.
+     */
+    public abstract <U> Option<U> reduceLeftOption(Function2<U, T, U> op);
+
+    /**
+     * Applies a binary operator to all elements of this immutable sequence,
+     * going right to left.
+     */
+    public abstract <U> U reduceRight(Function2<T, U, U> op);
+
+    /**
+     * Optionally applies a binary operator to all elements of this immutable
+     * sequence, going right to left.
+     */
+    public abstract <U> Option<U> reduceRightOption(Function2<T, U, U> op);
+
+    /**
      * Returns new sequence wih elements in reversed order.
      */
     public abstract Seq<T> reverse();

@@ -691,4 +691,48 @@ public class NilTest {
         assertThat(actual.toString(), is(equalTo(expected)));
     }
 
+    @Test
+    public void reduceLeft_A$Function2() throws Exception {
+        Seq<Integer> seq = Nil._();
+        Integer actual = seq.reduceLeft(new FoldLeftF2<Integer, Integer>() {
+            public Integer _(Integer z, Integer e) throws Exception {
+                return z;
+            }
+        });
+        assertThat(actual, is(nullValue()));
+    }
+
+    @Test
+    public void reduceLeftOption_A$Function2() throws Exception {
+        Seq<Integer> seq = Nil._();
+        Option<Integer> actual = seq.reduceLeftOption(new FoldLeftF2<Integer, Integer>() {
+            public Integer _(Integer z, Integer e) throws Exception {
+                return z;
+            }
+        });
+        assertThat(actual.isDefined(), is(false));
+    }
+
+    @Test
+    public void reduceRight_A$Function2() throws Exception {
+        Seq<Integer> seq = Nil._();
+        Integer actual = seq.reduceRight(new FoldRightF2<Integer, Integer>() {
+            public Integer _(Integer z, Integer e) throws Exception {
+                return z;
+            }
+        });
+        assertThat(actual, is(nullValue()));
+    }
+
+    @Test
+    public void reduceRightOption_A$Function2() throws Exception {
+        Seq<Integer> seq = Nil._();
+        Option<Integer> actual = seq.reduceRightOption(new FoldRightF2<Integer, Integer>() {
+            public Integer _(Integer z, Integer e) throws Exception {
+                return z;
+            }
+        });
+        assertThat(actual.isDefined(), is(false));
+    }
+
 }

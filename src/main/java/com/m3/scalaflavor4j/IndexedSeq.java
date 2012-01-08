@@ -491,6 +491,34 @@ public class IndexedSeq<T> extends Seq<T> {
     }
 
     @Override
+    public <U> U reduceLeft(final Function2<U, T, U> operator) {
+        return foldLeft(null, new FoldLeftF2<U, T>() {
+            public U _(U z, T element) throws Exception {
+                return operator.apply(z, element);
+            }
+        });
+    }
+
+    @Override
+    public <U> Option<U> reduceLeftOption(Function2<U, T, U> operator) {
+        return Option._(reduceLeft(operator));
+    }
+
+    @Override
+    public <U> U reduceRight(final Function2<T, U, U> operator) {
+        return foldRight(null, new FoldRightF2<T, U>() {
+            public U _(T element, U z) throws Exception {
+                return operator.apply(element, z);
+            }
+        });
+    }
+
+    @Override
+    public <U> Option<U> reduceRightOption(Function2<T, U, U> operator) {
+        return Option._(reduceRight(operator));
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public IndexedSeq<T> reverse() {
         return foldRight(IndexedSeq.<T> _(), new FoldRightF2<T, IndexedSeq<T>>() {

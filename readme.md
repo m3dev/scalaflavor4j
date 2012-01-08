@@ -294,24 +294,48 @@ Seq._(1, 2, 3, 4, 5).foreach(new VoidF1<Integer>() {
 }); 
 ```
 
-### foldLeft
+### foldLeft / foldRight
 
 ```java
-// Seq(1, 2, 3, 4, 5).foldLeft(0L){ (sum: Long, i: Int) => sum + i.toLong }
+// Seq('b', 'c', 'd').foldLeft("a"){ (z: String, c: Char) => z + c }
 
-long sum = Seq._(1, 2, 3, 4, 5).foldLeft(0L, new F2<Long, Integer, Long>() {
-  public Long _(Long sum, Integer i) { 
-    return sum + Long.valueOf(i); 
+String s = Seq._('b', 'c', 'd').foldLeft("a", new Function2<String, Character, String>() { // or FoldLeftF2<String, Character>
+  public String _(String z, Character c) {
+    return z + c;
   }
-}); 
-// -> sum : 15L
+});
+// -> s : "abcd"
 
-long sum = Seq._(1, 2, 3, 4, 5).foldLeft(0, new FoldLeftF2<Long, Integer>() {
-  public Long _(Long sum, Integer i) { 
-    return sum + Long.valueOf(i); 
+// Seq('b', 'c', 'd').foldRight("a"){ (c: Char, z: String) => z + c }
+
+String s = Seq._('b', 'c', 'd').foldRight("a", new Function2<Character, String, String>() { // or FoldRightF2<Character, String>
+  public String _(Character c, String z) {
+    return z + c;
   }
-}); 
-// -> sum : 15L
+});
+// -> s : "adcb"
+```
+
+### reduceLeft / reduceRight
+
+```java
+// Seq('b', 'c', 'd').reduceLeft{ (z: Any, c: Char) => z + c.toString }
+
+String s = Seq._('b', 'c', 'd').reduceLeft(new Function2<String, Character, String>() {
+  public String _(String z, Character c) {
+    return z != null ? z + i : c.toString();
+  }
+});
+// -> s : "bcd"
+
+// Seq('b', 'c', 'd').reduceRight{ (c: Char, z: Any) => z + c.toString }
+
+Seq._('b', 'c', 'd').reduceRight(new Function2<Character, String, String>() {
+  public String _(Character c, String z) {
+    return z != null ? z + c : c.toString();
+  }
+});
+// -> s : "dcb"
 ```
 
 ### union
