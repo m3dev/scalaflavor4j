@@ -735,4 +735,10 @@ public class NilTest {
         assertThat(actual.isDefined(), is(false));
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void init_A$() throws Exception {
+        Seq<Integer> seq = Nil._();
+        seq.init();
+    }
+
 }

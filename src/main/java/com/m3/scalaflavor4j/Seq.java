@@ -177,6 +177,11 @@ public abstract class Seq<T> implements CollectionLike<T> {
     public abstract Seq<Integer> indices();
 
     /**
+     * Selects all elements except the last.
+     */
+    public abstract Seq<T> init();
+
+    /**
      * Computes the multiset intersection between this sequence and another
      * sequence.
      */

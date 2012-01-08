@@ -314,6 +314,11 @@ public class IndexedSeq<T> extends Seq<T> {
     }
 
     @Override
+    public Seq<T> init() {
+        return slice(0, size() - 1);
+    }
+
+    @Override
     public IndexedSeq<T> intersect(final Seq<T> that) {
         return flatMap(new F1<T, CollectionLike<T>>() {
             public CollectionLike<T> _(T thisElement) {

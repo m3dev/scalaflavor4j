@@ -381,4 +381,9 @@ public class Nil<T> extends Seq<T> {
         return Option.none();
     }
 
+    @Override
+    public Seq<T> init() {
+        throw new UnsupportedOperationException("empty.init");
+    }
+
 }

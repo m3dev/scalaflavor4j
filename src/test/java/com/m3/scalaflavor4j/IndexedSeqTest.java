@@ -1569,4 +1569,12 @@ public class IndexedSeqTest {
         assertThat(actual.getOrNull(), is(equalTo(9)));
     }
 
+    @Test
+    public void init_A$() throws Exception {
+        Seq<String> seq = Seq._("foo", "bar", "baz");
+        Seq<String> actual = seq.init();
+        assertThat(actual.size(), is(equalTo(2)));
+        assertThat(actual.mkString(","), is(equalTo("foo,bar")));
+    }
+
 }
