@@ -184,7 +184,7 @@ Provides `scala.Option`.
 ```java
 // val some = Option(3)
 // some.isDefined
-// some.getOrNull
+// some.orNull(null)
 // some.getOrElse(0)
 // some foreach { (i: Int) => println("The value " + i + " will be printed.") }
 
@@ -297,7 +297,7 @@ Seq._(1, 2, 3, 4, 5).foreach(new VoidF1<Integer>() {
 ### foldLeft
 
 ```java
-// Seq(1, 2, 3, 4, 5) foldLeft(0L){ (sum: Long, i: Int) => sum + i.toLong }
+// Seq(1, 2, 3, 4, 5).foldLeft(0L){ (sum: Long, i: Int) => sum + i.toLong }
 
 long sum = Seq._(1, 2, 3, 4, 5).foldLeft(0L, new F2<Long, Integer, Long>() {
   public Long _(Long sum, Integer i) { 
@@ -675,7 +675,7 @@ either.right(); // Option._("foo")
 Create a new Catch with additional exception handling logic by using `or`.
 
 ```java
-// val result = catchingNPE or (catching(classOf[IOException]) withApply { "ioe" }) apply {
+// val result = catchingNPE or (catching(classOf[IOException]) withApply { (t) => "ioe" }) apply {
 //   throw new IOException("file not found")
 // }
 
@@ -754,12 +754,18 @@ String result = ultimately.apply(new F0<String>() {
 ### Pattern Matching
 
 ```java
-// something match {
-//   case str: Int => println("int value")
-//   case str: String if str.legnth > 100 => println("large str")
-//   case str: Name => println("name object")
-//   case _ => println("object")
+// case class Name(first: String, last: String)
+// def example(arg: Any) = {
+//   arg match {
+//     case i: Int => println("int value")
+//     case str: String if str.length > 100 => println("large str")
+//     case name: Name => println("name object")
+//    case _ => println("object")
+//   }
 // }
+// example(123) 
+// example("aaaa....")
+// example(Name("Martin", "Odersky")) 
 
 CaseClause<Integer, Void> intCase = 
   CaseClause
