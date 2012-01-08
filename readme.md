@@ -22,6 +22,10 @@ ScalaFlavor4J provides you Scala flavored useful API in Java.
 </dependencies>
 ```
 
+# Download 
+
+http://m3dev.github.com/mvn-repo/releases/com/m3/scalaflavor4j/scalaflavor4j/0.1/scalaflavor4j-0.1.jar
+
 # Snippets
 
 https://github.com/m3dev/scalaflavor4j/blob/master/src/test/java/com/m3/scalaflavor4j/Snippets.java
