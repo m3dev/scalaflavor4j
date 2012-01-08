@@ -136,18 +136,38 @@ public class ExceptionControl {
             }
         };
 
-        private boolean promiscuously = false;
-        private final SMap<Seq<Class<? extends Throwable>>, Function1<Throwable, R>> catchHandlers;
+        /**
+         * Handler definition
+         */
+        private class HandlerDef {
+
+            private Seq<Class<? extends Throwable>> classesToHandle;
+            private Function1<Throwable, R> withApply;
+
+            public HandlerDef(Seq<Class<? extends Throwable>> classesToHandle, Function1<Throwable, R> withApply) {
+                this.classesToHandle = classesToHandle;
+                this.withApply = withApply;
+            }
+        }
+
+        private final Seq<HandlerDef> handlerDefinitions;
+
         private VoidFunction0 finallyHandler = defaultFinallyHandler;
 
-        public Catch(SMap<Seq<Class<? extends Throwable>>, Function1<Throwable, R>> catchHandlers, boolean promiscuously) {
-            this.catchHandlers = catchHandlers;
+        private boolean promiscuously = false;
+
+        public Catch(Seq<HandlerDef> handlerDefinitions, boolean promiscuously) {
+            this.handlerDefinitions = handlerDefinitions;
             this.promiscuously = promiscuously;
         }
 
+        public Catch(Seq<Class<? extends Throwable>> classes, Function1<Throwable, R> withApply) {
+            this(classes, withApply, false);
+        }
+
+        @SuppressWarnings("unchecked")
         public Catch(Seq<Class<? extends Throwable>> classes, Function1<Throwable, R> withApply, boolean promiscuously) {
-            catchHandlers = SMap.<Seq<Class<? extends Throwable>>, Function1<Throwable, R>> _().update(classes,
-                    withApply);
+            this.handlerDefinitions = Seq.<HandlerDef> _(new HandlerDef(classes, withApply));
             this.promiscuously = promiscuously;
         }
 
@@ -172,11 +192,11 @@ public class ExceptionControl {
          */
         public Either<Throwable, R> either(Function0<R> block) {
             try {
-                Tuple2<R, Option<Throwable>> applied = _apply(block);
-                if (applied._2().isDefined()) {
-                    return Left._(applied._2());
+                Applied applied = _apply(block);
+                if (applied.handled.isDefined()) {
+                    return Left._(applied.handled);
                 } else {
-                    return Right._(applied._1());
+                    return Right._(applied.result);
                 }
             } catch (Exception e) {
                 throw new ScalaFlavor4JException(e);
@@ -189,62 +209,79 @@ public class ExceptionControl {
          */
         public Option<R> opt(Function0<R> block) {
             try {
-                Tuple2<R, Option<Throwable>> applied = _apply(block);
-                if (applied._2().isDefined()) {
+                Applied applied = _apply(block);
+                if (applied.handled.isDefined()) {
                     return Option.none();
                 } else {
-                    return Option._(applied._1());
+                    return Option._(applied.result);
                 }
             } catch (Exception e) {
                 throw new ScalaFlavor4JException(e);
             }
         }
 
-        Tuple2<R, Option<Throwable>> _apply(Function0<R> block) throws Exception {
+        /**
+         * @see {@link Catch#_apply(Function0)}
+         */
+        private class Applied {
+            R result;
+            Option<Throwable> handled = Option.none();
+
+            public Applied(R result) {
+                this.result = result;
+            }
+
+            public Applied(R result, Throwable handled) {
+                this.result = result;
+                this.handled = Option._(handled);
+            }
+        }
+
+        private Applied _apply(Function0<R> block) throws Exception {
             try {
-                return Tuple2._(block.apply(), Option.<Throwable> none());
+                return new Applied(block.apply());
+
             } catch (final Exception e) {
                 if (!promiscuously && e instanceof InterruptedException) {
                     throw e;
                 }
-                Option<Tuple2<Seq<Class<? extends Throwable>>, Function1<Throwable, R>>> catchHandlerDef = catchHandlers
-                        .toSeq().find(
-                                new PredicateF1<Tuple2<Seq<Class<? extends Throwable>>, Function1<Throwable, R>>>() {
-                                    public Boolean _(
-                                            Tuple2<Seq<Class<? extends Throwable>>, Function1<Throwable, R>> catchHandlerDef) {
-                                        return catchHandlerDef._1().find(new PredicateF1<Class<? extends Throwable>>() {
-                                            public Boolean _(Class<? extends Throwable> clazz) throws Exception {
-                                                try {
-                                                    return clazz.cast(e) != null;
-                                                } catch (ClassCastException cce) {
-                                                    return false;
-                                                }
-                                            }
-                                        }).isDefined();
-                                    }
-                                });
-                if (!catchHandlerDef.isDefined()) {
+                Option<HandlerDef> handlerDefinition = handlerDefinitions.find(new PredicateF1<HandlerDef>() {
+                    public Boolean _(HandlerDef handlerDef) {
+                        return handlerDef.classesToHandle.find(new PredicateF1<Class<? extends Throwable>>() {
+                            public Boolean _(Class<? extends Throwable> targetClass) throws Exception {
+                                try {
+                                    return targetClass.cast(e) != null;
+                                } catch (ClassCastException cce) {
+                                    return false;
+                                }
+                            }
+                        }).isDefined();
+                    }
+                });
+                if (!handlerDefinition.isDefined()) {
                     throw e;
                 }
-                Seq<Class<? extends Throwable>> classesToCatch = catchHandlerDef.getOrNull()._1();
-                Function1<Throwable, R> catchHandler = catchHandlerDef.getOrNull()._2();
+                Seq<Class<? extends Throwable>> classesToHandle = handlerDefinition.getOrNull().classesToHandle;
+                Function1<Throwable, R> catchHandler = handlerDefinition.getOrNull().withApply;
                 try {
-                    Option<Class<? extends Throwable>> toCatch = classesToCatch
-                            .find(new PredicateF1<Class<? extends Throwable>>() {
-                                public Boolean _(Class<? extends Throwable> clazz) throws Exception {
+                    Class<? extends Throwable> classToHandle = classesToHandle.find(
+                            new PredicateF1<Class<? extends Throwable>>() {
+                                public Boolean _(Class<? extends Throwable> classToHandle) {
                                     try {
-                                        return clazz.cast(e) != null;
+                                        return classToHandle.cast(e) != null;
                                     } catch (ClassCastException cce) {
                                         return false;
                                     }
                                 }
-                            });
+                            }).getOrNull();
                     try {
-                        return Tuple2._(catchHandler.apply(toCatch.getOrNull().cast(e)), Option.<Throwable> _(e));
+                        R handlerApplied = catchHandler.apply(classToHandle.cast(e));
+                        return new Applied(handlerApplied, e);
                     } catch (Exception e2) {
                         throw e2;
                     }
                 } catch (ClassCastException cce) {
+                    // if failed to cast, throw the original exception
                     throw e;
                 }
             } finally {
@@ -252,15 +289,16 @@ public class ExceptionControl {
             }
         }
 
+        @Override
         public R _(Function0<R> block) throws Exception {
-            return _apply(block)._1();
+            return _apply(block).result;
         }
 
         /**
          * Create a new Catch with additional exception handling logic.
          */
         public Catch<R> or(Catch<R> that) {
-            return new Catch<R>(SMap._(this.catchHandlers.toSeq().union(that.catchHandlers.toSeq())), promiscuously);
+            return new Catch<R>(this.handlerDefinitions.union(that.handlerDefinitions), promiscuously);
         }
     }
 

@@ -231,10 +231,10 @@ public class IndexedSeq<T> extends Seq<T> {
 
     @Override
     public <U> U foldRight(U z, Function2<T, U, U> operator) {
+        if (isEmpty()) {
+            return NIL.foldRight(z, operator);
+        }
         try {
-            if (isEmpty()) {
-                return NIL.foldRight(z, operator);
-            }
             int lastIndex = list.size() - 1;
             for (int i = lastIndex; i >= 0; i--) {
                 z = operator.apply(list.get(i), z);
@@ -446,20 +446,41 @@ public class IndexedSeq<T> extends Seq<T> {
         }));
     }
 
+    /**
+     * @see {@link IndexedSeq#partition(Function1)}
+     */
+    private class PartitionZ {
+
+        Seq<T> matched;
+        Seq<T> unmatched;
+
+        @SuppressWarnings("unchecked")
+        public PartitionZ() {
+            this.matched = IndexedSeq.<T> _();
+            this.unmatched = IndexedSeq.<T> _();
+        }
+
+        public PartitionZ(Seq<T> matched, Seq<T> unmatched) {
+            this.matched = matched;
+            this.unmatched = unmatched;
+        }
+
+        public Pair<Seq<T>, Seq<T>> toResult() {
+            return Pair._(matched, unmatched);
+        }
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public Tuple2<Seq<T>, Seq<T>> partition(final Function1<T, Boolean> predicate) {
-        Pair<Seq<T>, Seq<T>> partition = Pair.<Seq<T>, Seq<T>> _(IndexedSeq.<T> _(), IndexedSeq.<T> _());
-        return foldLeft(partition, new FoldLeftF2<Pair<Seq<T>, Seq<T>>, T>() {
-            public Pair<Seq<T>, Seq<T>> _(Pair<Seq<T>, Seq<T>> partition, T element) throws Exception {
-                Seq<T> matched = partition._1();
-                Seq<T> unmatched = partition._2();
+        return foldLeft(new PartitionZ(), new FoldLeftF2<PartitionZ, T>() {
+            public PartitionZ _(PartitionZ z, T element) throws Exception {
                 if (predicate.apply(element)) {
-                    return Pair._(matched.append(element), unmatched);
+                    return new PartitionZ(z.matched.append(element), z.unmatched);
                 }
-                return Pair._(matched, unmatched.append(element));
+                return new PartitionZ(z.matched, z.unmatched.append(element));
             };
-        });
+        }).toResult();
     }
 
     @Override
@@ -495,10 +516,12 @@ public class IndexedSeq<T> extends Seq<T> {
         return zip(that).foldLeft(true, new FoldLeftF2<Boolean, Tuple2<T, T>>() {
             public Boolean _(Boolean sameElements, Tuple2<T, T> thisAndThat) {
                 if (sameElements) {
-                    if (thisAndThat._1() == null && thisAndThat._2() == null) {
+                    T thisOne = thisAndThat._1();
+                    T thatOne = thisAndThat._2();
+                    if (thisOne == null && thatOne == null) {
                         return true;
                     }
-                    if (!thisAndThat._1().equals(thisAndThat._2())) {
+                    if (!thisOne.equals(thatOne)) {
                         return false;
                     }
                 }
@@ -509,10 +532,10 @@ public class IndexedSeq<T> extends Seq<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <U> IndexedSeq<U> scanLeft(U z, final Function2<U, T, U> op) {
+    public <U> IndexedSeq<U> scanLeft(U z, final Function2<U, T, U> operator) {
         return foldLeft(IndexedSeq._(z), new FoldLeftF2<IndexedSeq<U>, T>() {
             public IndexedSeq<U> _(IndexedSeq<U> scanResult, T element) throws Exception {
-                U result = op.apply(scanResult.last(), element);
+                U result = operator.apply(scanResult.last(), element);
                 return scanResult.append(result);
             }
         });
@@ -520,10 +543,10 @@ public class IndexedSeq<T> extends Seq<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <U> IndexedSeq<U> scanRight(U z, final Function2<T, U, U> op) {
+    public <U> IndexedSeq<U> scanRight(U z, final Function2<T, U, U> operator) {
         return foldRight(IndexedSeq._(z), new FoldRightF2<T, IndexedSeq<U>>() {
             public IndexedSeq<U> _(T element, IndexedSeq<U> scanResult) throws Exception {
-                U result = op.apply(element, scanResult.last());
+                U result = operator.apply(element, scanResult.last());
                 return scanResult.append(result);
             }
         }).reverse();
@@ -607,26 +630,46 @@ public class IndexedSeq<T> extends Seq<T> {
         return IndexedSeq._(copied);
     }
 
+    /**
+     * @see {@link IndexedSeq#span(Function1)}
+     */
+    private class SpanZ {
+
+        Boolean unmatchFound;
+        Seq<T> stillMatched;
+        Seq<T> others;
+
+        @SuppressWarnings("unchecked")
+        public SpanZ() {
+            this.unmatchFound = false;
+            this.stillMatched = IndexedSeq.<T> _();
+            this.others = IndexedSeq.<T> _();
+        }
+
+        public SpanZ(Boolean unmatchFound, Seq<T> stillMatched, Seq<T> others) {
+            this.unmatchFound = unmatchFound;
+            this.stillMatched = stillMatched;
+            this.others = others;
+        }
+
+        public Pair<Seq<T>, Seq<T>> toResult() {
+            return Pair._(stillMatched, others);
+        }
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public Tuple2<Seq<T>, Seq<T>> span(final Function1<T, Boolean> predicate) {
-        Triple<Boolean, Seq<T>, Seq<T>> spanned = foldLeft(Triple._(false, Seq.<T> _(), Seq.<T> _()),
-                new FoldLeftF2<Triple<Boolean, Seq<T>, Seq<T>>, T>() {
-                    public Triple<Boolean, Seq<T>, Seq<T>> _(Triple<Boolean, Seq<T>, Seq<T>> spanned, T element)
-                            throws Exception {
-                        boolean unmatchFound = spanned._1();
-                        Seq<T> stillMatched = spanned._2();
-                        Seq<T> others = spanned._3();
-                        if (unmatchFound) {
-                            return Triple._(unmatchFound, stillMatched, others.append(element));
-                        } else if (!predicate.apply(element)) {
-                            return Triple._(true, stillMatched, others.append(element));
-                        }
-                        return Triple._(unmatchFound, stillMatched.append(element), others);
-                    };
-                });
-        return Pair._(spanned._2(), spanned._3());
-
+        return foldLeft(new SpanZ(), new FoldLeftF2<SpanZ, T>() {
+            public SpanZ _(SpanZ z, T element) throws Exception {
+                if (z.unmatchFound) {
+                    return new SpanZ(z.unmatchFound, z.stillMatched, z.others.append(element));
+                } else if (!predicate.apply(element)) {
+                    return new SpanZ(true, z.stillMatched, z.others.append(element));
+                }
+                return new SpanZ(z.unmatchFound, z.stillMatched.append(element), z.others);
+            };
+        }).toResult();
     }
 
     @Override
