@@ -5,9 +5,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.m3.scalaflavor4j.Either.Left;
-import com.m3.scalaflavor4j.Either.Right;
-
 public class EitherTest {
 
     @Test

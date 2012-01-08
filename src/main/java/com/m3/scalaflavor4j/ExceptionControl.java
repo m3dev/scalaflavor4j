@@ -15,9 +15,6 @@
  */
 package com.m3.scalaflavor4j;
 
-import com.m3.scalaflavor4j.Either.Left;
-import com.m3.scalaflavor4j.Either.Right;
-
 /**
  * scala.util.control.Exception
  * 
