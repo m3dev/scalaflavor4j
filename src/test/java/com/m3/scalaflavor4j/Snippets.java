@@ -606,7 +606,7 @@ public class Snippets {
                 throw new RuntimeException();// -> result : null
             }
         });
-        assertThat(result, is(notNullValue()));
+        assertThat(result, is(nullValue()));
     }
 
     @Test
@@ -657,60 +657,56 @@ public class Snippets {
         /**
          * <pre>
          * case class Name(first: String, last: String)
-         * def example(arg: Any) = {
+         * def example(arg: Any): String = {
          *   arg match {
-         *     case i: Int => println("int value")
-         *     case str: String if str.length > 100 => println("large str")
-         *     case name: Name => println("name object")
-         *     case _ => println("object")
+         *     case i: Int => "int value : " + i
+         *     case str: String if str.length > 100 => "larget string : " + str
+         *     case name: Name => "name object : " + name
+         *     case obj => "object : " + obj
          *   }
          * }
-         * example(123)
-         * example("aaaa....")
-         * example(Name("Martin", "Odersky"))
+         * val result = example(123)
+         * val result = example("aaaa...." * 100)
+         * val result = example(Name("Martin", "Odersky"))
          * </pre>
          */
 
-        CaseClause<Integer, Void> intCase = CaseClause._case(Integer.class)._arrow(new F1<Integer, Void>() {
-            public Void _(Integer i) throws Exception {
-                System.out.println("int value");
-                return null;
+        CaseClause<Integer, String> intCase = CaseClause._case(Integer.class)._arrow(new F1<Integer, String>() {
+            public String _(Integer i) throws Exception {
+                return "int value : " + i;
             }
         });
 
-        CaseClause<String, Void> largeStrCase = CaseClause._case(String.class)._if(new Guard<String>() {
+        CaseClause<String, String> largeStrCase = CaseClause._case(String.class)._if(new Guard<String>() {
             public Boolean _(String str) {
                 return str.length() > 100;
             }
-        })._arrow(new F1<String, Void>() {
-            public Void _(String v1) throws Exception {
-                System.out.println("large str");
-                return null;
+        })._arrow(new F1<String, String>() {
+            public String _(String str) {
+                return "large string : " + str;
             }
         });
 
-        CaseClause<Name, Void> nameCase = CaseClause._case(new Extractor<Name>() {
+        CaseClause<Name, String> nameCase = CaseClause._case(new Extractor<Name>() {
             public Name extract(Object v) {
                 if (v instanceof Name) {
                     return (Name) v;
                 }
                 return null;
             }
-        })._arrow(new F1<Name, Void>() {
-            public Void _(Name v) {
-                System.out.println("name object");
-                return null;
+        })._arrow(new F1<Name, String>() {
+            public String _(Name name) {
+                return "name object : " + name;
             }
         });
 
-        CaseClause<Object, Void> objectCase = CaseClause._case(Object.class)._arrow(new F1<Object, Void>() {
-            public Void _(Object v) {
-                System.out.println("object");
-                return null;
+        CaseClause<Object, String> objectCase = CaseClause._case(Object.class)._arrow(new F1<Object, String>() {
+            public String _(Object obj) {
+                return "object : " + obj;
             }
         });
 
-        PartialFunction<Void> intOnly = PartialF.<Void> _(intCase);
+        PartialFunction<String> intOnly = PartialF.<String> _(intCase);
         intOnly.apply(123); // "int value"
         try {
             intOnly.apply("aaaa......"); // MatchError (RuntimeException)
@@ -718,7 +714,7 @@ public class Snippets {
         } catch (MatchError e) {
         }
 
-        PartialFunction<Void> largeStrAndName = PartialF.<Void> _(largeStrCase, nameCase);
+        PartialFunction<String> largeStrAndName = PartialF.<String> _(largeStrCase, nameCase);
         try {
             largeStrAndName.apply(123); // MatchError (RuntimeException)
             fail();
@@ -727,8 +723,8 @@ public class Snippets {
         largeStrAndName.apply("aaaa......"); // "large str"
         largeStrAndName.apply(new Name("Martin", "Odersky")); // "name object"
 
-        PartialFunction<Void> intAndLargeStrAndName = intOnly.orElse(largeStrAndName);
-        PartialFunction<Void> all = intAndLargeStrAndName.orElse(PartialF.<Void> _(objectCase));
+        PartialFunction<String> intAndLargeStrAndName = intOnly.orElse(largeStrAndName);
+        PartialFunction<String> all = intAndLargeStrAndName.orElse(PartialF.<String> _(objectCase));
 
     }
 }

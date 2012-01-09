@@ -50,7 +50,7 @@ Provides `scala.Function*`.
 // getLength("foo")
 // getLength.apply("foo")
 
-Function1<String, Integer> getLength = new Function1<String, Integer>() {
+F1<String, Integer> getLength = new F1<String, Integer>() {
   public Integer _(String v) { 
     return v.length(); 
   }
@@ -62,12 +62,11 @@ int len = getLength._("foo"); // -> len : 3
 `F*` are shorter aliases for `Function*`.
 
 ```java
-F1<String, Integer> getLength = new F1<String, Integer>() {
+Function1<String, Integer> getLength = new Function1<String, Integer>() {
   public Integer _(String v) { 
     return v.length(); 
   }
 };
-int len = getLength.apply("foo"); // -> len : 3
 ```
 
 `_` means `apply` method. In Function classes, only `_` is abstract method. `apply` calls `_` internally.
@@ -93,7 +92,7 @@ new F1<String, InputStream>() {
   public InputStream _(String filename) throws IOException {
     return new FileInputStream(new File(filename));
   }
-}; // IOException might be thrown 
+};
 ```
 
 ### andThen
@@ -299,7 +298,7 @@ Seq._(1, 2, 3, 4, 5).foreach(new VoidF1<Integer>() {
 ```java
 // Seq('b', 'c', 'd').foldLeft("a"){ (z: String, c: Char) => z + c }
 
-String s = Seq._('b', 'c', 'd').foldLeft("a", new F2<String, Character, String>() { // or FoldLeftF2<String, Character>
+String s = Seq._('b', 'c', 'd').foldLeft("a", new FoldLeftF2<String, Character>() { // or F2<String, Character, String>
   public String _(String z, Character c) {
     return z + c;
   }
@@ -308,7 +307,7 @@ String s = Seq._('b', 'c', 'd').foldLeft("a", new F2<String, Character, String>(
 
 // Seq('b', 'c', 'd').foldRight("a"){ (c: Char, z: String) => z + c }
 
-String s = Seq._('b', 'c', 'd').foldRight("a", new F2<Character, String, String>() { // or FoldRightF2<Character, String>
+String s = Seq._('b', 'c', 'd').foldRight("a", new FoldRightF2<Character, String>() { // or F2<Character, String, String>
   public String _(Character c, String z) {
     return z + c;
   }
@@ -437,7 +436,7 @@ Seq._(1, 2, 3, 4, 5).take(3);
 Seq._(1, 2, 3, 4, 5).takeRight(3); 
 // -> Seq._(3, 4, 5)
 
-Seq._(1, 3, 5, 2, 4).takeWhile(new F1<Integer, Boolean>() {
+Seq._(1, 3, 5, 2, 4).takeWhile(new PredicateF1<Integer>() { // or F1<Integer, Boolean>
   public Boolean _(Integer i) { 
     return i < 5; 
   }
@@ -458,7 +457,7 @@ Seq._(1, 2, 3, 4, 5).drop(3);
 Seq._(1, 2, 3, 4, 5).dropRight(3); 
 // -> Seq._(1, 2)
 
-Seq._(1, 3, 5, 2, 4).dropWhile(new F1<Integer, Boolean>() {
+Seq._(1, 3, 5, 2, 4).dropWhile(new PredicateF1<Integer>() { // or F1<Integer, Boolean>
   public Boolean _(Integer i) { 
     return i < 5; 
   }
@@ -559,7 +558,7 @@ sMap.foreach(new VoidF1<Tuple2<String, Integer>>() {
 ```java
 // val withoutCharley = sMap filter { case (k, v) => k.contains("n") }
 
-SMap<String, Integer> withoutCharley = sMap.filter(new F1<Tuple2<String, Integer>, Boolean>() {
+SMap<String, Integer> withoutCharley = sMap.filter(new PredicateF1<Tuple2<String, Integer>>() { or F1<Tuple2<String, Integer>, Boolean>
     public Boolean _(Tuple2<String, Integer> v1) { 
       return v1._1().contains("n"); 
     }
@@ -714,7 +713,7 @@ String result =
       }
     })
     .apply(new F0<String>(){
-      public String _() {
+      public String _() throws Exception {
         throw new IOException("file not found");  // -> result : "ioe"
         // throw new NullPointerException("will be catched"); -> result: "npe"
       }
@@ -735,7 +734,7 @@ String result = handling(RuntimeException.class)
     }
   })
   .apply(new F0<String>(){
-    public String _() {
+    public String _() throws Exception {
       throw new RuntimeException(); // -> result : ""
       // return "ok"; // -> result : "ok"
     }
@@ -750,7 +749,7 @@ String result = handling(RuntimeException.class)
 import static com.m3.scalaflavor4j.ExceptionControl.*;
 Catch<String> ignoring = ignoring(Exception.class);
 String result = ignoring.apply(new F0<String>() {
-  public String _() {
+  public String _() throws Exception {
     throw new RuntimeException(); // -> result : null
   }
 });
@@ -763,7 +762,7 @@ String result = ignoring.apply(new F0<String>() {
 
 import static com.m3.scalaflavor4j.ExceptionControl.*;
 Catch<String> ultimately = ultimately(new VoidF0() {
-  public void _() throws Exception {
+  public void _() {
     System.out.println("every time finally called");
   }
 });
@@ -781,82 +780,77 @@ String result = ultimately.apply(new F0<String>() {
 ### Pattern Matching
 
 ```java
-// case class Name(first: String, last: String)
-// def example(arg: Any) = {
-//   arg match {
-//     case i: Int => println("int value")
-//     case str: String if str.length > 100 => println("large str")
-//     case name: Name => println("name object")
-//     case _ => println("object")
-//   }
-// }
-// example(123) 
-// example("aaaa....")
-// example(Name("Martin", "Odersky")) 
+/*
+ * case class Name(first: String, last: String)
+ * def example(arg: Any): String = {
+ *   arg match {
+ *     case i: Int => "int value : " + i
+ *     case str: String if str.length > 100 => "larget string : " + str
+ *     case name: Name => "name object : " + name
+ *     case obj => "object : " + obj
+ *   }
+ * }
+ * val result = example(123)
+ * val result = example("aaaa...." * 100)
+ * val result = example(Name("Martin", "Odersky"))
+ */
 
-CaseClause<Integer, Void> intCase = 
+CaseClause<Integer, String> intCase = 
   CaseClause
     ._case(Integer.class)
-    ._arrow(new F1<Integer, Void>() {
-      public Void _(Integer i) {
-        System.out.println("int value");
-        return null;
+    ._arrow(new F1<Integer, String>() {
+      public String _(Integer i) {
+        return "int value : " + i;
       }
     });
 
-CaseClause<String, Void> largeStrCase = 
+CaseClause<String, String> largeStrCase = 
   CaseClause
     ._case(String.class)
     ._if(new Guard<String>() {
       public Boolean _(String str) {
         return str.length() > 100;
       }
-    })
-    ._arrow(new F1<String, Void>() {
-      public Void _(String v1) {
-        System.out.println("large str");
-        return null;
+    })._arrow(new F1<String, String>() {
+      public String _(String str) throws Exception {
+        return "large string : " + str;
       }
     });
 
-CaseClause<Name, Void> nameCase =
+CaseClause<Name, String> nameCase = 
   CaseClause
     ._case(new Extractor<Name>() {
       public Name extract(Object v) {
         if (v instanceof Name) {
-          return (Name)v;
+          return (Name) v;
         }
         return null;
       }
-    })
-    ._arrow(new F1<Name, Void>() {
-      public Void _(Name v) {
-        System.out.println("name object");
-        return null;
+    })._arrow(new F1<Name, String>() {
+      public String _(Name name) {
+        return "name object : " + name;
       }
     });
 
-CaseClause<Object, Void> objectCase = 
+CaseClause<Object, String> objectCase = 
   CaseClause
-    ._case(Object.class)
-    ._arrow(new F1<Object, Void>() {
-      public Void _(Object v) {
-        System.out.println("object");
-        return null;
-      } 
+    ._case(Object.class)._arrow(new F1<Object, String>() {
+      public String _(Object obj) {
+        return "object : " + obj;
+      }
     });
 
-PartialFunction<Void> intOnly = PartialF.<Void> _(intCase);
-intOnly.apply(123); // "int value"
+PartialFunction<String> intOnly = PartialF.<String> _(intCase);
+intOnly.apply(123); // "int value : 123"
 intOnly.apply("aaaa......"); // MatchError (RuntimeException)
 
-PartialFunction<Void> largeStrAndName = PartialF.<Void>_(largeStrCase, nameCase);
+PartialFunction<String> largeStrAndName = PartialF.<String> _(largeStrCase, nameCase);
 largeStrAndName.apply(123); // MatchError (RuntimeException)
-largeStrAndName.apply("aaaa......"); // "large str"
-largeStrAndName.apply(new Name("Martin", "Odersky")); // "name object"
+largeStrAndName.apply("aaaa......"); // "large string : aaaa......"
+largeStrAndName.apply(new Name("Martin", "Odersky")); // "name object : Name(Martin, Odersky)"
 
-PartialFunction<Void> intAndLargeStrAndName = intOnly.orElse(largeStrAndName);
-PartialFunction<Void> all = intAndLargeStrAndName.orElse(PartialF.<Void>_(objectCase));
+PartialFunction<String> intAndLargeStrAndName = intOnly.orElse(largeStrAndName);
+PartialFunction<String> all = intAndLargeStrAndName.orElse(PartialF.<String> _(objectCase));
 ```
 
 
