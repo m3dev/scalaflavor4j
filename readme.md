@@ -558,7 +558,7 @@ sMap.foreach(new VoidF1<Tuple2<String, Integer>>() {
 ```java
 // val withoutCharley = sMap filter { case (k, v) => k.contains("n") }
 
-SMap<String, Integer> withoutCharley = sMap.filter(new PredicateF1<Tuple2<String, Integer>>() { or F1<Tuple2<String, Integer>, Boolean>
+SMap<String, Integer> withoutCharley = sMap.filter(new PredicateF1<Tuple2<String, Integer>>() { // or F1<Tuple2<String, Integer>, Boolean>
     public Boolean _(Tuple2<String, Integer> v1) { 
       return v1._1().contains("n"); 
     }
