@@ -323,7 +323,7 @@ String s = Seq._('b', 'c', 'd').foldRight("a", new F2<Character, String, String>
 
 String s = Seq._('b', 'c', 'd').reduceLeft(new F2<String, Character, String>() {
   public String _(String z, Character c) {
-    return z != null ? z + i : c.toString();
+    return z != null ? z + c : c.toString();
   }
 });
 // -> s : "bcd"
