@@ -299,7 +299,7 @@ Seq._(1, 2, 3, 4, 5).foreach(new VoidF1<Integer>() {
 ```java
 // Seq('b', 'c', 'd').foldLeft("a"){ (z: String, c: Char) => z + c }
 
-String s = Seq._('b', 'c', 'd').foldLeft("a", new Function2<String, Character, String>() { // or FoldLeftF2<String, Character>
+String s = Seq._('b', 'c', 'd').foldLeft("a", new F2<String, Character, String>() { // or FoldLeftF2<String, Character>
   public String _(String z, Character c) {
     return z + c;
   }
@@ -308,7 +308,7 @@ String s = Seq._('b', 'c', 'd').foldLeft("a", new Function2<String, Character, S
 
 // Seq('b', 'c', 'd').foldRight("a"){ (c: Char, z: String) => z + c }
 
-String s = Seq._('b', 'c', 'd').foldRight("a", new Function2<Character, String, String>() { // or FoldRightF2<Character, String>
+String s = Seq._('b', 'c', 'd').foldRight("a", new F2<Character, String, String>() { // or FoldRightF2<Character, String>
   public String _(Character c, String z) {
     return z + c;
   }
@@ -321,7 +321,7 @@ String s = Seq._('b', 'c', 'd').foldRight("a", new Function2<Character, String, 
 ```java
 // Seq('b', 'c', 'd').reduceLeft{ (z: Any, c: Char) => z + c.toString }
 
-String s = Seq._('b', 'c', 'd').reduceLeft(new Function2<String, Character, String>() {
+String s = Seq._('b', 'c', 'd').reduceLeft(new F2<String, Character, String>() {
   public String _(String z, Character c) {
     return z != null ? z + i : c.toString();
   }
@@ -330,7 +330,7 @@ String s = Seq._('b', 'c', 'd').reduceLeft(new Function2<String, Character, Stri
 
 // Seq('b', 'c', 'd').reduceRight{ (c: Char, z: Any) => z + c.toString }
 
-Seq._('b', 'c', 'd').reduceRight(new Function2<Character, String, String>() {
+String s = Seq._('b', 'c', 'd').reduceRight(new F2<Character, String, String>() {
   public String _(Character c, String z) {
     return z != null ? z + c : c.toString();
   }
