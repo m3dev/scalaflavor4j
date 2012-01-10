@@ -17,14 +17,14 @@ ScalaFlavor4J provides you Scala flavored useful API in Java.
   <dependency>
     <groupId>com.m3.scalaflavor4j</groupId>
     <artifactId>scalaflavor4j</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
   </dependency>
 </dependencies>
 ```
 
 # Download 
 
-http://m3dev.github.com/mvn-repo/releases/com/m3/scalaflavor4j/scalaflavor4j/0.1/scalaflavor4j-0.1.jar
+http://m3dev.github.com/mvn-repo/releases/com/m3/scalaflavor4j/scalaflavor4j/0.2/scalaflavor4j-0.2.jar
 
 # Snippets
 
