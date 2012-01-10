@@ -17,12 +17,12 @@ package com.m3.scalaflavor4j;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import jsr166y.ForkJoinPool;
 
 /**
  * scala.concurrent.ops
@@ -36,7 +36,7 @@ public class ConcurrentOps {
 
     private static final Logger logger = Logger.getLogger(ConcurrentOps.class.getCanonicalName());
 
-    private static ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
+    private static ForkJoinPool forkJoinPool = new ForkJoinPool();
 
     /**
      * Evaluates an expression asynchronously, and returns a closure for
@@ -49,7 +49,7 @@ public class ConcurrentOps {
                 return p.apply();
             }
         });
-        EXECUTOR_SERVICE.execute(future);
+        forkJoinPool.execute(future);
         return future;
     }
 
@@ -70,8 +70,8 @@ public class ConcurrentOps {
                 return yp.apply();
             }
         });
-        EXECUTOR_SERVICE.execute(xpFuture);
-        EXECUTOR_SERVICE.execute(ypFuture);
+        forkJoinPool.execute(xpFuture);
+        forkJoinPool.execute(ypFuture);
         return Tuple2._(xpFuture.get(), ypFuture.get());
     }
 
@@ -79,7 +79,7 @@ public class ConcurrentOps {
      * Evaluates an expression asynchronously.
      */
     public static void spawn(final VoidFunction0 p) {
-        EXECUTOR_SERVICE.execute(new Runnable() {
+        forkJoinPool.execute(new Runnable() {
             @Override
             public void run() {
                 try {

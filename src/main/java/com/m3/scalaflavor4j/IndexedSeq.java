@@ -35,7 +35,7 @@ public class IndexedSeq<T> extends Seq<T> {
      */
     private final Nil<T> NIL = Nil._();
 
-    private final List<T> list;
+    protected final List<T> list;
 
     public static <T> IndexedSeq<T> apply(T... values) {
         return _(values);
