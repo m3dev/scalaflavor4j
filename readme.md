@@ -265,14 +265,7 @@ Seq._(1, 2, null, 3, null, 4, 5).flatMap(new F1<Integer, CollectionLike<Integer>
 ```java
 // Seq(1, 2, 3, 4, 5) filter { (i: Int) => i > 2 }
 
-Seq._(1, 2, 3, 4, 5).filter(new F1<Integer, Boolean>() {
-  public Boolean _(Integer i) { 
-    return i > 2; 
-  }
-}); 
-// -> Seq._(3, 4, 5)
-
-Seq._(1, 2, 3, 4, 5).filter(new PredicateF1<Integer>() {
+Seq._(1, 2, 3, 4, 5).filter(new PredicateF1<Integer>() { // or new F1<Integer, Boolean>
   public Boolean _(Integer i) { 
     return i > 2; 
   }
@@ -587,6 +580,56 @@ Seq<Integer> oneToFive = SInt._(1).to(5);
 
 Seq<Integer> oneUntilFive = SInt._(1).until(5); 
 // oneUntilFive : Seq._(1, 2, 3, 4)
+```
+
+
+## ConcurrentOps
+
+Provides `scala.concurrent.ops.*`
+
+### spawn
+
+```java
+import static com.m3.scalaflavor4j.ConcurrentOps.*;
+spawn(new VoidF0() {
+  public void _() {
+    System.out.println("on a different thread!");
+  }
+});
+```
+
+### future
+
+```java
+Future<String> future = future(new F0<String>() {
+  public String _() throws Exception {
+    Thread.sleep(1000L);
+    return "foo";
+  }
+});
+future.isDone(); // -> false
+future.get(); // -> "foo"
+future.isDone(); // -> true
+```
+
+### par
+
+```java
+Tuple2<String, Integer> result = par(
+  new F0<String>() {
+    public String _() throws Exception {
+      Thread.sleep(500L);
+      return "foo";
+    }
+  }, 
+  new F0<Integer>() {
+    public Integer _() throws Exception {
+      Thread.sleep(1000L);
+      return 123;
+    }
+  }); // 1000L blocking
+result._1(); // -> "foo"
+result._2(), // -> 123
 ```
 
 
