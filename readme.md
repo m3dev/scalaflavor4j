@@ -521,20 +521,20 @@ Provides `scala.collection.parallel.ParSeq`. ScalaFlavor4J does not support all 
 // (1 to 1000).par.map { (i) => print(Thread.currentThread.getId + ","); i * i }
 // (1 to 1000).par.flatMap { (i) => print(Thread.currentThread.getId + ","); 1 to i }
 
-SInt._(1).to(1000).par.foreach(new VoidF1<Integer>() {
+SInt._(1).to(1000).par().foreach(new VoidF1<Integer>() {
   public void _(Integer i) {
     System.out.println(Thread.currentThread.getId() + ",");
   }
 });
 
-SInt._(1).to(1000).par.map(new F1<Integer, Integer>() {
+SInt._(1).to(1000).par().map(new F1<Integer, Integer>() {
   public Integer _(Integer i) {
     System.out.println(Thread.currentThread.getId() + ",");
     return i * i;
   }
 });
 
-SInt._(1).to(1000).par.flatMap(new F1<Integer, CollectionLike<Integer>>() {
+SInt._(1).to(1000).par().flatMap(new F1<Integer, CollectionLike<Integer>>() {
   public Seq<Integer> _(Integer i) {
     System.out.println(Thread.currentThread.getId() + ",");
     return SInt._(1).to(i);
