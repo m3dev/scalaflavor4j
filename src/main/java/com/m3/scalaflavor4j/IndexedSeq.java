@@ -454,6 +454,11 @@ public class IndexedSeq<T> extends Seq<T> {
         }));
     }
 
+    @Override
+    public ParSeq<T> par() {
+        return ParSeq.<T> _(list);
+    }
+
     /**
      * @see {@link IndexedSeq#partition(Function1)}
      */

@@ -242,6 +242,11 @@ public abstract class Seq<T> implements CollectionLike<T> {
     public abstract Seq<T> padTo(int len, T elem);
 
     /**
+     * Returns a parallel implementation of this collection.
+     */
+    public abstract ParSeq<T> par();
+
+    /**
      * Partitions this sequence in two sequences according to a predicate.
      */
     public abstract Tuple2<Seq<T>, Seq<T>> partition(Function1<T, Boolean> p);

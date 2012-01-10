@@ -386,4 +386,10 @@ public class Nil<T> extends Seq<T> {
         throw new UnsupportedOperationException("empty.init");
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public ParSeq<T> par() {
+        return ParSeq.<T> _();
+    }
+
 }

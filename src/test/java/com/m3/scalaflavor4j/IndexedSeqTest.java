@@ -1583,4 +1583,14 @@ public class IndexedSeqTest {
         assertThat(actual.mkString(","), is(equalTo("foo,bar")));
     }
 
+    @Test
+    public void par_A$() throws Exception {
+        Seq<Integer> seq = SInt._(1).to(10000);
+        ParSeq<Integer> parSeq = seq.par();
+        assertThat(parSeq, notNullValue());
+        parSeq.foreach(new VoidF1<Integer>() {
+            public void _(Integer v1) throws Exception {
+            }
+        });
+    }
 }

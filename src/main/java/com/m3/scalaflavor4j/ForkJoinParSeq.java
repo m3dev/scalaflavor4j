@@ -22,7 +22,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import jsr166y.ForkJoinPool;
 
 /**
  * {@link ParSeq} implementation
@@ -30,6 +35,12 @@ import java.util.concurrent.Future;
 public class ForkJoinParSeq<T> extends ParSeq<T> {
 
     private static final long serialVersionUID = 1L;
+
+    private final Nil<T> NIL = Nil._();
+
+    private static final Logger logger = Logger.getLogger(ForkJoinParSeq.class.getCanonicalName());
+
+    private static final ForkJoinPool forkJoinPool = new ForkJoinPool();
 
     protected final Collection<T> collection;
 
@@ -74,6 +85,9 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
 
     @Override
     public int count(final Function1<T, Boolean> predicate) {
+        if (isEmpty()) {
+            return NIL.count(predicate);
+        }
         return map(new F1<T, Integer>() {
             public Integer _(T element) throws Exception {
                 return predicate.apply(element) ? 1 : 0;
@@ -87,6 +101,9 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
 
     @Override
     public boolean exists(final Function1<T, Boolean> predicate) {
+        if (isEmpty()) {
+            return NIL.exists(predicate);
+        }
         return map(new F1<T, Boolean>() {
             public Boolean _(T element) throws Exception {
                 return predicate.apply(element);
@@ -96,6 +113,9 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
 
     @Override
     public ParSeq<T> filter(final Function1<T, Boolean> predicate) {
+        if (isEmpty()) {
+            return ParSeq._(NIL.filter(predicate).toList());
+        }
         return flatMap(new F1<T, CollectionLike<T>>() {
             public CollectionLike<T> _(T element) throws Exception {
                 if (predicate.apply(element)) {
@@ -108,6 +128,9 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
 
     @Override
     public ParSeq<T> filterNot(final Function1<T, Boolean> predicate) {
+        if (isEmpty()) {
+            return ParSeq._(NIL.filterNot(predicate).toList());
+        }
         return flatMap(new F1<T, CollectionLike<T>>() {
             public CollectionLike<T> _(T element) throws Exception {
                 if (!predicate.apply(element)) {
@@ -120,6 +143,9 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
 
     @Override
     public <U> ParSeq<U> flatMap(final Function1<T, CollectionLike<U>> f) {
+        if (isEmpty()) {
+            return ParSeq._(NIL.flatMap(f).toList());
+        }
         LinkedList<Future<CollectionLike<U>>> futures = new LinkedList<Future<CollectionLike<U>>>();
         for (final T element : collection) {
             futures.add(future(new F0<CollectionLike<U>>() {
@@ -137,6 +163,9 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
 
     @Override
     public boolean forall(final Function1<T, Boolean> predicate) {
+        if (isEmpty()) {
+            return NIL.forall(predicate);
+        }
         Seq<Boolean> result = map(new F1<T, Boolean>() {
             public Boolean _(T element) throws Exception {
                 return predicate.apply(element);
@@ -145,7 +174,26 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
         return result.size() == 1 && result.head();
     }
 
-    class GroupEntry<U> {
+    @Override
+    public void foreach(final VoidFunction1<T> f) {
+        if (isEmpty()) {
+            NIL.foreach(f);
+            return;
+        }
+        for (final T element : collection) {
+            forkJoinPool.execute(new Runnable() {
+                public void run() {
+                    try {
+                        f.apply(element);
+                    } catch (Exception t) {
+                        logger.log(Level.WARNING, "Exception is thrown on a spawn thread.", t);
+                    }
+                }
+            });
+        }
+    }
+
+    private class GroupEntry<U> {
         U groupName;
         T member;
 
@@ -158,22 +206,33 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
     @Override
     @SuppressWarnings("unchecked")
     public <U> SMap<U, Seq<T>> groupBy(final Function1<T, U> getGroupName) {
-        ParSeq<GroupEntry<U>> groupMembers = map(new F1<T, GroupEntry<U>>() {
+        if (isEmpty()) {
+            return NIL.groupBy(getGroupName);
+        }
+        ParSeq<GroupEntry<U>> entries = map(new F1<T, GroupEntry<U>>() {
             public GroupEntry<U> _(T element) throws Exception {
                 U name = getGroupName.apply(element);
                 return new GroupEntry<U>(name, element);
             }
         });
-        return groupMembers.toSeq().foldLeft(SMap.<U, Seq<T>> _(), new FoldLeftF2<SMap<U, Seq<T>>, GroupEntry<U>>() {
-            public SMap<U, Seq<T>> _(SMap<U, Seq<T>> map, GroupEntry<U> member) throws Exception {
-                Seq<T> groupMembers = map.getOrElse(member.groupName, Seq.<T> _());
-                return map.update(member.groupName, groupMembers.append(member.member));
+        return entries.toSeq().foldLeft(SMap.<U, Seq<T>> _(), new FoldLeftF2<SMap<U, Seq<T>>, GroupEntry<U>>() {
+            public SMap<U, Seq<T>> _(SMap<U, Seq<T>> map, GroupEntry<U> entry) throws Exception {
+                Seq<T> groupMembers = map.getOrElse(entry.groupName, Seq.<T> _());
+                return map.update(entry.groupName, groupMembers.append(entry.member));
             };
         });
     }
 
     @Override
+    public boolean isEmpty() {
+        return collection == null || collection.size() == 0;
+    }
+
+    @Override
     public <U> ParSeq<U> map(final Function1<T, U> f) {
+        if (isEmpty()) {
+            return ParSeq._(NIL.map(f).toList());
+        }
         LinkedList<Future<U>> futures = new LinkedList<Future<U>>();
         for (final T element : collection) {
             futures.add(future(new F0<U>() {
@@ -187,6 +246,11 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
             results.add(doBlocking(future));
         }
         return ParSeq._(results);
+    }
+
+    @Override
+    public List<T> toList() {
+        return new ArrayList<T>(collection);
     }
 
     @Override

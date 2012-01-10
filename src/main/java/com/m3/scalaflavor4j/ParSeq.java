@@ -22,7 +22,9 @@ import java.util.LinkedList;
 /**
  * A template trait for parallel sequences.
  */
-public abstract class ParSeq<T> {
+public abstract class ParSeq<T> implements CollectionLike<T> {
+
+    private static final long serialVersionUID = 1L;
 
     public static <T> ParSeq<T> apply(T... values) {
         return _(values);
@@ -74,6 +76,11 @@ public abstract class ParSeq<T> {
      * Tests whether a predicate holds for all elements of this sequence.
      */
     public abstract boolean forall(Function1<T, Boolean> p);
+
+    /**
+     * Applies a function f to all elements of this sequence.
+     */
+    public abstract void foreach(VoidFunction1<T> f);
 
     /**
      * Partitions this sequence into a map of sequences according to some

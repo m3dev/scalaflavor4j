@@ -506,6 +506,37 @@ domainLegths.foreach(new VoidF1<Tuple2<Integer, Seq<String>>() {
 // "12 -> facebook.com,linkedin.com"
 ```
 
+## Parallel Collection
+
+Provides `scala.collection.parallel.ParSeq`. ScalaFlavor4J does not support all the methods that are defined in Scala because some methods are not efficient.
+
+```java
+// (1 to 1000).par.foreach { (i) => print(Thread.currentThread.getId + ",") }
+// (1 to 1000).par.map { (i) => print(Thread.currentThread.getId + ","); i * i }
+// (1 to 1000).par.flatMap { (i) => print(Thread.currentThread.getId + ","); 1 to i }
+
+SInt._(1).to(1000).par.foreach(new VoidF1<Integer>() {
+  public void _(Integer i) {
+    System.out.println(Thread.currentThread.getId() + ",");
+  }
+});
+
+SInt._(1).to(1000).par.map(new F1<Integer, Integer>() {
+  public Integer _(Integer i) {
+    System.out.println(Thread.currentThread.getId() + ",");
+    return i * i;
+  }
+});
+
+SInt._(1).to(1000).par.flatMap(new F1<Integer, CollectionLike<Integer>>() {
+  public Seq<Integer> _(Integer i) {
+    System.out.println(Thread.currentThread.getId() + ",");
+    return SInt._(1).to(i);
+  }
+});
+```
+
+
 ## SMap
 
 Provides `scala.collection.Map`.
@@ -590,6 +621,9 @@ Provides `scala.concurrent.ops.*`
 ### spawn
 
 ```java
+// import scala.concurrent.ops._
+// spawn { println("on a different thread!") }
+
 import static com.m3.scalaflavor4j.ConcurrentOps.*;
 spawn(new VoidF0() {
   public void _() {
@@ -601,20 +635,27 @@ spawn(new VoidF0() {
 ### future
 
 ```java
-Future<String> future = future(new F0<String>() {
+// val f = future { Thread.sleep(1000L); "foo" }
+
+Future<String> f = future(new F0<String>() {
   public String _() throws Exception {
     Thread.sleep(1000L);
     return "foo";
   }
 });
-future.isDone(); // -> false
-future.get(); // -> "foo"
-future.isDone(); // -> true
+f.isDone(); // -> false
+f.get(); // -> "foo"
+f.isDone(); // -> true
 ```
 
 ### par
 
 ```java
+// val (str, i) = par (
+//   () => { Thread.sleep(500L); "foo" }, 
+//   () => { Thread.sleep(1000L); 123 }
+// )
+
 Tuple2<String, Integer> result = par(
   new F0<String>() {
     public String _() throws Exception {

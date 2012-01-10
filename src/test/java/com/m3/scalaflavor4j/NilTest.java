@@ -741,4 +741,11 @@ public class NilTest {
         seq.init();
     }
 
+    @Test
+    public void par_A$() throws Exception {
+        Seq<Integer> seq = Nil._();
+        ParSeq<Integer> actual = seq.par();
+        assertThat(actual, notNullValue());
+    }
+
 }

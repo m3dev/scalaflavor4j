@@ -60,6 +60,17 @@ public class ForkJoinParSeqTest {
     }
 
     @Test
+    public void count_A$Function1_Nil() throws Exception {
+        ForkJoinParSeq<String> target = ForkJoinParSeq._(emptyList);
+        int actual = target.count(new F1<String, Boolean>() {
+            public Boolean _(String v1) {
+                return v1 != null && v1.contains("f");
+            }
+        });
+        assertThat(actual, is(equalTo(0)));
+    }
+
+    @Test
     public void count_A$Function1() throws Exception {
         ForkJoinParSeq<String> target = ForkJoinParSeq._(list);
         int actual = target.count(new F1<String, Boolean>() {
@@ -67,8 +78,18 @@ public class ForkJoinParSeqTest {
                 return v1 != null && v1.contains("f");
             }
         });
-        int expected = 20;
-        assertThat(actual, is(equalTo(expected)));
+        assertThat(actual, is(equalTo(20)));
+    }
+
+    @Test
+    public void exists_A$Function1_Nil() throws Exception {
+        ForkJoinParSeq<String> target = ForkJoinParSeq._(emptyList);
+        boolean actual = target.exists(new F1<String, Boolean>() {
+            public Boolean _(String v1) {
+                return v1 != null && v1.contains("f");
+            }
+        });
+        assertThat(actual, is(false));
     }
 
     @Test
@@ -83,6 +104,17 @@ public class ForkJoinParSeqTest {
     }
 
     @Test
+    public void filter_A$Function1_Nil() throws Exception {
+        ForkJoinParSeq<String> target = ForkJoinParSeq._(emptyList);
+        ParSeq<String> actual = target.filter(new F1<String, Boolean>() {
+            public Boolean _(String v1) {
+                return v1 != null && v1.contains("f");
+            }
+        });
+        assertThat(actual.toSeq().size(), is(equalTo(0)));
+    }
+
+    @Test
     public void filter_A$Function1() throws Exception {
         ForkJoinParSeq<String> target = ForkJoinParSeq._(list);
         ParSeq<String> actual = target.filter(new F1<String, Boolean>() {
@@ -91,6 +123,17 @@ public class ForkJoinParSeqTest {
             }
         });
         assertThat(actual.toSeq().size(), is(equalTo(20)));
+    }
+
+    @Test
+    public void filterNot_A$Function1_Nil() throws Exception {
+        ForkJoinParSeq<String> target = ForkJoinParSeq._(emptyList);
+        ParSeq<String> actual = target.filterNot(new F1<String, Boolean>() {
+            public Boolean _(String v1) {
+                return v1 != null && v1.contains("f");
+            }
+        });
+        assertThat(actual.toSeq().size(), is(equalTo(0)));
     }
 
     @Test
@@ -105,6 +148,17 @@ public class ForkJoinParSeqTest {
     }
 
     @Test
+    public void flatMap_A$Function1_Nil() throws Exception {
+        ForkJoinParSeq<String> target = ForkJoinParSeq._(emptyList);
+        ParSeq<String> actual = target.flatMap(new F1<String, CollectionLike<String>>() {
+            public CollectionLike<String> _(String v1) throws Exception {
+                return Option._(v1);
+            }
+        });
+        assertThat(actual.toSeq().size(), is(equalTo(0)));
+    }
+
+    @Test
     public void flatMap_A$Function1() throws Exception {
         ForkJoinParSeq<String> target = ForkJoinParSeq._(list);
         ParSeq<String> actual = target.flatMap(new F1<String, CollectionLike<String>>() {
@@ -116,14 +170,48 @@ public class ForkJoinParSeqTest {
     }
 
     @Test
-    public void forall_A$Function1() throws Exception {
-        ForkJoinParSeq<String> target = ForkJoinParSeq._(list);
+    public void forall_A$Function1_Nil() throws Exception {
+        ForkJoinParSeq<String> target = ForkJoinParSeq._(emptyList);
         boolean actual = target.forall(new F1<String, Boolean>() {
             public Boolean _(String v1) {
                 return v1 != null && v1.contains("f");
             }
         });
-        assertThat(actual, is(false));
+        assertThat(actual, is(true));
+    }
+
+    @Test
+    public void forall_A$Function1() throws Exception {
+        {
+            ForkJoinParSeq<String> target = ForkJoinParSeq._(list);
+            boolean actual = target.forall(new F1<String, Boolean>() {
+                public Boolean _(String v1) {
+                    return v1 != null && v1.contains("f");
+                }
+            });
+            assertThat(actual, is(false));
+        }
+        {
+            ForkJoinParSeq<String> target = ForkJoinParSeq._("foo", "fuga", "foofoo");
+            boolean actual = target.forall(new F1<String, Boolean>() {
+                public Boolean _(String v1) {
+                    return v1 != null && v1.contains("f");
+                }
+            });
+            assertThat(actual, is(true));
+        }
+    }
+
+    @Test
+    public void groupBy_A$Function1_Nil() throws Exception {
+        ForkJoinParSeq<String> target = ForkJoinParSeq._(emptyList);
+        SMap<Integer, Seq<String>> actual = target.groupBy(new F1<String, Integer>() {
+            public Integer _(String v1) throws Exception {
+                return v1 == null ? 0 : v1.length();
+            }
+        });
+        Map<Integer, Seq<String>> map = actual.toMap();
+        assertThat(map, notNullValue());
     }
 
     @Test
@@ -147,6 +235,17 @@ public class ForkJoinParSeqTest {
     }
 
     @Test
+    public void map_A$Function1_Nil() throws Exception {
+        ForkJoinParSeq<String> target = ForkJoinParSeq._(emptyList);
+        ParSeq<Integer> actual = target.map(new F1<String, Integer>() {
+            public Integer _(String v1) throws Exception {
+                return v1 == null ? 0 : v1.length();
+            }
+        });
+        assertThat(actual.toSeq().mkString(","), is(equalTo("")));
+    }
+
+    @Test
     public void map_A$Function1() throws Exception {
         ForkJoinParSeq<String> target = ForkJoinParSeq._(list);
         ParSeq<Integer> actual = target.map(new F1<String, Integer>() {
@@ -160,12 +259,56 @@ public class ForkJoinParSeqTest {
     }
 
     @Test
+    public void toSeq_A$_Nil() throws Exception {
+        ForkJoinParSeq<String> target = ForkJoinParSeq._(emptyList);
+        Seq<String> actual = target.toSeq();
+        assertThat(actual.mkString(","), is(equalTo("")));
+    }
+
+    @Test
     public void toSeq_A$() throws Exception {
         ForkJoinParSeq<String> target = ForkJoinParSeq._(list);
         Seq<String> actual = target.toSeq();
         assertThat(
                 actual.mkString(","),
                 is(equalTo("foo,null,bar,fooo,null,barbar,baz,bazbaz,fuuu,mmmmm,dddddd,m3,Japan,foooooo,dfsdfzzzz,foo,null,bar,fooo,null,barbar,baz,bazbaz,fuuu,mmmmm,dddddd,m3,Japan,foooooo,dfsdfzzzz,foo,null,bar,fooo,null,barbar,baz,bazbaz,fuuu,mmmmm,dddddd,m3,Japan,foooooo,dfsdfzzzz,foo,null,bar,fooo,null,barbar,baz,bazbaz,fuuu,mmmmm,dddddd,m3,Japan,foooooo,dfsdfzzzz")));
+    }
+
+    @Test
+    public void foreach_A$VoidFunction1_Nil() throws Exception {
+        Seq.<Integer> _().par().foreach(new VoidF1<Integer>() {
+            public void _(Integer each) throws Exception {
+                Thread.sleep(1L);
+                System.out.print(Thread.currentThread().getId() + ",");
+            }
+        });
+        Thread.sleep(100L);
+    }
+
+    @Test
+    public void foreach_A$VoidFunction1() throws Exception {
+        System.out.println("-----");
+        SInt._(1).to(100).par().foreach(new VoidF1<Integer>() {
+            public void _(Integer each) throws Exception {
+                Thread.sleep(1L);
+                System.out.print(Thread.currentThread().getId() + ",");
+            }
+        });
+        Thread.sleep(500L);
+        System.out.println("");
+        System.out.println("-----");
+    }
+
+    @Test
+    public void isEmpty_A$() throws Exception {
+        assertThat(ForkJoinParSeq._(emptyList).isEmpty(), is(true));
+        assertThat(ForkJoinParSeq._(list).isEmpty(), is(false));
+    }
+
+    @Test
+    public void toList_A$() throws Exception {
+        assertThat(ForkJoinParSeq._(emptyList).toList().size(), is(equalTo(0)));
+        assertThat(ForkJoinParSeq._(list).toList().size() > 0, is(true));
     }
 
 }
