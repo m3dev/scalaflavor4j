@@ -242,26 +242,37 @@ public class Snippets {
      * {@link com.m3.scalaflavor4j.None}
      */
     @Test
-    public void option() {
+    public void option() throws Exception {
         // Some
         Option<Integer> some = Option._(3);
         assertThat(some.isDefined(), is(true));
         assertThat(some.getOrNull(), is(3));
-        some.foreach(new VoidFunction1<Integer>() {
-            public void _(Integer i) throws Exception {
-                print.apply("The value " + i + " will be printed.");
+
+        some.map(new F1<Integer, String>() {
+            public String _(Integer i) {
+                return "found : " + i;
             }
-        });
+        }).getOrElse(new F0<String>() {
+            public String _() {
+                return "not found";
+            }
+        }); // -> "found : 3"
 
         // None
         Option<Integer> none = Option._(null);
         assertThat(none.isDefined(), is(false));
         assertThat(none.getOrNull(), is(nullValue()));
-        none.foreach(new VoidF1<Integer>() {
-            public void _(Integer i) throws Exception {
-                print.apply("The value " + i + " will be printed.");
+
+        none.map(new F1<Integer, String>() {
+            public String _(Integer i) {
+                return "found : " + i;
             }
-        });
+        }).getOrElse(new F0<String>() {
+            public String _() {
+                return "not found";
+            }
+        }); // -> "not found"
+
     }
 
     /**
@@ -651,7 +662,7 @@ public class Snippets {
     }
 
     @Test
-    @SuppressWarnings( { "unused", "unchecked" })
+    @SuppressWarnings({ "unused", "unchecked" })
     public void patternMatching() throws Exception {
 
         /**

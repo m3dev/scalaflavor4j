@@ -203,24 +203,33 @@ Option<Integer> some = Option._(3);
 some.isDefined(); // true
 some.getOrNull(); // 3
 some.getOrElse(0); // 3
-some.foreach(new VoidF1<Integer>() {
-  public void _(Integer i) { 
-    System.out.println("The value " + i + " will be printed."); 
-    // -> "The value 3 will be printed."
+
+some.map(new F1<Integer, String>() {
+  public String _(Integer i) {
+    return "found : " + i;
   }
-}); 
+}).getOrElse(new F0<String>() {
+  public String _() { 
+    return "not found"; 
+  }
+}); // -> "found : 3"
 
 Option<Integer> none = Option._(null); // or Option.none();
 none.isDefined(); // false
 none.getOrNull(); // null
 none.getOrElse(0); // 0
-none.foreach(new VoidF1<Integer>() {
-  public void _(Integer i) { 
-    System.out.println("The value " + i + " will be printed."); 
-    // slient...
+
+none.map(new F1<Integer, String>() {
+  public String _(Integer i) {
+    return "found : " + i;
   }
-});
+}).getOrElse(new F0<String>() {
+  public String _() { 
+    return "not found"; 
+  }
+}); // -> "not found"
 ```
+
 
 ## Seq
 
