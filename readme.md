@@ -25,16 +25,22 @@ ScalaFlavor4J provides you Scala flavored useful API in Java.
 
 # Download 
 
-http://m3dev.github.com/mvn-repo/releases/com/m3/scalaflavor4j/scalaflavor4j/0.3/scalaflavor4j-0.3.jar
+<a href="http://m3dev.github.com/mvn-repo/releases/com/m3/scalaflavor4j/scalaflavor4j/0.3/scalaflavor4j-0.3.jar">com/m3/scalaflavor4j/scalaflavor4j/0.3/scalaflavor4j-0.3.jar</a>
 
-If you use parallel collection, also:
+If you use ParSeq or ConcurrentOps, the following is also required:
 
-http://search.maven.org/remotecontent?filepath=org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0.jar
+<a href="http://search.maven.org/remotecontent?filepath=org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0.jar">org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0.jar</a>
+
+
+# Introduction
+
+<a href="http://www.slideshare.net/seratch/scalaflavor4j-10953097" title="ScalaFlavor4J" target="_blank">ScalaFlavor4J(slideshare)</a>
 
 
 # Snippets
 
-https://github.com/m3dev/scalaflavor4j/blob/master/src/test/java/com/m3/scalaflavor4j/Snippets.java
+<a href="https://github.com/m3dev/scalaflavor4j/blob/master/src/test/java/com/m3/scalaflavor4j/Snippets.java">src/test/java/com/m3/scalaflavor4j/Snippets.java</a>
+
 
 # Overview
 
