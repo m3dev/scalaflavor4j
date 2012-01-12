@@ -54,6 +54,18 @@ public abstract class Option<T> implements CollectionLike<T> {
     public abstract T getOrElse(T defaultValue);
 
     /**
+     * Returns the option's value if the option is nonempty, otherwise return
+     * the result of evaluating default.
+     */
+    public T getOrElse(Function0<T> defaultProvider) throws Exception {
+        if (isDefined()) {
+            return getOrNull();
+        } else {
+            return defaultProvider.apply();
+        }
+    }
+
+    /**
      * Returns true if the option is an instance of Some, false otherwise.
      */
     public abstract boolean isDefined();

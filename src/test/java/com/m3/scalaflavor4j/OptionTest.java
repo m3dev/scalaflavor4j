@@ -28,4 +28,32 @@ public class OptionTest {
         assertThat(actual.getOrNull(), is(nullValue()));
     }
 
+    @Test
+    public void getOrElse_A$Function0_defined() throws Exception {
+        int result = Option._("foo").map(new F1<String, Integer>() {
+            public Integer _(String str) {
+                return str.length();
+            }
+        }).getOrElse(new F0<Integer>() {
+            public Integer _() {
+                return 0;
+            }
+        });
+        assertThat(result, is(equalTo(3)));
+    }
+
+    @Test
+    public void getOrElse_A$Function0_undefined() throws Exception {
+        int result = Option.<String> _(null).map(new F1<String, Integer>() {
+            public Integer _(String str) {
+                return str.length();
+            }
+        }).getOrElse(new F0<Integer>() {
+            public Integer _() {
+                return 0;
+            }
+        });
+        assertThat(result, is(equalTo(0)));
+    }
+
 }
