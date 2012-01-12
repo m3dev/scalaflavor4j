@@ -17,7 +17,7 @@ ScalaFlavor4J provides you Scala flavored useful API in Java.
   <dependency>
     <groupId>com.m3.scalaflavor4j</groupId>
     <artifactId>scalaflavor4j</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
   </dependency>
 </dependencies>
 ```
@@ -25,7 +25,7 @@ ScalaFlavor4J provides you Scala flavored useful API in Java.
 
 # Download 
 
-<a href="http://m3dev.github.com/mvn-repo/releases/com/m3/scalaflavor4j/scalaflavor4j/0.3/scalaflavor4j-0.3.jar">com/m3/scalaflavor4j/scalaflavor4j/0.3/scalaflavor4j-0.3.jar</a>
+<a href="http://m3dev.github.com/mvn-repo/releases/com/m3/scalaflavor4j/scalaflavor4j/0.4/scalaflavor4j-0.4.jar">com/m3/scalaflavor4j/scalaflavor4j/0.4/scalaflavor4j-0.4.jar</a>
 
 If you use ParSeq or ConcurrentOps, the following is also required:
 
