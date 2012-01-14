@@ -17,7 +17,7 @@ ScalaFlavor4J provides you Scala flavored useful API in Java.
   <dependency>
     <groupId>com.m3.scalaflavor4j</groupId>
     <artifactId>scalaflavor4j</artifactId>
-    <version>0.4</version>
+    <version>0.5</version>
   </dependency>
 </dependencies>
 ```
@@ -25,7 +25,7 @@ ScalaFlavor4J provides you Scala flavored useful API in Java.
 
 # Download 
 
-<a href="http://m3dev.github.com/mvn-repo/releases/com/m3/scalaflavor4j/scalaflavor4j/0.4/scalaflavor4j-0.4.jar">com/m3/scalaflavor4j/scalaflavor4j/0.4/scalaflavor4j-0.4.jar</a>
+<a href="http://m3dev.github.com/mvn-repo/releases/com/m3/scalaflavor4j/scalaflavor4j/0.5/scalaflavor4j-0.5.jar">com/m3/scalaflavor4j/scalaflavor4j/0.5/scalaflavor4j-0.5.jar</a>
 
 If you use ParSeq or ConcurrentOps, the following is also required:
 
@@ -637,7 +637,7 @@ Seq<Integer> oneUntilFive = SInt._(1).until(5);
 
 ## ConcurrentOps
 
-Provides `scala.concurrent.ops.*`
+Provides `scala.concurrent.ops._`
 
 ### spawn
 
@@ -695,7 +695,7 @@ result._2(), // -> 123
 
 ## ExceptionControl
 
-Provides `scala.util.control.Exception.*`.
+Provides `scala.util.control.Exception._`.
 
 ### allCatch
 
@@ -875,6 +875,37 @@ String result = ultimately.apply(new F0<String>() {
   }
 });
 // -> result : "foo"
+```
+
+## Scala Arm
+
+Provides "Scala Automatic Resource Management"(Scala Incubator project).
+
+https://github.com/jsuereth/scala-arm
+
+```java
+import static com.m3.scalaflavor4j.arm.Resource.*;
+String content = managed(new FileInputStream("input.txt")).map(new F1<InputStream, Integer>() {
+  public Integer _(InputStream is) throws Exception {
+    // ...
+    return "content";
+  }
+}
+); // finally FileInputStream will be closed
+```
+
+
+## Source
+
+Provides `scala.io.Source`.
+
+```java
+BufferedSource source = Source.fromFile("input.txt", "UTF-8");
+BufferedSource source = Source.fromURL("http://docs.scala-lang.org/cheatsheets/", "UTF-8");
+
+Seq<Byte> bs = source.toByteSeq():
+Seq<Character> cs = source.toCharSeq():
+Seq<String> lines = source.getLines();
 ```
 
 
