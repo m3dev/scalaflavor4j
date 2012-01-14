@@ -20,7 +20,7 @@ import com.m3.scalaflavor4j.ScalaFlavor4JException;
 import com.m3.scalaflavor4j.VoidFunction1;
 
 /**
- * Managed Resource (scala-arm)
+ * Managed Resource (Scala ARM like, not exactly)
  * 
  * @see "https://github.com/jsuereth/scala-arm/blob/master/src/main/scala/resource/ManagedResource.scala"
  */

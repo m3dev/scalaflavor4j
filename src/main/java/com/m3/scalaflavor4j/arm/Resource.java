@@ -24,7 +24,7 @@ import com.m3.scalaflavor4j.F1;
 import com.m3.scalaflavor4j.ScalaFlavor4JException;
 
 /**
- * Resource (scala-arm)
+ * Resource (Scala ARM like, not exactly)
  * 
  * @see "https://github.com/jsuereth/scala-arm/blob/master/src/main/scala/resource/package.scala"
  */
