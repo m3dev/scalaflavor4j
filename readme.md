@@ -658,15 +658,13 @@ spawn(new VoidF0() {
 ```java
 // val f = future { Thread.sleep(1000L); "foo" }
 
-Future<String> f = future(new F0<String>() {
+F0<String> f = future(new F0<String>() {
   public String _() throws Exception {
     Thread.sleep(1000L);
     return "foo";
   }
 });
-f.isDone(); // -> false
-f.get(); // -> "foo"
-f.isDone(); // -> true
+f.apply(); // -> "foo"
 ```
 
 ### par
