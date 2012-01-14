@@ -877,9 +877,10 @@ String result = ultimately.apply(new F0<String>() {
 // -> result : "foo"
 ```
 
-## Scala Arm
 
-Provides "Scala Automatic Resource Management"(Scala Incubator project).
+## Scala ARM
+
+"Scala Automatic Resource Management"(Scala Incubator project).
 
 https://github.com/jsuereth/scala-arm
 
