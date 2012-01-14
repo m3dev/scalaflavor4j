@@ -4,8 +4,6 @@ import static com.m3.scalaflavor4j.ConcurrentOps.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import java.util.concurrent.Future;
-
 import org.junit.Test;
 
 public class ConcurrentOpsTest {
@@ -17,14 +15,13 @@ public class ConcurrentOpsTest {
 
     @Test
     public void future_A$Function0() throws Exception {
-        Future<String> f = future(new F0<String>() {
+        F0<String> f = future(new F0<String>() {
             public String _() throws Exception {
                 Thread.sleep(1000L);
                 return "foo";
             }
         });
-        assertThat(f.isDone(), is(false));
-        assertThat(f.get(), is(equalTo("foo")));
+        assertThat(f._(), is(equalTo("foo")));
     }
 
     @Test

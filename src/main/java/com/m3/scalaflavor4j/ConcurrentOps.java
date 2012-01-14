@@ -17,7 +17,6 @@ package com.m3.scalaflavor4j;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,15 +41,19 @@ public class ConcurrentOps {
      * Evaluates an expression asynchronously, and returns a closure for
      * retrieving the result.
      */
-    public static <R> Future<R> future(final Function0<R> p) {
-        FutureTask<R> future = new FutureTask<R>(new Callable<R>() {
+    public static <R> F0<R> future(final Function0<R> p) {
+        final FutureTask<R> future = new FutureTask<R>(new Callable<R>() {
             @Override
             public R call() throws Exception {
                 return p.apply();
             }
         });
         forkJoinPool.execute(future);
-        return future;
+        return new F0<R>() {
+            public R _() throws InterruptedException, ExecutionException {
+                return future.get();
+            }
+        };
     }
 
     /**

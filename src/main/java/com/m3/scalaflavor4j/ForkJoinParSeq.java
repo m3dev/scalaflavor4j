@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,14 +69,14 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T doBlocking(final Future<T> future) {
+    private static <T> T doBlocking(final F0<T> future) {
         return handling(Exception.class).by(new F1<Throwable, T>() {
             public T _(Throwable t) throws Exception {
                 throw new ScalaFlavor4JException(t);
             }
         }).apply(new F0<T>() {
             public T _() throws Exception {
-                return future.get();
+                return future._();
             }
 
         });
@@ -146,7 +145,7 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
         if (isEmpty()) {
             return ParSeq._(NIL.flatMap(f).toList());
         }
-        LinkedList<Future<CollectionLike<U>>> futures = new LinkedList<Future<CollectionLike<U>>>();
+        LinkedList<F0<CollectionLike<U>>> futures = new LinkedList<F0<CollectionLike<U>>>();
         for (final T element : collection) {
             futures.add(future(new F0<CollectionLike<U>>() {
                 public CollectionLike<U> _() throws Exception {
@@ -155,7 +154,7 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
             }));
         }
         LinkedList<U> results = new LinkedList<U>();
-        for (Future<CollectionLike<U>> future : futures) {
+        for (F0<CollectionLike<U>> future : futures) {
             results.addAll(doBlocking(future).toList());
         }
         return ParSeq._(results);
@@ -233,7 +232,7 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
         if (isEmpty()) {
             return ParSeq._(NIL.map(f).toList());
         }
-        LinkedList<Future<U>> futures = new LinkedList<Future<U>>();
+        LinkedList<F0<U>> futures = new LinkedList<F0<U>>();
         for (final T element : collection) {
             futures.add(future(new F0<U>() {
                 public U _() throws Exception {
@@ -242,7 +241,7 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
             }));
         }
         LinkedList<U> results = new LinkedList<U>();
-        for (Future<U> future : futures) {
+        for (F0<U> future : futures) {
             results.add(doBlocking(future));
         }
         return ParSeq._(results);
