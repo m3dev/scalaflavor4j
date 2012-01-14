@@ -880,9 +880,7 @@ String result = ultimately.apply(new F0<String>() {
 
 ## Scala ARM
 
-Inspired by "Scala Automatic Resource Management"(Scala Incubator project), but not implemeneted exactly.
-
-https://github.com/jsuereth/scala-arm
+Inspired by ["Scala Automatic Resource Management"](https://github.com/jsuereth/scala-arm)(Scala Incubator project), but not implemeneted exactly.
 
 ```java
 import static com.m3.scalaflavor4j.arm.Resource.*;
@@ -998,7 +996,7 @@ http://www.apache.org/licenses/LICENSE-2.0.html
 
 # Contributers
 
-- Kazuhiro Sera <@seratch>
-- Toshiyuki Takahashi <@tototoshi>
-- Takayuki Murata <@takayuki-tk>
+* Kazuhiro Sera <[@seratch](http://twitter.com/seratch)>
+* Toshiyuki Takahashi <[@tototoshi](http://twitter.com/tototoshi)>
+* Takayuki Murata <[@takayuki-tk](http://twitter.com/takayuki-tk)>
 
