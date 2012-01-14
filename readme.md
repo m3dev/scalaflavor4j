@@ -880,7 +880,7 @@ String result = ultimately.apply(new F0<String>() {
 
 ## Scala ARM
 
-"Scala Automatic Resource Management"(Scala Incubator project).
+Inspired by "Scala Automatic Resource Management"(Scala Incubator project), but not implemeneted exactly.
 
 https://github.com/jsuereth/scala-arm
 
