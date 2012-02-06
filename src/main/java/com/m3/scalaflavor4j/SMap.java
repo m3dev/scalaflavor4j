@@ -39,6 +39,9 @@ public class SMap<K, V> {
         this.map = map;
     }
 
+    /**
+     * Retrieves the value which is associated with the given key.
+     */
     public static <K, V> SMap<K, V> apply(Map<K, V> map) {
         return _(map);
     }
@@ -99,17 +102,6 @@ public class SMap<K, V> {
         });
     }
 
-    /**
-     * [Original] Appends passed pair
-     */
-    public SMap<K, V> update(K key, V value) {
-        Map<K, V> newMap = copy().toMap();
-        if (key != null && value != null) {
-            newMap.put(key, value);
-        }
-        return SMap._(newMap);
-    }
-
     public Seq<Tuple2<K, V>> toSeq() {
         return Seq._(toList());
     }
@@ -122,6 +114,10 @@ public class SMap<K, V> {
         return toList().iterator();
     }
 
+    /**
+     * Returns the value associated with a key, or a default value if the key is
+     * not contained in the map.
+     */
     public V getOrElse(K key, V defaultValue) {
         if (key == null) {
             return defaultValue;
@@ -134,6 +130,9 @@ public class SMap<K, V> {
         }
     }
 
+    /**
+     * Selects all elements of this immutable map which satisfy a predicate.
+     */
     public SMap<K, V> filter(final Function1<Tuple2<K, V>, Boolean> f) {
         Map<K, V> map = toSeq().foldLeft(new ConcurrentHashMap<K, V>(), new F2<Map<K, V>, Tuple2<K, V>, Map<K, V>>() {
             public Map<K, V> _(Map<K, V> map, Tuple2<K, V> tuple) throws Exception {
@@ -146,10 +145,17 @@ public class SMap<K, V> {
         return SMap._(map);
     }
 
+    /**
+     * Applies a function f to all elements of this immutable map.
+     */
     public void foreach(VoidFunction1<Tuple2<K, V>> f) {
         toSeq().foreach(f);
     }
 
+    /**
+     * Builds a new collection by applying a function to all elements of this
+     * immutable map.
+     */
     public <L, M> SMap<L, M> map(final Function1<Tuple2<K, V>, Tuple2<L, M>> f) {
         Map<L, M> map = toSeq().foldLeft(new ConcurrentHashMap<L, M>(), new F2<Map<L, M>, Tuple2<K, V>, Map<L, M>>() {
             public Map<L, M> _(Map<L, M> map, Tuple2<K, V> tuple) throws Exception {
@@ -161,6 +167,54 @@ public class SMap<K, V> {
         return SMap._(map);
     }
 
+    /**
+     * Creates a new immutable map from this immutable map with some elements
+     * removed.
+     */
+    public SMap<K, V> minus(K... keys) {
+        final SMap<K, V> copied = copy();
+        Seq._(keys).dropNull().foreach(new VoidF1<K>() {
+            public void _(K key) {
+                copied.toMap().remove(key);
+            }
+        });
+        return copied;
+    }
+
+    /**
+     * Adds two or more elements to this collection and returns a new
+     * collection.
+     */
+    public SMap<K, V> plus(Tuple2<K, V>... elems) {
+        final SMap<K, V> copied = copy();
+        Seq._(elems).dropNull().filter(new PredicateF1<Tuple2<K, V>>() {
+            public Boolean _(Tuple2<K, V> elem) {
+                return elem._1() != null && elem._2() != null;
+            }
+        }).foreach(new VoidF1<Tuple2<K, V>>() {
+            public void _(Tuple2<K, V> elem) {
+                copied.toMap().put(elem._1(), elem._2());
+            }
+        });
+        return copied;
+    }
+
+    /**
+     * A new immutable map containing updating this map with a given key/value
+     * mapping.
+     */
+    public SMap<K, V> updated(K key, V value) {
+        SMap<K, V> copied = copy();
+        if (key != null && value != null) {
+            copied.toMap().put(key, value);
+        }
+        return copied;
+    }
+
+    /**
+     * Converts this immutable map of pairs into two collections of the first
+     * and second half of each pair.
+     */
     public Tuple2<Seq<K>, Seq<V>> unzip() {
         final List<K> ks = new ArrayList<K>();
         final List<V> vs = new ArrayList<V>();

@@ -271,7 +271,7 @@ public class IndexedSeq<T> extends Seq<T> {
             public SMap<U, Seq<T>> _(SMap<U, Seq<T>> map, T element) throws Exception {
                 U groupName = getGroupName.apply(element);
                 Seq<T> groupMembers = map.getOrElse(groupName, Seq.<T> _());
-                return map.update(groupName, groupMembers.append(element));
+                return map.updated(groupName, groupMembers.append(element));
             };
         });
     }

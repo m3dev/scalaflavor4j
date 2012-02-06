@@ -217,7 +217,7 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
         return entries.toSeq().foldLeft(SMap.<U, Seq<T>> _(), new FoldLeftF2<SMap<U, Seq<T>>, GroupEntry<U>>() {
             public SMap<U, Seq<T>> _(SMap<U, Seq<T>> map, GroupEntry<U> entry) throws Exception {
                 Seq<T> groupMembers = map.getOrElse(entry.groupName, Seq.<T> _());
-                return map.update(entry.groupName, groupMembers.append(entry.member));
+                return map.updated(entry.groupName, groupMembers.append(entry.member));
             };
         });
     }

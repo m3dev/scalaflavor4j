@@ -190,8 +190,6 @@ print._("foo"); // "foo"
 
 Provides `scala.Option`.
 
-### Good-bye NPE
-
 ```java
 // val some = Option(3)
 // some.isDefined
@@ -611,13 +609,17 @@ SMap<String, Integer> withoutCharley = sMap.filter(new PredicateF1<Tuple2<String
 // -> withoutCharley : ("Andy" -> 21, "Brian" -> 18)
 ```
 
-### update
-
-`update` does not exist in Scala. This method is similar to `Map#+(kv)`.
+### updated / plus / minus
 
 ```java
-SMap<String, Integer> newMap = sMap.update("Denis", 24); 
+SMap<String, Integer> newMap = sMap.updated("Denis", 24); 
 // -> newMap : ("Andy" -> 21, "Brian" -> 18, "Charley" -> 27, "Denis" -> 24)
+
+SMap<String, Integer> newMap = sMap.plus(Pair._("Denis", 24), Pair._("Elle", 19)); 
+// -> newMap : ("Andy" -> 21, "Brian" -> 18, "Charley" -> 27, "Denis" -> 24, "Elle" -> 19)
+
+SMap<String, Integer> newMap = sMap.minus("Charley", "Andy"); 
+// -> newMap : ("Brian" -> 18)
 ```
 
 
@@ -878,7 +880,7 @@ String result = ultimately.apply(new F0<String>() {
 ```
 
 
-## Scala ARM
+## Scala ARM like
 
 Inspired by ["Scala Automatic Resource Management"](https://github.com/jsuereth/scala-arm)(Scala Incubator project), but not implemeneted exactly.
 

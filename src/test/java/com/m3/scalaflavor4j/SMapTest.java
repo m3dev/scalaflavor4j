@@ -206,21 +206,6 @@ public class SMapTest {
     }
 
     @Test
-    public void update_A$Object$Object() throws Exception {
-        Map<String, Integer> map = new HashMap<String, Integer>();
-        map.put("foo", 123);
-        map.put("bar", 234);
-        map.put("baz", 345);
-        SMap<String, Integer> smap = SMap.apply(map);
-        String key = "bar";
-        Integer value = 999;
-        SMap<String, Integer> after = smap.update(key, value);
-        assertThat(after.getOrElse("foo", 0), is(equalTo(123)));
-        assertThat(after.getOrElse("bar", 0), is(equalTo(999)));
-        assertThat(after.getOrElse("baz", 0), is(equalTo(345)));
-    }
-
-    @Test
     public void toString_A$() throws Exception {
         Map<String, Integer> map = new HashMap<String, Integer>();
         map.put("foo", 123);
@@ -229,6 +214,79 @@ public class SMapTest {
         String actual = smap.toString();
         String expected = "SMap(foo -> 123, bar -> 456)";
         assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void minus_A$ObjectArray() throws Exception {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        map.put("foo", 123);
+        map.put("bar", 456);
+        map.put("baz", 789);
+        SMap<String, Integer> smap = SMap._(map);
+        SMap<String, Integer> actual = smap.minus("foo", "bar");
+        assertThat(actual.toMap().size(), is(1));
+        assertThat(actual.getOrElse("baz", -1), is(789));
+
+        assertThat(map.size(), is(3));
+    }
+
+    @Test
+    public void minus_A$ObjectArray_SkipNullKeys() throws Exception {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        map.put("foo", 123);
+        map.put("bar", 456);
+        map.put("baz", 789);
+        SMap<String, Integer> smap = SMap._(map);
+        SMap<String, Integer> actual = smap.minus("foo", null, "bar");
+        assertThat(actual.toMap().size(), is(1));
+        assertThat(actual.getOrElse("baz", -1), is(789));
+
+        assertThat(map.size(), is(3));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void plus_A$Tuple2Array_SkipNullTupleAndNullKeyOrValue() throws Exception {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        map.put("foo", 123);
+        SMap<String, Integer> smap = SMap._(map);
+        Tuple2<String, Integer>[] elems = new Tuple2[] { Pair._("bar", 456), null, Pair._(null, 888),
+                Pair._("aaa", null), Pair._("baz", 789) };
+        SMap<String, Integer> actual = smap.plus(elems);
+        assertThat(actual.toMap().size(), is(3));
+        assertThat(actual.getOrElse("foo", -1), is(123));
+        assertThat(actual.getOrElse("bar", -1), is(456));
+        assertThat(actual.getOrElse("baz", -1), is(789));
+
+        assertThat(map.size(), is(1));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void plus_A$Tuple2Array() throws Exception {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        map.put("foo", 123);
+        SMap<String, Integer> smap = SMap._(map);
+        SMap<String, Integer> actual = smap.plus(Pair._("bar", 456), Pair._("baz", 789));
+        assertThat(actual.toMap().size(), is(3));
+        assertThat(actual.getOrElse("foo", -1), is(123));
+        assertThat(actual.getOrElse("bar", -1), is(456));
+        assertThat(actual.getOrElse("baz", -1), is(789));
+
+        assertThat(map.size(), is(1));
+    }
+
+    @Test
+    public void updated_A$Object$Object() throws Exception {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        map.put("foo", 123);
+        SMap<String, Integer> smap = SMap._(map);
+        SMap<String, Integer> actual = smap.updated("bar", 456);
+        assertThat(actual.toMap().size(), is(2));
+        assertThat(actual.getOrElse("foo", -1), is(123));
+        assertThat(actual.getOrElse("bar", -1), is(456));
+
+        assertThat(map.size(), is(1));
     }
 
 }
