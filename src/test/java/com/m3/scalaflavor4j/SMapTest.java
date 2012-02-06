@@ -281,9 +281,9 @@ public class SMapTest {
         Map<String, Integer> map = new HashMap<String, Integer>();
         map.put("foo", 123);
         SMap<String, Integer> smap = SMap._(map);
-        SMap<String, Integer> actual = smap.updated("bar", 456);
+        SMap<String, Integer> actual = smap.updated("foo", 234).updated("bar", 456);
         assertThat(actual.toMap().size(), is(2));
-        assertThat(actual.getOrElse("foo", -1), is(123));
+        assertThat(actual.getOrElse("foo", -1), is(234));
         assertThat(actual.getOrElse("bar", -1), is(456));
 
         assertThat(map.size(), is(1));
