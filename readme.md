@@ -991,6 +991,7 @@ PartialFunction<String> all = intAndLargeStrAndName.orElse(PartialF.<String> _(o
 
 # License
 
+
 Apache License, Version 2.0 
 
 http://www.apache.org/licenses/LICENSE-2.0.html
@@ -998,7 +999,7 @@ http://www.apache.org/licenses/LICENSE-2.0.html
 
 # Contributers
 
-* Kazuhiro Sera <[@seratch](http://twitter.com/seratch)>
-* Toshiyuki Takahashi <[@tototoshi](http://twitter.com/tototoshi)>
-* Takayuki Murata <[@takayuki-tk](http://twitter.com/takayuki-tk)>
+* [Kazuhiro Sera](https://github.com/seratch)
+* [Toshiyuki Takahashi](https://github.com/tototoshi)
+* Takayuki Murata
 
