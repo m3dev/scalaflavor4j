@@ -3,6 +3,8 @@ package com.m3.scalaflavor4j;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.util.concurrent.Future;
+
 import org.junit.Test;
 
 public class Function0Test {
@@ -44,6 +46,18 @@ public class Function0Test {
         String actual = target.toString();
         String expected = "<function0>";
         assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void toJucFuture_A$() throws Exception {
+        Function0<String> f0 = new Function0<String>() {
+            public String _() {
+                return "foo";
+            }
+        };
+        Future<String> f = f0.toJucFuture();
+        assertThat(f.isCancelled(), is(false));
+        assertThat(f.get(), is(equalTo("foo")));
     }
 
 }
