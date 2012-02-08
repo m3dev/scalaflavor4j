@@ -4,6 +4,8 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.junit.Test;
 
@@ -33,6 +35,16 @@ public class ResourceTest {
     public void close_A$() throws Exception {
         ByteArrayInputStream closable = new ByteArrayInputStream(new byte[] { 83, 99, 97, 108, 97 });
         Resource target = new Resource(closable);
+        target.close();
+    }
+
+    @Test
+    public void close_A$_closeMethodIsDefinedAtSuperClasses() throws Exception {
+        Resource target = new Resource(new InputStream() {
+            public int read() throws IOException {
+                return 0;
+            }
+        });
         target.close();
     }
 

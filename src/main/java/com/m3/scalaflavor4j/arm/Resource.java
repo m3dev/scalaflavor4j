@@ -43,9 +43,19 @@ public class Resource {
     public void close() {
         try {
             Class<?> clazz = closable.getClass();
-            Method close = clazz.getDeclaredMethod("close", (Class<?>[]) null);
-            close.invoke(closable, (Object[]) null);
-        } catch (IllegalAccessException overridedInputStream) {
+            Method close = null;
+            while (clazz != Object.class) {
+                try {
+                    close = clazz.getDeclaredMethod("close", (Class<?>[]) null);
+                    break;
+                } catch (Exception e) {
+                }
+                clazz = clazz.getSuperclass();
+            }
+            if (close != null) {
+                close.invoke(closable, (Object[]) null);
+            }
+        } catch (IllegalAccessException overridedScope) {
         } catch (Exception e) {
             throw new ScalaFlavor4JException(e);
         }
@@ -60,9 +70,22 @@ public class Resource {
             }
         }).apply(new F0<Object>() {
             public Object _() throws SecurityException, NoSuchMethodException {
+                boolean isCloseMethodFound = false;
                 Class<?> clazz = closable.getClass();
-                clazz.getDeclaredMethod("close", (Class<?>[]) null);
-                return closable;
+                while (clazz != Object.class) {
+                    try {
+                        clazz.getDeclaredMethod("close", (Class<?>[]) null);
+                        isCloseMethodFound = true;
+                    } catch (Exception e) {
+                    }
+                    clazz = clazz.getSuperclass();
+                }
+                if (isCloseMethodFound) {
+                    return closable;
+                } else {
+                    // will be handled by withApply
+                    throw new IllegalArgumentException();
+                }
             }
         });
     }
