@@ -30,7 +30,7 @@ Please add the following dependency:
 
 Please download the following jar files:
 
-<a href="http://m3dev.github.com/mvn-repo/releases/com/m3/scalaflavor4j/scalaflavor4j/0.6/scalaflavor4j-0.6.jar">com/m3/scalaflavor4j/scalaflavor4j/0.6/scalaflavor4j-0.6.jar</a>
+<a href="http://m3dev.github.com/mvn-repo/releases/com/m3/scalaflavor4j/scalaflavor4j/0.7/scalaflavor4j-0.7.jar">com/m3/scalaflavor4j/scalaflavor4j/0.7/scalaflavor4j-0.7.jar</a>
 
 <a href="http://search.maven.org/remotecontent?filepath=org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0.jar">org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0.jar</a>
 
