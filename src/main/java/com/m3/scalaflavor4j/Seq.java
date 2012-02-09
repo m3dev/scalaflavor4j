@@ -17,7 +17,8 @@ package com.m3.scalaflavor4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Enumeration;
+import java.util.Iterator;
 
 /**
  * scala.collection.Seq
@@ -32,19 +33,61 @@ public abstract class Seq<T> implements CollectionLike<T> {
         return _(values);
     }
 
+    public static <T> Seq<T> apply(Enumeration<T> e) {
+        return _(e);
+    }
+
+    public static <T> Seq<T> apply(Iterator<T> iter) {
+        return _(iter);
+    }
+
+    public static <T> Seq<T> apply(Iterable<T> iterable) {
+        return _(iterable);
+    }
+
     public static <T> Seq<T> _(T... values) {
-        List<T> list = new ArrayList<T>();
-        for (T value : values) {
-            list.add(value);
+        Collection<T> list = new ArrayList<T>();
+        if (values != null) {
+            for (T value : values) {
+                list.add(value);
+            }
         }
-        return apply(list);
+        return applyCollection(list);
     }
 
-    public static <T> Seq<T> apply(Collection<T> col) {
-        return _(col);
+    public static <T> Seq<T> _(Enumeration<T> e) {
+        if (e == null) {
+            return Nil.<T> _();
+        } else {
+            Collection<T> col = new ArrayList<T>();
+            while (e.hasMoreElements()) {
+                col.add(e.nextElement());
+            }
+            return applyCollection(col);
+        }
     }
 
-    public static <T> Seq<T> _(Collection<T> col) {
+    public static <T> Seq<T> _(Iterator<T> iter) {
+        if (iter == null) {
+            return Nil.<T> _();
+        } else {
+            Collection<T> col = new ArrayList<T>();
+            while (iter.hasNext()) {
+                col.add(iter.next());
+            }
+            return applyCollection(col);
+        }
+    }
+
+    public static <T> Seq<T> _(Iterable<T> iterable) {
+        if (iterable == null) {
+            return Nil.<T> _();
+        } else {
+            return _(iterable.iterator());
+        }
+    }
+
+    protected static <T> Seq<T> applyCollection(Collection<T> col) {
         if (col == null || col.size() == 0) {
             return Nil.apply();
         }

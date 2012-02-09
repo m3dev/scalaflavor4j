@@ -5,9 +5,13 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.junit.Test;
 
@@ -1511,6 +1515,55 @@ public class SeqTest {
         assertThat(actual.toList().get(3), is(equalTo(4)));
         assertThat(actual.toList().get(4), is(equalTo(5)));
         assertThat(actual.toList().get(5), is(equalTo(6)));
+    }
+
+    @Test
+    public void apply_A$Enumeration() throws Exception {
+        Enumeration<Object> e = new StringTokenizer("a,b, c", ",");
+        Seq<Object> seq = Seq.apply(e);
+        assertThat(seq.size(), is(equalTo(3)));
+    }
+
+    @Test
+    public void apply_A$Iterator() throws Exception {
+        Iterator<Integer> iter = Arrays.asList(1, 2, 3).iterator();
+        Seq<Integer> seq = Seq.apply(iter);
+        assertThat(seq.size(), is(equalTo(3)));
+    }
+
+    @Test
+    public void apply_A$Iterable() throws Exception {
+        Iterable<Integer> iterable = Arrays.asList(2, 3, 4);
+        Seq<Integer> seq = Seq.apply(iterable);
+        assertThat(seq.size(), is(equalTo(3)));
+    }
+
+    @Test
+    public void __A$Enumeration() throws Exception {
+        Enumeration<Object> e = new StringTokenizer("日 本 語");
+        Seq<Object> seq = Seq._(e);
+        assertThat(seq.size(), is(equalTo(3)));
+    }
+
+    @Test
+    public void __A$Iterator() throws Exception {
+        Iterator<Character> iter = Arrays.asList('a', 'b', 'c', 'd', 'e').iterator();
+        Seq<Character> seq = Seq.apply(iter);
+        assertThat(seq.size(), is(equalTo(5)));
+    }
+
+    @Test
+    public void __A$Iterable() throws Exception {
+        Iterable<Character> iterable = Arrays.asList('f', 'g');
+        Seq<Character> seq = Seq.apply(iterable);
+        assertThat(seq.size(), is(equalTo(2)));
+    }
+
+    @Test
+    public void applyCollection_A$Collection() throws Exception {
+        Collection<Integer> col = Arrays.asList(0, 1, 2, 3);
+        Seq<Integer> seq = Seq.applyCollection(col);
+        assertThat(seq.size(), is(equalTo(4)));
     }
 
 }
