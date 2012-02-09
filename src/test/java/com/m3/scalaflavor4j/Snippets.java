@@ -109,7 +109,7 @@ public class Snippets {
         };
         // tupled
         F1<Tuple2<String, Integer>, Boolean> lengthCheckerTupled = lengthChecker.tupled();
-        boolean res0 = lengthCheckerTupled.apply(Tuple2._("foo", 3));
+        boolean res0 = lengthCheckerTupled.apply(Tuple._("foo", 3));
         assertThat(res0, is(true));
 
         // currying

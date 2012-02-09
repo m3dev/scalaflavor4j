@@ -29,7 +29,7 @@ public class Function5Test {
                 return (v1 + v2 + v3 + v4 + v5).length();
             }
         };
-        int result = f.tupled()._(Tuple5._("a", "b", "c", "d", "e"));
+        int result = f.tupled()._(Tuple._("a", "b", "c", "d", "e"));
         assertThat(result, is(equalTo(5)));
     }
 

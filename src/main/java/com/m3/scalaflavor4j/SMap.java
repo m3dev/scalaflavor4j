@@ -86,7 +86,7 @@ public class SMap<K, V> {
         List<Tuple2<K, V>> list = new ArrayList<Tuple2<K, V>>();
         Set<K> keys = map.keySet();
         for (K key : keys) {
-            list.add(Tuple2._(key, map.get(key)));
+            list.add(Tuple._(key, map.get(key)));
         }
         return list;
     }
@@ -224,7 +224,7 @@ public class SMap<K, V> {
                 vs.add(tuple._2());
             }
         });
-        return Tuple2._(Seq._(ks), Seq._(vs));
+        return Tuple._(Seq._(ks), Seq._(vs));
     }
 
     @Override

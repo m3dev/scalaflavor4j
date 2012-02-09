@@ -155,13 +155,13 @@ public class Nil<T> extends Seq<T> {
     @Override
     public Tuple2<Seq<T>, Seq<T>> partition(Function1<T, Boolean> p) {
         Seq<T> nil = Seq._((List<T>) null);
-        return Tuple2._(nil, nil);
+        return Tuple._(nil, nil);
     }
 
     @Override
     public Tuple2<Seq<T>, Seq<T>> splitAt(int n) {
         Seq<T> nil = Seq._((List<T>) null);
-        return Tuple2._(nil, nil);
+        return Tuple._(nil, nil);
     }
 
     @Override
@@ -189,7 +189,7 @@ public class Nil<T> extends Seq<T> {
     @Override
     public Tuple2<Seq<T>, Seq<T>> span(Function1<T, Boolean> p) {
         Seq<T> nil = Seq._((List<T>) null);
-        return Tuple2._(nil, nil);
+        return Tuple._(nil, nil);
     }
 
     @Override

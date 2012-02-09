@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.InputStreamReader;
 
 import org.junit.Test;
 
@@ -49,6 +50,25 @@ public class BufferedSourceTest {
         BufferedSource target = new BufferedSource(file, enc);
         Seq<String> actual = target.getLines();
         assertThat(actual.size(), is(equalTo(3)));
+    }
+
+    @Test
+    public void getInputStreamReader_A$() throws Exception {
+        File file = new File("src/test/resources/input.txt");
+        String enc = null;
+        BufferedSource target = new BufferedSource(file, enc);
+        InputStreamReader isr = target.getInputStreamReader();
+        assertThat(isr, is(notNullValue()));
+        isr.close();
+    }
+
+    @Test
+    public void toStringSeq_A$() throws Exception {
+        File file = new File("src/test/resources/input.txt");
+        String enc = null;
+        BufferedSource target = new BufferedSource(file, enc);
+        Seq<String> actual = target.toStringSeq();
+        assertThat(actual, is(notNullValue()));
     }
 
 }

@@ -30,7 +30,7 @@ public class Function2Test {
             }
         };
         Function1<Tuple2<String, Integer>, Boolean> f2 = f.tupled();
-        boolean result = f2._(Tuple2._("foo", 3));
+        boolean result = f2._(Tuple._("foo", 3));
         assertThat(result, is(true));
     }
 

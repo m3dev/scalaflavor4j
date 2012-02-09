@@ -30,7 +30,7 @@ public class Function4Test {
             }
         };
         Function1<Tuple4<String, String, String, String>, Integer> f2 = f.tupled();
-        int result = f2._(Tuple4._("a", "bc", "def", "gihj"));
+        int result = f2._(Tuple._("a", "bc", "def", "gihj"));
         assertThat(result, is(equalTo(10)));
     }
 

@@ -478,8 +478,8 @@ public class IndexedSeq<T> extends Seq<T> {
             this.unmatched = unmatched;
         }
 
-        public Pair<Seq<T>, Seq<T>> toResult() {
-            return Pair._(matched, unmatched);
+        public Tuple2<Seq<T>, Seq<T>> toResult() {
+            return Tuple._(matched, unmatched);
         }
     }
 
@@ -715,7 +715,7 @@ public class IndexedSeq<T> extends Seq<T> {
 
     @Override
     public Tuple2<Seq<T>, Seq<T>> splitAt(int n) {
-        return Pair.<Seq<T>, Seq<T>> _(take(n), drop(n));
+        return Tuple.<Seq<T>, Seq<T>> _(take(n), drop(n));
     }
 
     @Override
@@ -832,8 +832,8 @@ public class IndexedSeq<T> extends Seq<T> {
             return IndexedSeq._();
         } else {
             return (IndexedSeq<Tuple2<T, U>>) indices.map(new F1<Integer, Tuple2<T, U>>() {
-                public Pair<T, U> _(Integer i) {
-                    return Pair._(toList().get(i), that.toList().get(i));
+                public Tuple2<T, U> _(Integer i) {
+                    return Tuple._(toList().get(i), that.toList().get(i));
                 }
             });
         }

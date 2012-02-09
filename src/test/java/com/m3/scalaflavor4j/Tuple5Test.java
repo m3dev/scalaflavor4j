@@ -118,4 +118,16 @@ public class Tuple5Test {
         assertThat(actual, is(equalTo(expected)));
     }
 
+    @Test
+    public void instantiation() throws Exception {
+        String _1 = "foo";
+        Integer _2 = 123;
+        Long _3 = 456L;
+        Boolean _4 = true;
+        Double _5 = 7.8D;
+        Tuple5<String, Integer, Long, Boolean, Double> target = new Tuple5<String, Integer, Long, Boolean, Double>(_1,
+                _2, _3, _4, _5);
+        assertThat(target, notNullValue());
+    }
+
 }

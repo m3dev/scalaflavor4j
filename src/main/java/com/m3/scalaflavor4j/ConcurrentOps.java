@@ -43,7 +43,6 @@ public class ConcurrentOps {
      */
     public static <R> F0<R> future(final Function0<R> p) {
         final FutureTask<R> future = new FutureTask<R>(new Callable<R>() {
-            @Override
             public R call() throws Exception {
                 return p.apply();
             }
@@ -62,20 +61,18 @@ public class ConcurrentOps {
     public static <A, B> Tuple2<A, B> par(final Function0<A> xp, final Function0<B> yp) throws InterruptedException,
             ExecutionException {
         final FutureTask<A> xpFuture = new FutureTask<A>(new Callable<A>() {
-            @Override
             public A call() throws Exception {
                 return xp.apply();
             }
         });
         final FutureTask<B> ypFuture = new FutureTask<B>(new Callable<B>() {
-            @Override
             public B call() throws Exception {
                 return yp.apply();
             }
         });
         forkJoinPool.execute(xpFuture);
         forkJoinPool.execute(ypFuture);
-        return Tuple2._(xpFuture.get(), ypFuture.get());
+        return Tuple._(xpFuture.get(), ypFuture.get());
     }
 
     /**
@@ -83,7 +80,6 @@ public class ConcurrentOps {
      */
     public static void spawn(final VoidFunction0 p) {
         forkJoinPool.execute(new Runnable() {
-            @Override
             public void run() {
                 try {
                     p.apply();

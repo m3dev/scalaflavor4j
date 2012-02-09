@@ -30,7 +30,7 @@ public class Function3Test {
             }
         };
         Function1<Tuple3<String, String, String>, Integer> f2 = f.tupled();
-        Integer result = f2._(Tuple3._("a", "bc", "def"));
+        Integer result = f2._(Tuple._("a", "bc", "def"));
         assertThat(result, is(equalTo(6)));
     }
 

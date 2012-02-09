@@ -103,7 +103,7 @@ public class SMapTest {
         SMap<String, Integer> smap = SMap._(map);
         SMap<String, String> newMap = smap.map(new F1<Tuple2<String, Integer>, Tuple2<String, String>>() {
             public Tuple2<String, String> _(Tuple2<String, Integer> v1) {
-                return Tuple2._(v1._1(), v1._2().toString());
+                return Tuple._(v1._1(), v1._2().toString());
             }
         });
         assertThat(newMap.toList().get(0)._2(), is(equalTo("123")));
@@ -165,7 +165,7 @@ public class SMapTest {
     @Test
     public void __A$Seq() throws Exception {
         @SuppressWarnings("unchecked")
-        SMap<String, Integer> actual = SMap._(Seq._(Tuple2._("foo", 123), Tuple2._("bar", 234), Tuple2._("baz", 345)));
+        SMap<String, Integer> actual = SMap._(Seq._(Tuple._("foo", 123), Tuple._("bar", 234), Tuple._("baz", 345)));
         assertThat(actual.toMap().get("foo"), is(equalTo(123)));
         assertThat(actual.toMap().get("bar"), is(equalTo(234)));
         assertThat(actual.toMap().get("baz"), is(equalTo(345)));
@@ -174,7 +174,7 @@ public class SMapTest {
     @Test
     public void toSeq_A$() throws Exception {
         @SuppressWarnings("unchecked")
-        SMap<String, Integer> map = SMap._(Seq._(Tuple2._("foo", 123), Tuple2._("bar", 234), Tuple2._("baz", 345)));
+        SMap<String, Integer> map = SMap._(Seq._(Tuple._("foo", 123), Tuple._("bar", 234), Tuple._("baz", 345)));
         Seq<Tuple2<String, Integer>> actual = map.toSeq();
         assertThat(actual.toList().size(), is(equalTo(3)));
     }
@@ -250,8 +250,8 @@ public class SMapTest {
         Map<String, Integer> map = new HashMap<String, Integer>();
         map.put("foo", 123);
         SMap<String, Integer> smap = SMap._(map);
-        Tuple2<String, Integer>[] elems = new Tuple2[] { Pair._("bar", 456), null, Pair._(null, 888),
-                Pair._("aaa", null), Pair._("baz", 789) };
+        Tuple2<String, Integer>[] elems = new Tuple2[] { Tpl._("bar", 456), null, Tpl._(null, 888), Tpl._("aaa", null),
+                Tpl._("baz", 789) };
         SMap<String, Integer> actual = smap.plus(elems);
         assertThat(actual.toMap().size(), is(3));
         assertThat(actual.getOrElse("foo", -1), is(123));
@@ -267,7 +267,7 @@ public class SMapTest {
         Map<String, Integer> map = new HashMap<String, Integer>();
         map.put("foo", 123);
         SMap<String, Integer> smap = SMap._(map);
-        SMap<String, Integer> actual = smap.plus(Pair._("bar", 456), Pair._("baz", 789));
+        SMap<String, Integer> actual = smap.plus(Tpl._("bar", 456), Tpl._("baz", 789));
         assertThat(actual.toMap().size(), is(3));
         assertThat(actual.getOrElse("foo", -1), is(123));
         assertThat(actual.getOrElse("bar", -1), is(456));
