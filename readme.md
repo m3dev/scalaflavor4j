@@ -21,7 +21,7 @@ Please add the following dependency:
   <dependency>
     <groupId>com.m3.scalaflavor4j</groupId>
     <artifactId>scalaflavor4j</artifactId>
-    <version>0.6</version>
+    <version>0.7</version>
   </dependency>
 </dependencies>
 ```
