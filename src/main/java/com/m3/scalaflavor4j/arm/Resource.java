@@ -76,6 +76,7 @@ public class Resource {
                     try {
                         clazz.getDeclaredMethod("close", (Class<?>[]) null);
                         isCloseMethodFound = true;
+                        break;
                     } catch (Exception e) {
                     }
                     clazz = clazz.getSuperclass();
