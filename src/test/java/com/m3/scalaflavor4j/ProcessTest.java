@@ -1,11 +1,11 @@
-package com.m3.scalaflavor4j.sys.process;
+package com.m3.scalaflavor4j;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import com.m3.scalaflavor4j.*;
+import com.m3.scalaflavor4j.Process;
 import org.junit.Test;
-
-import com.m3.scalaflavor4j.Seq;
 
 public class ProcessTest {
 
@@ -41,7 +41,7 @@ public class ProcessTest {
 
     @Test
     public void __A$String() throws Exception {
-        Process process = Process._("ls");
+        Process process = com.m3.scalaflavor4j.Process._("ls");
         assertThat(process, is(notNullValue()));
     }
 

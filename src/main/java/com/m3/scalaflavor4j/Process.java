@@ -13,10 +13,7 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package com.m3.scalaflavor4j.sys.process;
-
-import com.m3.scalaflavor4j.Seq;
-import com.m3.scalaflavor4j.Source;
+package com.m3.scalaflavor4j;
 
 /**
  * scala.sys.process.Process
