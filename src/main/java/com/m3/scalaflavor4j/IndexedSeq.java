@@ -57,7 +57,7 @@ public class IndexedSeq<T> extends Seq<T> {
         return new IndexedSeq<T>(list);
     }
 
-    private IndexedSeq(Collection<T> list) {
+    protected IndexedSeq(Collection<T> list) {
         if (list == null) {
             throw new IllegalArgumentException("List should not be null.");
         }

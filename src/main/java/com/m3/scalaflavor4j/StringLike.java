@@ -15,15 +15,20 @@
  */
 package com.m3.scalaflavor4j;
 
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
- * Provides scala.runtime.StringLike
+ * scala.runtime.StringLike
  * 
  * @see "http://www.scala-lang.org/api/2.9.1/index.html#scala.collection.immutable.StringLike"
  */
-public class Str {
+public class StringLike extends IndexedSeq<Character> {
 
-    private Str() {
+    private static final long serialVersionUID = 1L;
+
+    protected StringLike(Collection<Character> list) {
+        super(list);
     }
 
     public static StringLike apply(String str) {
@@ -31,7 +36,18 @@ public class Str {
     }
 
     public static StringLike _(String str) {
-        return StringLike._(str);
+        Collection<Character> cs = new ArrayList<Character>();
+        if (str != null) {
+            for (char c : str.toCharArray()) {
+                cs.add(c);
+            }
+        }
+        return new StringLike(cs);
+    }
+
+    @Override
+    public String toString() {
+        return mkString();
     }
 
 }
