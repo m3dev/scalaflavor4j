@@ -3,8 +3,6 @@ package com.m3.scalaflavor4j;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import com.m3.scalaflavor4j.*;
-import com.m3.scalaflavor4j.Process;
 import org.junit.Test;
 
 public class ProcessTest {
