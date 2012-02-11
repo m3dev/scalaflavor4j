@@ -289,4 +289,32 @@ public class SMapTest {
         assertThat(map.size(), is(1));
     }
 
+    @Test
+    public void apply_A$Object_Exists() throws Exception {
+        SMap<String, Integer> map = SMap.<String, Integer> _().updated("foo", 123).updated("bar", 234);
+        Integer v = map.apply("foo");
+        assertThat(v, is(equalTo(123)));
+    }
+
+    @Test
+    public void apply_A$Object_NotExists() throws Exception {
+        SMap<String, Integer> map = SMap.<String, Integer> _().updated("foo", 123).updated("bar", 234);
+        Integer v = map.apply("baz");
+        assertThat(v, is(nullValue()));
+    }
+
+    @Test
+    public void __A$Object_Exists() throws Exception {
+        SMap<String, Integer> map = SMap.<String, Integer> _().updated("foo", 123).updated("bar", 234);
+        Integer v = map._("foo");
+        assertThat(v, is(equalTo(123)));
+    }
+
+    @Test
+    public void __A$Object_NotExists() throws Exception {
+        SMap<String, Integer> map = SMap.<String, Integer> _().updated("foo", 123).updated("bar", 234);
+        Integer v = map._("baz");
+        assertThat(v, is(nullValue()));
+    }
+
 }

@@ -73,6 +73,20 @@ public class SMap<K, V> {
     }
 
     /**
+     * Retrieves the value which is associated with the given key.
+     */
+    public V apply(K key) {
+        return _(key);
+    }
+
+    /**
+     * Retrieves the value which is associated with the given key.
+     */
+    public V _(K key) {
+        return map.get(key);
+    }
+
+    /**
      * [Original] Provides as java.util.Map object
      */
     public Map<K, V> toMap() {
