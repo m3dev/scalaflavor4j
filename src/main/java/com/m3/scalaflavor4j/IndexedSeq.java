@@ -323,7 +323,7 @@ public class IndexedSeq<T> extends Seq<T> {
 
     @Override
     public IndexedSeq<T> intersect(final Seq<T> that) {
-        return flatMap(new F1<T, CollectionLike<T>>() {
+        return flatMap(new FlatMapF1<T, T>() {
             public CollectionLike<T> _(T thisElement) {
                 if (that.contains(thisElement)) {
                     return Option._(thisElement);

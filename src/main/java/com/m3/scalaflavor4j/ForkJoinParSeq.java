@@ -115,7 +115,7 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
         if (isEmpty()) {
             return ParSeq._(NIL.filter(predicate).toList());
         }
-        return flatMap(new F1<T, CollectionLike<T>>() {
+        return flatMap(new FlatMapF1<T, T>() {
             public CollectionLike<T> _(T element) throws Exception {
                 if (predicate.apply(element)) {
                     return Option._(element);
@@ -130,7 +130,7 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
         if (isEmpty()) {
             return ParSeq._(NIL.filterNot(predicate).toList());
         }
-        return flatMap(new F1<T, CollectionLike<T>>() {
+        return flatMap(new FlatMapF1<T, T>() {
             public CollectionLike<T> _(T element) throws Exception {
                 if (!predicate.apply(element)) {
                     return Option._(element);

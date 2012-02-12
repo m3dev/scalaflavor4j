@@ -150,7 +150,7 @@ public class ForkJoinParSeqTest {
     @Test
     public void flatMap_A$Function1_Nil() throws Exception {
         ForkJoinParSeq<String> target = ForkJoinParSeq._(emptyList);
-        ParSeq<String> actual = target.flatMap(new F1<String, CollectionLike<String>>() {
+        ParSeq<String> actual = target.flatMap(new FlatMapF1<String, String>() {
             public CollectionLike<String> _(String v1) throws Exception {
                 return Option._(v1);
             }
@@ -161,7 +161,7 @@ public class ForkJoinParSeqTest {
     @Test
     public void flatMap_A$Function1() throws Exception {
         ForkJoinParSeq<String> target = ForkJoinParSeq._(list);
-        ParSeq<String> actual = target.flatMap(new F1<String, CollectionLike<String>>() {
+        ParSeq<String> actual = target.flatMap(new FlatMapF1<String, String>() {
             public CollectionLike<String> _(String v1) throws Exception {
                 return Option._(v1);
             }
