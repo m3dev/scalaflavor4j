@@ -180,13 +180,13 @@ public class Snippets {
      */
     @Test
     public void flatMap() {
-        assertThat(Seq._(1, 2, 3, 4, 5).flatMap(new F1<Integer, CollectionLike<Integer>>() {
+        assertThat(Seq._(1, 2, 3, 4, 5).flatMap(new FlatMapF1<Integer, Integer>() {
             public Seq<Integer> _(Integer i) {
                 return SInt._(1).to(i);
             }
         }).mkString(","), is(equalTo("1,1,2,1,2,3,1,2,3,4,1,2,3,4,5")));
 
-        assertThat(Seq._(1, 2, null, 3, null, null, 4, 5).flatMap(new F1<Integer, CollectionLike<Integer>>() {
+        assertThat(Seq._(1, 2, null, 3, null, null, 4, 5).flatMap(new FlatMapF1<Integer, Integer>() {
             public Option<Integer> _(Integer i) {
                 return Option._(i);
             }

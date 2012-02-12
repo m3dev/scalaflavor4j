@@ -189,12 +189,12 @@ Seq._(1, 2, 3, 4, 5).map(new F1<Integer, Long>() {
 });
 // -> Seq._(2L, 4L, 6L, 8L, 10L)
 
-Seq._(1, 2, 3, 4, 5).flatMap(new F1<Integer, CollectionLike<Integer>>() {
+Seq._(1, 2, 3, 4, 5).flatMap(new FlatMapF1<Integer, Integer>() {
   public Seq<Integer> _(Integer i) { return SInt._(1).to(i); }
 }).mkString(","); 
 // -> "1,1,2,1,2,3,1,2,3,4,1,2,3,4,5"
 
-Seq._(1, 2, null, 3, null, 4, 5).flatMap(new F1<Integer, CollectionLike<Integer>>() {
+Seq._(1, 2, null, 3, null, 4, 5).flatMap(new FlatMapF1<Integer, Integer>() {
   public Option<Integer> _(Integer i) { return Option._(i); }
 }).mkString(","); 
 // -> "1,2,3,4,5"

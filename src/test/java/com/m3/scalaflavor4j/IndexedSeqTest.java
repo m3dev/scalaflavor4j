@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -91,7 +92,7 @@ public class IndexedSeqTest {
     }
 
     @Test
-    public void flatMap_A$Function1_i() throws Exception {
+    public void flatMap_A$Function1_emptyList() throws Exception {
         F1<String, CollectionLike<Integer>> f = new F1<String, CollectionLike<Integer>>() {
             public Option<Integer> _(String v1) {
                 return Option._(v1.length());
@@ -110,6 +111,17 @@ public class IndexedSeqTest {
             }
         };
         Seq<Integer> actual = IndexedSeq._(list).flatMap(f);
+        assertThat(actual.isEmpty(), is(false));
+        assertThat(actual.toList().size(), is(3));
+    }
+
+    @Test
+    public void flatMap_A$Function1_FlatMapF1() throws Exception {
+        Seq<Integer> actual = IndexedSeq._(list).flatMap(new FlatMapF1<String, Integer>() {
+            public Option<Integer> _(String str) {
+                return str == null ? Option._(0) : Option._(str.length());
+            }
+        });
         assertThat(actual.isEmpty(), is(false));
         assertThat(actual.toList().size(), is(3));
     }
@@ -1593,4 +1605,12 @@ public class IndexedSeqTest {
             }
         });
     }
+
+    @Test
+    public void instantiation() throws Exception {
+        Collection<Integer> list = Arrays.asList(1, 2, 3);
+        IndexedSeq<Integer> seq = new IndexedSeq<Integer>(list);
+        assertThat(seq, notNullValue());
+    }
+
 }

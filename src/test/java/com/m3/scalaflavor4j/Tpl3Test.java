@@ -46,10 +46,10 @@ public class Tpl3Test {
     }
 
     @Test
-    public void unapply_A$Tuple3() throws Exception {
+    public void unapply_A$Tpl3() throws Exception {
         Tpl3<String, Integer, Long> tuple = Tpl3._("a", 1, 2L);
-        Option<Tpl3<String, Integer, Long>> actual = Tpl3.unapply(tuple);
-        assertThat(actual, notNullValue());
+        Option<Tpl3<String, Integer, Long>> opt = Tpl3.unapply(tuple);
+        assertThat(opt.isDefined(), is(true));
     }
 
 }

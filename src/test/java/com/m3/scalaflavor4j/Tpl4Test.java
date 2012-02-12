@@ -52,7 +52,7 @@ public class Tpl4Test {
     }
 
     @Test
-    public void unapply_A$Tuple4() throws Exception {
+    public void unapply_A$Tpl4() throws Exception {
         Tpl4<String, Integer, Long, Double> tuple = Tpl4._("a", 1, 2L, 3.0D);
         Option<Tpl4<String, Integer, Long, Double>> actual = Tpl4.unapply(tuple);
         assertThat(actual.isDefined(), is(true));

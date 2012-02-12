@@ -59,7 +59,7 @@ public class Tpl5Test {
     }
 
     @Test
-    public void unapply_A$Tuple5() throws Exception {
+    public void unapply_A$Tpl5() throws Exception {
         String _1 = "foo";
         Integer _2 = 123;
         Long _3 = 456L;
