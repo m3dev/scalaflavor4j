@@ -40,7 +40,7 @@ public class Tpl2Test {
     }
 
     @Test
-    public void unapply_A$Tuple2() throws Exception {
+    public void unapply_A$Tpl2() throws Exception {
         Tpl2<String, Integer> tuple = Tpl._("a", 1);
         Option<Tpl2<String, Integer>> opt = Tpl2.unapply(tuple);
         assertThat(opt.isDefined(), is(true));
