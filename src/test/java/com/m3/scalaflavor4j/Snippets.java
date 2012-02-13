@@ -426,6 +426,32 @@ public class Snippets {
         assertThat(dropWhile.mkString(","), is(equalTo("5,2,4")));
     }
 
+    static class Called {
+        int count = 0;
+    }
+
+    /**
+     * {@link com.m3.scalaflavor4j.For}
+     * {@link com.m3.scalaflavor4j.ForComprehension1}
+     * {@link com.m3.scalaflavor4j.ForComprehension2}
+     * {@link com.m3.scalaflavor4j.ForComprehension3}
+     * {@link com.m3.scalaflavor4j.ForComprehension4}
+     * {@link com.m3.scalaflavor4j.ForComprehension5}
+     */
+    @Test
+    public void comprehensions() {
+        Seq<String> xs1 = Seq._("a", "b");
+        Seq<Integer> xs2 = Seq._(1, 2, 3, 4, 5);
+        Seq<Long> xs3 = Seq._(10L, 20L);
+        final Called c = new Called();
+        For._(xs1, xs2, xs3)._(new VoidF1<Tuple3<String, Integer, Long>>() {
+            public void _(Tuple3<String, Integer, Long> t) {
+                c.count++;
+            }
+        });
+        assertThat(c.count, is(equalTo(20)));
+    }
+
     /**
      * {@link com.m3.scalaflavor4j.SMap}
      */
@@ -731,7 +757,8 @@ public class Snippets {
             fail();
         } catch (MatchError e) {
         }
-        largeStrAndName.apply("aaaa......"); // "large str"
+        largeStrAndName
+                .apply("aaaa......aaaa......aaaa......aaaa......aaaa......aaaa......aaaa......aaaa......aaaa......aaaa......aaaa......"); // "large str"
         largeStrAndName.apply(new Name("Martin", "Odersky")); // "name object"
 
         PartialFunction<String> intAndLargeStrAndName = intOnly.orElse(largeStrAndName);
