@@ -53,9 +53,9 @@ public class Resource {
                 clazz = clazz.getSuperclass();
             }
             if (close != null) {
+                close.setAccessible(true);
                 close.invoke(closable, (Object[]) null);
             }
-        } catch (IllegalAccessException overridedScope) {
         } catch (Exception e) {
             throw new ScalaFlavor4JException(e);
         }
