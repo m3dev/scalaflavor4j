@@ -15,6 +15,10 @@
  */
 package com.m3.scalaflavor4j.arm;
 
+import java.util.Arrays;
+import java.util.List;
+
+import com.m3.scalaflavor4j.CollectionLike;
 import com.m3.scalaflavor4j.Function1;
 import com.m3.scalaflavor4j.ScalaFlavor4JException;
 import com.m3.scalaflavor4j.VoidFunction1;
@@ -24,7 +28,7 @@ import com.m3.scalaflavor4j.VoidFunction1;
  * 
  * @see "https://github.com/jsuereth/scala-arm/blob/master/src/main/scala/resource/ManagedResource.scala"
  */
-public class ManagedResource<R> {
+public class ManagedResource<R> implements CollectionLike<R> {
 
     private static final long serialVersionUID = 1L;
 
@@ -54,6 +58,17 @@ public class ManagedResource<R> {
         } finally {
             resource.close();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<R> toList() {
+        return Arrays.asList((R) resource.getResource());
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return resource == null || resource.getResource() == null;
     }
 
 }

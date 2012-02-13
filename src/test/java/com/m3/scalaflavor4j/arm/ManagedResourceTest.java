@@ -5,6 +5,8 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -80,6 +82,30 @@ public class ManagedResourceTest {
             }
         });
         assertThat(ds.isClosed, is(true));
+    }
+
+    @Test
+    public void toList_A$() throws Exception {
+        Resource resource = new Resource(new ByteArrayInputStream(new byte[] { 83, 99, 97, 108, 97 }));
+        ManagedResource<InputStream> mr = new ManagedResource<InputStream>(resource);
+        List<InputStream> list = mr.toList();
+        assertThat(list.get(0), is(notNullValue()));
+    }
+
+    @Test
+    public void isEmpty_A$_false() throws Exception {
+        Resource resource = new Resource(new ByteArrayInputStream(new byte[] { 83, 99, 97, 108, 97 }));
+        ManagedResource<InputStream> mr = new ManagedResource<InputStream>(resource);
+        boolean actual = mr.isEmpty();
+        assertThat(actual, is(false));
+    }
+
+    @Test
+    public void isEmpty_A$_true() throws Exception {
+        Resource resource = new Resource(null);
+        ManagedResource<InputStream> mr = new ManagedResource<InputStream>(resource);
+        boolean actual = mr.isEmpty();
+        assertThat(actual, is(true));
     }
 
 }
