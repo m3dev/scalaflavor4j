@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * scala.runtime.StringLike
+ * scala.collection.immutable.StringLike
  * 
  * @see "http://www.scala-lang.org/api/2.9.1/index.html#scala.collection.immutable.StringLike"
  */
