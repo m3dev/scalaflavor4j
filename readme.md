@@ -295,6 +295,31 @@ SInt._(1).to(1000).par().flatMap(new F1<Integer, CollectionLike<Integer>>() {
 ```
 
 
+## For Comprehension
+
+Provides functions that are similar to for-comprehension.
+
+Scala:
+
+```scala
+val xs1 = Seq("abc", "abcd", "abcde")
+val xs2 = Seq(3, 4, 5)
+val bs = for (a <- xs1; b <- xs2) yield a.length == b
+```
+
+ScalaFlavor4J:
+
+```java
+Seq<String> xs1 = Seq._("abc", "abcd", "abcde");
+Seq<Integer> xs2 = Seq._(3, 4, 5);
+Seq<Boolean> bs = For._(xs1, xs2).yield(new F1<Tuple2<String, Integer>, Boolean>() {
+  public Boolean _(Tuple2<String, Integer> tpl) {
+    return tpl._1().length() == tpl._2();
+  }
+}); // true, false, false, false, true, false, false, false, true
+```
+
+
 ## SMap
 
 Provides `scala.collection.Map`.
