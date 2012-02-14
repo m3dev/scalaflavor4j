@@ -224,7 +224,7 @@ public class IndexedSeq<T> extends Seq<T> {
                 z = operator.apply(z, element);
             }
             return z;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ScalaFlavor4JException(e);
         }
     }
@@ -232,12 +232,16 @@ public class IndexedSeq<T> extends Seq<T> {
     @Override
     public <U> Function1<Function2<U, T, U>, U> foldLeft(final U z) {
         return new F1<Function2<U, T, U>, U>() {
-            public U _(Function2<U, T, U> operator) throws Exception {
-                U result = z;
-                for (T element : list) {
-                    result = operator.apply(result, element);
+            public U _(Function2<U, T, U> operator) {
+                try {
+                    U result = z;
+                    for (T element : list) {
+                        result = operator.apply(result, element);
+                    }
+                    return result;
+                } catch (Throwable e) {
+                    throw new ScalaFlavor4JException(e);
                 }
-                return result;
             }
         };
     }
@@ -253,7 +257,7 @@ public class IndexedSeq<T> extends Seq<T> {
                 z = operator.apply(list.get(i), z);
             }
             return z;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ScalaFlavor4JException(e);
         }
     }
@@ -261,13 +265,17 @@ public class IndexedSeq<T> extends Seq<T> {
     @Override
     public <U> Function1<Function2<T, U, U>, U> foldRight(final U z) {
         return new F1<Function2<T, U, U>, U>() {
-            public U _(Function2<T, U, U> operator) throws Exception {
-                U result = z;
-                int lastIndex = list.size() - 1;
-                for (int i = lastIndex; i >= 0; i--) {
-                    result = operator.apply(list.get(i), result);
+            public U _(Function2<T, U, U> operator) {
+                try {
+                    U result = z;
+                    int lastIndex = list.size() - 1;
+                    for (int i = lastIndex; i >= 0; i--) {
+                        result = operator.apply(list.get(i), result);
+                    }
+                    return result;
+                } catch (Throwable e) {
+                    throw new ScalaFlavor4JException(e);
                 }
-                return result;
             }
         };
     }
@@ -283,7 +291,7 @@ public class IndexedSeq<T> extends Seq<T> {
             for (T element : list) {
                 f.apply(element);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ScalaFlavor4JException(e);
         }
     }
@@ -610,6 +618,21 @@ public class IndexedSeq<T> extends Seq<T> {
     }
 
     @Override
+    public <U> Function1<Function2<U, T, U>, Seq<U>> scanLeft(final U z) {
+        return new F1<Function2<U, T, U>, Seq<U>>() {
+            @SuppressWarnings("unchecked")
+            public Seq<U> _(final Function2<U, T, U> operator) throws Exception {
+                return foldLeft(IndexedSeq._(z), new FoldLeftF2<IndexedSeq<U>, T>() {
+                    public IndexedSeq<U> _(IndexedSeq<U> scanResult, T element) throws Exception {
+                        U result = operator.apply(scanResult.last(), element);
+                        return scanResult.append(result);
+                    }
+                });
+            }
+        };
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public <U> IndexedSeq<U> scanRight(U z, final Function2<T, U, U> operator) {
         return foldRight(IndexedSeq._(z), new FoldRightF2<T, IndexedSeq<U>>() {
@@ -618,6 +641,21 @@ public class IndexedSeq<T> extends Seq<T> {
                 return scanResult.append(result);
             }
         }).reverse();
+    }
+
+    @Override
+    public <U> Function1<Function2<T, U, U>, Seq<U>> scanRight(final U z) {
+        return new F1<Function2<T, U, U>, Seq<U>>() {
+            @SuppressWarnings("unchecked")
+            public Seq<U> _(final Function2<T, U, U> operator) throws Exception {
+                return foldRight(IndexedSeq._(z), new FoldRightF2<T, IndexedSeq<U>>() {
+                    public IndexedSeq<U> _(T element, IndexedSeq<U> scanResult) throws Exception {
+                        U result = operator.apply(element, scanResult.last());
+                        return scanResult.append(result);
+                    }
+                }).reverse();
+            }
+        };
     }
 
     @Override
@@ -690,7 +728,7 @@ public class IndexedSeq<T> extends Seq<T> {
             public int compare(T o1, T o2) {
                 try {
                     return lessThan.apply(o1, o2) ? 0 : 1;
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     throw new ScalaFlavor4JException(e);
                 }
             };

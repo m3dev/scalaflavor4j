@@ -182,7 +182,7 @@ public abstract class Seq<T> implements CollectionLike<T> {
     public abstract <U> U foldLeft(U z, Function2<U, T, U> op);
 
     /**
-     * @see {@link Seq#foldLeft(Object, Function2)}
+     * Curried {@link Seq#foldLeft(Object, Function2)}
      */
     public abstract <U> Function1<Function2<U, T, U>, U> foldLeft(U z);
 
@@ -193,7 +193,7 @@ public abstract class Seq<T> implements CollectionLike<T> {
     public abstract <U> U foldRight(U z, Function2<T, U, U> op);
 
     /**
-     * @see {@link Seq#foldRight(Object, Function2)}
+     * Curried {@link Seq#foldRight(Object, Function2)}
      */
     public abstract <U> Function1<Function2<T, U, U>, U> foldRight(U z);
 
@@ -358,10 +358,20 @@ public abstract class Seq<T> implements CollectionLike<T> {
     public abstract <U> Seq<U> scanLeft(U z, Function2<U, T, U> op);
 
     /**
+     * Curried {@link Seq#scanLeft(Object, Function2)}
+     */
+    public abstract <U> Function1<Function2<U, T, U>, Seq<U>> scanLeft(U z);
+
+    /**
      * Produces a collection containing cummulative results of applying the
      * operator going right to left.
      */
     public abstract <U> Seq<U> scanRight(U z, Function2<T, U, U> op);
+
+    /**
+     * Curried {@link Seq#scanRight(Object, Function2)}
+     */
+    public abstract <U> Function1<Function2<T, U, U>, Seq<U>> scanRight(U z);
 
     /**
      * The size of this sequence, equivalent to length.

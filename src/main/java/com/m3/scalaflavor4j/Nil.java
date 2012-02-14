@@ -355,8 +355,26 @@ public class Nil<T> extends Seq<T> {
     }
 
     @Override
+    public <U> Function1<Function2<U, T, U>, Seq<U>> scanLeft(U z) {
+        return new F1<Function2<U, T, U>, Seq<U>>() {
+            public Seq<U> _(Function2<U, T, U> f) {
+                return Nil._();
+            }
+        };
+    }
+
+    @Override
     public <U> Seq<U> scanRight(U z, Function2<T, U, U> op) {
         return Nil._();
+    }
+
+    @Override
+    public <U> Function1<Function2<T, U, U>, Seq<U>> scanRight(U z) {
+        return new F1<Function2<T, U, U>, Seq<U>>() {
+            public Seq<U> _(Function2<T, U, U> f) {
+                return Nil._();
+            }
+        };
     }
 
     @Override

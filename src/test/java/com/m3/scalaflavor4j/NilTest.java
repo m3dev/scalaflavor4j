@@ -663,9 +663,33 @@ public class NilTest {
     }
 
     @Test
+    public void scanLeft_A$Object() throws Exception {
+        Seq<Integer> seq = Nil._();
+        Seq<Integer> actual = seq.scanLeft(0)._(new F2<Integer, Integer, Integer>() {
+            @Override
+            public Integer _(Integer acm, Integer i) {
+                return acm + i;
+            }
+        });
+        assertThat(actual.isEmpty(), is(true));
+    }
+
+    @Test
     public void scanRight_A$Object$Function2() throws Exception {
         Seq<Integer> seq = Nil._();
         Seq<Integer> actual = seq.scanRight(0, new F2<Integer, Integer, Integer>() {
+            @Override
+            public Integer _(Integer acm, Integer i) {
+                return acm + i;
+            }
+        });
+        assertThat(actual.isEmpty(), is(true));
+    }
+
+    @Test
+    public void scanRight_A$Object() throws Exception {
+        Seq<Integer> seq = Nil._();
+        Seq<Integer> actual = seq.scanRight(0)._(new F2<Integer, Integer, Integer>() {
             @Override
             public Integer _(Integer acm, Integer i) {
                 return acm + i;

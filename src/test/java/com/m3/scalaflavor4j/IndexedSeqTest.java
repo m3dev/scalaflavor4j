@@ -1544,9 +1544,39 @@ public class IndexedSeqTest {
     }
 
     @Test
+    public void scanLeft_A$Object() throws Exception {
+        IndexedSeq<Integer> seq = IndexedSeq._(1, 2, 3);
+        Seq<Integer> actual = seq.scanLeft(0)._(new F2<Integer, Integer, Integer>() {
+            public Integer _(Integer acm, Integer i) {
+                return acm + i;
+            }
+        });
+        assertThat(actual.size(), is(equalTo(4)));
+        assertThat(actual.toList().get(0), is(equalTo(0)));
+        assertThat(actual.toList().get(1), is(equalTo(1)));
+        assertThat(actual.toList().get(2), is(equalTo(3)));
+        assertThat(actual.toList().get(3), is(equalTo(6)));
+    }
+
+    @Test
     public void scanRight_A$Object$Function2() throws Exception {
         IndexedSeq<Integer> seq = IndexedSeq._(1, 2, 3);
         Seq<Integer> actual = seq.scanRight(0, new F2<Integer, Integer, Integer>() {
+            public Integer _(Integer acm, Integer i) {
+                return acm + i;
+            }
+        });
+        assertThat(actual.size(), is(equalTo(4)));
+        assertThat(actual.toList().get(0), is(equalTo(6)));
+        assertThat(actual.toList().get(1), is(equalTo(5)));
+        assertThat(actual.toList().get(2), is(equalTo(3)));
+        assertThat(actual.toList().get(3), is(equalTo(0)));
+    }
+
+    @Test
+    public void scanRight_A$Object() throws Exception {
+        IndexedSeq<Integer> seq = IndexedSeq._(1, 2, 3);
+        Seq<Integer> actual = seq.scanRight(0)._(new F2<Integer, Integer, Integer>() {
             public Integer _(Integer acm, Integer i) {
                 return acm + i;
             }
