@@ -40,6 +40,10 @@ public abstract class Option<T> implements CollectionLike<T> {
         return apply(null);
     }
 
+    public static <T> Option<T> empty() {
+        return none();
+    }
+
     /**
      * scala.Option#orNull()
      * 

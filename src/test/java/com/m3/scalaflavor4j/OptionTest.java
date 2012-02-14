@@ -29,6 +29,13 @@ public class OptionTest {
     }
 
     @Test
+    public void empty_A$() throws Exception {
+        Option<String> actual = Option.empty();
+        assertThat(actual.isDefined(), is(false));
+        assertThat(actual.getOrNull(), is(nullValue()));
+    }
+
+    @Test
     public void getOrElse_A$Function0_defined() throws Exception {
         int result = Option._("foo").map(new F1<String, Integer>() {
             public Integer _(String str) {
