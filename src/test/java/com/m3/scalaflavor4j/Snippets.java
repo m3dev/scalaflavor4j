@@ -198,13 +198,26 @@ public class Snippets {
      * {@link com.m3.scalaflavor4j.Seq#foldRight(Object, Function2)}
      */
     @Test
-    public void fold() {
+    public void fold() throws Exception {
+
         assertThat(Seq._('b', 'c', 'd').foldLeft("a", new FoldLeftF2<String, Character>() {
             public String _(String z, Character c) {
                 return z + c;
             }
         }), is(equalTo("abcd")));
         assertThat(Seq._('b', 'c', 'd').foldRight("a", new FoldRightF2<Character, String>() {
+            public String _(Character c, String z) {
+                return z + c;
+            }
+        }), is(equalTo("adcb")));
+
+        // curried
+        assertThat(Seq._('b', 'c', 'd').foldLeft("a")._(new FoldLeftF2<String, Character>() {
+            public String _(String z, Character c) {
+                return z + c;
+            }
+        }), is(equalTo("abcd")));
+        assertThat(Seq._('b', 'c', 'd').foldRight("a")._(new FoldRightF2<Character, String>() {
             public String _(Character c, String z) {
                 return z + c;
             }
@@ -303,6 +316,24 @@ public class Snippets {
         Option<Integer> hopt = seq.headOption();
         assertThat(hopt.isDefined(), is(true));
         assertThat(hopt.getOrNull(), is(equalTo(1)));
+    }
+
+    @Test
+    public void corresponds() throws Exception {
+        boolean result = Seq._("a", "ab", "abc").corresponds(Seq._(1, 2, 3), new F2<String, Integer, Boolean>() {
+            public Boolean _(String s, Integer i) {
+                return s.length() == i;
+            }
+        });
+        assertTrue(result);
+
+        // curried
+        boolean result2 = Seq._("a", "ab", "abc").corresponds(Seq._(1, 2, 3))._(new F2<String, Integer, Boolean>() {
+            public Boolean _(String s, Integer i) {
+                return s.length() == i;
+            }
+        });
+        assertTrue(result2);
     }
 
     /**
