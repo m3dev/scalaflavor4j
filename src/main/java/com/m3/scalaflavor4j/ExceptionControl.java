@@ -180,7 +180,7 @@ public class ExceptionControl {
         public R apply(Function0<R> f) {
             try {
                 return super.apply(f);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 throw new ScalaFlavor4JException(e);
             }
         }
@@ -198,7 +198,7 @@ public class ExceptionControl {
                 } else {
                     return Right._(applied.result);
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 throw new ScalaFlavor4JException(e);
             }
         }
@@ -215,7 +215,7 @@ public class ExceptionControl {
                 } else {
                     return Option._(applied.result);
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 throw new ScalaFlavor4JException(e);
             }
         }

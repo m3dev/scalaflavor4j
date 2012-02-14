@@ -83,7 +83,7 @@ public class ConcurrentOps {
             public void run() {
                 try {
                     p.apply();
-                } catch (Exception t) {
+                } catch (Throwable t) {
                     logger.log(Level.WARNING, "Exception is thrown on a spawn thread.", t);
                 }
             }

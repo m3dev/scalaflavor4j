@@ -42,7 +42,7 @@ public class ManagedResource<R> implements CollectionLike<R> {
     public <B> B map(final Function1<R, B> f) {
         try {
             return f.apply((R) resource.getResource());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ScalaFlavor4JException(e);
         } finally {
             resource.close();
@@ -53,7 +53,7 @@ public class ManagedResource<R> implements CollectionLike<R> {
     public void foreach(VoidFunction1<R> f) {
         try {
             f.apply((R) resource.getResource());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ScalaFlavor4JException(e);
         } finally {
             resource.close();

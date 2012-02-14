@@ -48,7 +48,7 @@ public class Resource {
                 try {
                     close = clazz.getDeclaredMethod("close", (Class<?>[]) null);
                     break;
-                } catch (Exception e) {
+                } catch (Throwable e) {
                 }
                 clazz = clazz.getSuperclass();
             }
@@ -56,7 +56,7 @@ public class Resource {
                 close.setAccessible(true);
                 close.invoke(closable, (Object[]) null);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ScalaFlavor4JException(e);
         }
     }
@@ -77,7 +77,7 @@ public class Resource {
                         clazz.getDeclaredMethod("close", (Class<?>[]) null);
                         isCloseMethodFound = true;
                         break;
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                     }
                     clazz = clazz.getSuperclass();
                 }

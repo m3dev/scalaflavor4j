@@ -184,7 +184,7 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
                 public void run() {
                     try {
                         f.apply(element);
-                    } catch (Exception t) {
+                    } catch (Throwable t) {
                         logger.log(Level.WARNING, "Exception is thrown on a spawn thread.", t);
                     }
                 }

@@ -61,7 +61,7 @@ public class Predef {
                     });
                 }
             });
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ScalaFlavor4JException(e);
         }
     }
@@ -69,7 +69,7 @@ public class Predef {
     public static Boolean readBoolean() {
         try {
             return Boolean.valueOf(readLine());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return false;
         }
     }

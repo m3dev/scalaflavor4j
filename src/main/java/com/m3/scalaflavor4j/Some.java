@@ -89,7 +89,7 @@ public class Some<T> extends Option<T> {
     public <U> Option<U> map(Function1<T, U> f) {
         try {
             return Option._(f.apply(value));
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ScalaFlavor4JException(e);
         }
     }
@@ -98,7 +98,7 @@ public class Some<T> extends Option<T> {
     public void foreach(VoidFunction1<T> f) {
         try {
             f.apply(value);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ScalaFlavor4JException(e);
         }
     }
@@ -111,7 +111,7 @@ public class Some<T> extends Option<T> {
             } else {
                 return Option.none();
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ScalaFlavor4JException(e);
         }
     }
@@ -124,7 +124,7 @@ public class Some<T> extends Option<T> {
             } else {
                 return Option.none();
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ScalaFlavor4JException(e);
         }
     }
