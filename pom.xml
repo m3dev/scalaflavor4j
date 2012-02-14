@@ -65,6 +65,10 @@
             <plugin>
                 <groupId>org.junithelper</groupId>
                 <artifactId>maven-junithelper-plugin</artifactId>
+                <configuration>
+                    <outputFileEncoding>UTF-8</outputFileEncoding>
+                    <lineBreakPolicy>forceLF</lineBreakPolicy>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
