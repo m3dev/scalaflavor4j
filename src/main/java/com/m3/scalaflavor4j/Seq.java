@@ -182,10 +182,20 @@ public abstract class Seq<T> implements CollectionLike<T> {
     public abstract <U> U foldLeft(U z, Function2<U, T, U> op);
 
     /**
+     * @see {@link Seq#foldLeft(Object, Function2)}
+     */
+    public abstract <U> Function1<Function2<U, T, U>, U> foldLeft(U z);
+
+    /**
      * Applies a binary operator to all elements of this sequence and a start
      * value, going right to left.
      */
     public abstract <U> U foldRight(U z, Function2<T, U, U> op);
+
+    /**
+     * @see {@link Seq#foldRight(Object, Function2)}
+     */
+    public abstract <U> Function1<Function2<T, U, U>, U> foldRight(U z);
 
     /**
      * Tests whether a predicate holds for all elements of this sequence.

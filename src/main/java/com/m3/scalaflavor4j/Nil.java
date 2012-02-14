@@ -123,8 +123,26 @@ public class Nil<T> extends Seq<T> {
     }
 
     @Override
+    public <U> Function1<Function2<U, T, U>, U> foldLeft(final U z) {
+        return new Function1<Function2<U, T, U>, U>() {
+            public U _(Function2<U, T, U> f) {
+                return z;
+            }
+        };
+    }
+
+    @Override
     public <U> U foldRight(U z, Function2<T, U, U> op) {
         return z;
+    }
+
+    @Override
+    public <U> Function1<Function2<T, U, U>, U> foldRight(final U z) {
+        return new Function1<Function2<T, U, U>, U>() {
+            public U _(Function2<T, U, U> f) {
+                return z;
+            }
+        };
     }
 
     @Override

@@ -230,6 +230,19 @@ public class IndexedSeq<T> extends Seq<T> {
     }
 
     @Override
+    public <U> Function1<Function2<U, T, U>, U> foldLeft(final U z) {
+        return new F1<Function2<U, T, U>, U>() {
+            public U _(Function2<U, T, U> operator) throws Exception {
+                U result = z;
+                for (T element : list) {
+                    result = operator.apply(result, element);
+                }
+                return result;
+            }
+        };
+    }
+
+    @Override
     public <U> U foldRight(U z, Function2<T, U, U> operator) {
         if (isEmpty()) {
             return NIL.foldRight(z, operator);
@@ -243,6 +256,20 @@ public class IndexedSeq<T> extends Seq<T> {
         } catch (Exception e) {
             throw new ScalaFlavor4JException(e);
         }
+    }
+
+    @Override
+    public <U> Function1<Function2<T, U, U>, U> foldRight(final U z) {
+        return new F1<Function2<T, U, U>, U>() {
+            public U _(Function2<T, U, U> operator) throws Exception {
+                U result = z;
+                int lastIndex = list.size() - 1;
+                for (int i = lastIndex; i >= 0; i--) {
+                    result = operator.apply(list.get(i), result);
+                }
+                return result;
+            }
+        };
     }
 
     @Override

@@ -215,6 +215,32 @@ public class NilTest {
     }
 
     @Test
+    public void foldLeft_A$Object() throws Exception {
+        Nil<String> target = Nil.<String> _();
+        String z = "";
+        F2<String, String, String> op = new F2<String, String, String>() {
+            public String _(String v1, String v2) {
+                return v1 + v2;
+            }
+        };
+        String actual = target.foldLeft(z)._(op);
+        assertThat(actual.isEmpty(), is(true));
+    }
+
+    @Test
+    public void foldRight_A$Object() throws Exception {
+        Nil<String> target = Nil.<String> _();
+        String z = "";
+        F2<String, String, String> op = new F2<String, String, String>() {
+            public String _(String v1, String v2) {
+                return v1 + v2;
+            }
+        };
+        String actual = target.foldRight(z)._(op);
+        assertThat(actual.isEmpty(), is(true));
+    }
+
+    @Test
     public void distinct_A$() throws Exception {
         Nil<String> target = Nil.<String> _();
         Seq<String> actual = target.distinct();

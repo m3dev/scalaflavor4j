@@ -273,6 +273,12 @@ public class IndexedSeqTest {
             }
         });
         assertThat(actual, is("foo"));
+        String actual2 = seq.foldLeft("foo")._(new F2<String, Integer, String>() {
+            public String _(String v1, Integer v2) {
+                return v1 + v2;
+            }
+        });
+        assertThat(actual2, is("foo"));
     }
 
     @Test
@@ -284,6 +290,12 @@ public class IndexedSeqTest {
             }
         });
         assertThat(actual, is("foo342051"));
+        String actual2 = seq.foldLeft("foo")._(new F2<String, Integer, String>() {
+            public String _(String v1, Integer v2) {
+                return v1 + v2;
+            }
+        });
+        assertThat(actual2, is("foo342051"));
     }
 
     @Test
@@ -295,6 +307,23 @@ public class IndexedSeqTest {
             }
         });
         assertThat(actual, is(15));
+        Integer result = seq.foldLeft(0)._(new FoldLeftF2<Integer, Integer>() {
+            public Integer _(Integer z, Integer i) throws Exception {
+                return z + i;
+            }
+        });
+        assertThat(result, is(equalTo(15)));
+    }
+
+    @Test
+    public void foldLeft_A$Object() throws Exception {
+        Seq<Integer> seq = IndexedSeq._(3, 4, 2, 0, 5, 1);
+        Integer result = seq.foldLeft(0)._(new FoldLeftF2<Integer, Integer>() {
+            public Integer _(Integer z, Integer i) throws Exception {
+                return z + i;
+            }
+        });
+        assertThat(result, is(equalTo(15)));
     }
 
     @Test
@@ -319,6 +348,17 @@ public class IndexedSeqTest {
     }
 
     @Test
+    public void foldRight_A$Object() throws Exception {
+        Seq<Integer> seq = IndexedSeq._();
+        String actual = seq.foldRight("foo")._(new F2<Integer, String, String>() {
+            public String _(Integer v1, String v2) {
+                return v1 + v2;
+            }
+        });
+        assertThat(actual, is("foo"));
+    }
+
+    @Test
     public void foldRight_A$Object$Function2_Nil() throws Exception {
         Seq<Integer> seq = IndexedSeq._();
         String actual = seq.foldRight("foo", new F2<Integer, String, String>() {
@@ -327,6 +367,12 @@ public class IndexedSeqTest {
             }
         });
         assertThat(actual, is("foo"));
+        String actual2 = seq.foldRight("foo")._(new F2<Integer, String, String>() {
+            public String _(Integer v1, String v2) {
+                return v1 + v2;
+            }
+        });
+        assertThat(actual2, is("foo"));
     }
 
     @Test
@@ -338,6 +384,12 @@ public class IndexedSeqTest {
             }
         });
         assertThat(actual, is("342051foo"));
+        String actual2 = seq.foldRight("foo")._(new F2<Integer, String, String>() {
+            public String _(Integer v1, String v2) {
+                return v1 + v2;
+            }
+        });
+        assertThat(actual2, is("342051foo"));
     }
 
     @Test
