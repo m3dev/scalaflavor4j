@@ -107,6 +107,17 @@ public abstract class Seq<T> implements CollectionLike<T> {
     public abstract boolean contains(T elem);
 
     /**
+     * Tests whether every element of this sequence relates to the corresponding
+     * element of another sequence by satisfying a test predicate.
+     */
+    public abstract <U> boolean corresponds(Seq<U> that, Function2<T, U, Boolean> p);
+
+    /**
+     * Curried {@link Seq#corresponds(Seq, Function1)}
+     */
+    public abstract <U> Function1<Function2<T, U, Boolean>, Boolean> corresponds(Seq<U> that);
+
+    /**
      * Counts the number of elements in the sequence which satisfy a predicate.
      */
     public abstract int count(Function1<T, Boolean> p);

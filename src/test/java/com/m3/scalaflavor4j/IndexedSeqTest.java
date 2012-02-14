@@ -1695,4 +1695,34 @@ public class IndexedSeqTest {
         assertThat(seq, notNullValue());
     }
 
+    @Test
+    public void corresponds_A$Seq() throws Exception {
+        Seq<String> seq = IndexedSeq._("foo", "bar", "baz");
+        F2<String, String, Boolean> predicate = new F2<String, String, Boolean>() {
+            public Boolean _(String v1, String v2) throws Exception {
+                return v1.equals(v2);
+            }
+        };
+        assertThat(seq.corresponds(IndexedSeq._("foo", "bar", "baz"))._(predicate), is(true));
+        assertThat(seq.corresponds(IndexedSeq._("foo", "bar", "bar"))._(predicate), is(false));
+        assertThat(seq.corresponds(IndexedSeq._("foo", "bar"))._(predicate), is(false));
+        assertThat(seq.corresponds(IndexedSeq._("foo"))._(predicate), is(false));
+        assertThat(seq.corresponds(IndexedSeq._("bar", "foo", "baz"))._(predicate), is(false));
+    }
+
+    @Test
+    public void corresponds_A$Seq$Function2() throws Exception {
+        Seq<String> seq = IndexedSeq._("foo", "bar", "baz");
+        F2<String, String, Boolean> predicate = new F2<String, String, Boolean>() {
+            public Boolean _(String v1, String v2) throws Exception {
+                return v1.equals(v2);
+            }
+        };
+        assertThat(seq.corresponds(IndexedSeq._("foo", "bar", "baz"), predicate), is(true));
+        assertThat(seq.corresponds(IndexedSeq._("foo", "bar", "bar"), predicate), is(false));
+        assertThat(seq.corresponds(IndexedSeq._("foo", "bar"), predicate), is(false));
+        assertThat(seq.corresponds(IndexedSeq._("foo"), predicate), is(false));
+        assertThat(seq.corresponds(IndexedSeq._("bar", "foo", "baz"), predicate), is(false));
+    }
+
 }

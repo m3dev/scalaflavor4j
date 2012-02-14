@@ -798,4 +798,23 @@ public class NilTest {
         assertThat(actual, notNullValue());
     }
 
+    @Test
+    public void corresponds_A$Seq() throws Exception {
+        Seq<Integer> seq = Nil._();
+        assertThat(seq.corresponds(Nil.<Integer> _())._(new F2<Integer, Integer, Boolean>() {
+            public Boolean _(Integer v1, Integer v2) throws Exception {
+                return false;
+            }
+        }), is(true));
+    }
+
+    @Test
+    public void corresponds_A$Seq$Function2() throws Exception {
+        Seq<Integer> seq = Nil._();
+        assertThat(seq.corresponds(Nil.<Integer> _(), new F2<Integer, Integer, Boolean>() {
+            public Boolean _(Integer v1, Integer v2) throws Exception {
+                return false;
+            }
+        }), is(true));
+    }
 }

@@ -85,6 +85,38 @@ public class IndexedSeq<T> extends Seq<T> {
     }
 
     @Override
+    public <U> Function1<Function2<T, U, Boolean>, Boolean> corresponds(final Seq<U> that) {
+        if (size() != that.size()) {
+            return new F1<Function2<T, U, Boolean>, Boolean>() {
+                public Boolean _(final Function2<T, U, Boolean> p) {
+                    return false;
+                }
+            };
+        }
+        return new F1<Function2<T, U, Boolean>, Boolean>() {
+            public Boolean _(final Function2<T, U, Boolean> p) {
+                return zip(that).forall(new F1<Tuple2<T, U>, Boolean>() {
+                    public Boolean _(Tuple2<T, U> e) throws Exception {
+                        return p.apply(e._1(), e._2());
+                    }
+                });
+            }
+        };
+    }
+
+    @Override
+    public <U> boolean corresponds(Seq<U> that, final Function2<T, U, Boolean> p) {
+        if (size() != that.size()) {
+            return false;
+        }
+        return zip(that).forall(new F1<Tuple2<T, U>, Boolean>() {
+            public Boolean _(Tuple2<T, U> e) throws Exception {
+                return p.apply(e._1(), e._2());
+            }
+        });
+    }
+
+    @Override
     public int count(final Function1<T, Boolean> predicate) {
         return foldLeft(0, new FoldLeftF2<Integer, T>() {
             public Integer _(Integer count, T element) throws Exception {

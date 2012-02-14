@@ -146,6 +146,20 @@ public class Nil<T> extends Seq<T> {
     }
 
     @Override
+    public <U> Function1<Function2<T, U, Boolean>, Boolean> corresponds(final Seq<U> that) {
+        return new F1<Function2<T, U, Boolean>, Boolean>() {
+            public Boolean _(Function2<T, U, Boolean> f) throws Exception {
+                return that.isEmpty();
+            }
+        };
+    }
+
+    @Override
+    public <U> boolean corresponds(Seq<U> that, Function2<T, U, Boolean> p) {
+        return that.isEmpty();
+    }
+
+    @Override
     public Seq<T> distinct() {
         return new Nil<T>();
     }
