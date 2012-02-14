@@ -15,6 +15,9 @@
  */
 package com.m3.scalaflavor4j;
 
+/**
+ * Guard function
+ */
 public abstract class Guard<M> extends PredicateF1<M> {
 
 }

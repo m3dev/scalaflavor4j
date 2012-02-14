@@ -18,6 +18,9 @@ package com.m3.scalaflavor4j;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Generator (for-comprehension)
+ */
 public class Generator<T> {
 
     private final CollectionLike<T> _xs;
