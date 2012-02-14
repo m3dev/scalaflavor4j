@@ -483,6 +483,18 @@ public class Snippets {
         assertThat(c.count, is(equalTo(20)));
     }
 
+    @Test
+    public void stringLike() {
+        Seq<Integer> is = Str._("123").map(new F1<Character, Integer>() {
+            public Integer _(Character c) {
+                return Integer.valueOf(c);
+            }
+        });
+        assertThat(is.head(), is(equalTo(49)));
+        assertThat(is.tail().head(), is(equalTo(50)));
+        assertThat(is.tail().tail().head(), is(equalTo(51)));
+    }
+
     /**
      * {@link com.m3.scalaflavor4j.SMap}
      */
