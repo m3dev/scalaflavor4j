@@ -6,34 +6,19 @@ ScalaFlavor4J provides you Scala flavored useful API in Java.
 
 ## Maven
 
+Available on maven central repository.
+
 Please add the following dependency:
 
 ```xml
-<repositories>
-  <repository>
-    <id>m3dev.github.com releases</id>
-    <name>m3dev.github.com releases</name>
-    <url>http://m3dev.github.com/mvn-repo/releases</url>
-  </repository>
-</repositories>
-
 <dependencies>
   <dependency>
-    <groupId>com.m3.scalaflavor4j</groupId>
+    <groupId>com.m3</groupId>
     <artifactId>scalaflavor4j</artifactId>
-    <version>0.8</version>
+    <version>1.0.0</version>
   </dependency>
 </dependencies>
 ```
-
-## Download 
-
-Please download the following jar files:
-
-<a href="http://m3dev.github.com/mvn-repo/releases/com/m3/scalaflavor4j/scalaflavor4j/0.8/scalaflavor4j-0.8.jar">com/m3/scalaflavor4j/scalaflavor4j/0.8/scalaflavor4j-0.8.jar</a>
-
-<a href="http://search.maven.org/remotecontent?filepath=org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0.jar">org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0.jar</a>
-
 
 # Introduction
 
@@ -544,11 +529,4 @@ Apache License, Version 2.0
 
 http://www.apache.org/licenses/LICENSE-2.0.html
 
-
-# Contributers
-
-
-* [Kazuhiro Sera](https://github.com/seratch)
-* [Toshiyuki Takahashi](https://github.com/tototoshi)
-* Takayuki Murata
 
