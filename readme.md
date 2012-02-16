@@ -6,9 +6,7 @@ ScalaFlavor4J provides you Scala flavored useful API in Java.
 
 ## Maven
 
-Available on maven central repository.
-
-Please add the following dependency:
+ScalaFlavor4J is available on maven central repository. Add the following dependency:
 
 ```xml
 <dependencies>
