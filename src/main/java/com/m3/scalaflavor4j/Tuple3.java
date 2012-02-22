@@ -65,6 +65,27 @@ public class Tuple3<T1, T2, T3> {
         return _3;
     }
 
+    /**
+     * Element 1 of this Tuple3
+     */
+    public T1 getFirst() {
+        return _1();
+    }
+
+    /**
+     * Element 2 of this Tuple3
+     */
+    public T2 getSecond() {
+        return _2();
+    }
+
+    /**
+     * Element 3 of this Tuple3
+     */
+    public T3 getThird() {
+        return _3();
+    }
+
     @Override
     public String toString() {
         return "(" + _1 + "," + _2 + "," + _3 + ")";

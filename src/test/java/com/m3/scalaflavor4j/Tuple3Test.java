@@ -77,4 +77,28 @@ public class Tuple3Test {
         assertThat(actual, is(equalTo(expected)));
     }
 
+    @Test
+    public void getFirst_A$() throws Exception {
+        Tuple3<String, Integer, Long> tuple = Tuple3._("a", 1, 2L);
+        String actual = tuple.getFirst();
+        String expected = "a";
+        assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void getSecond_A$() throws Exception {
+        Tuple3<String, Integer, Long> tuple = Tuple3._("a", 1, 2L);
+        Integer actual = tuple.getSecond();
+        Integer expected = 1;
+        assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void getThird_A$() throws Exception {
+        Tuple3<String, Integer, Long> tuple = Tuple3._("a", 1, 2L);
+        Long actual = tuple.getThird();
+        Long expected = 2L;
+        assertThat(actual, is(equalTo(expected)));
+    }
+
 }

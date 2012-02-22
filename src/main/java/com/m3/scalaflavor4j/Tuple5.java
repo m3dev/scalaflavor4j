@@ -83,6 +83,41 @@ public class Tuple5<T1, T2, T3, T4, T5> {
         return _5;
     }
 
+    /**
+     * Element 1 of this Tuple5
+     */
+    public T1 getFirst() {
+        return _1();
+    }
+
+    /**
+     * Element 2 of this Tuple5
+     */
+    public T2 getSecond() {
+        return _2();
+    }
+
+    /**
+     * Element 3 of this Tuple5
+     */
+    public T3 getThird() {
+        return _3();
+    }
+
+    /**
+     * Element 4 of this Tuple5
+     */
+    public T4 getFourth() {
+        return _4();
+    }
+
+    /**
+     * Element 5 of this Tuple5
+     */
+    public T5 getFifth() {
+        return _5();
+    }
+
     @Override
     public String toString() {
         return "(" + _1 + "," + _2 + "," + _3 + "," + _4 + "," + _5 + ")";

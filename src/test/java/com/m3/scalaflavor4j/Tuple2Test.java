@@ -72,4 +72,20 @@ public class Tuple2Test {
         assertThat(actual, is(equalTo(expected)));
     }
 
+    @Test
+    public void getFirst_A$() throws Exception {
+        Tuple2<Integer, Long> tuple = Tuple2._(1, 2L);
+        Integer actual = tuple.getFirst();
+        Integer expected = 1;
+        assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void getSecond_A$() throws Exception {
+        Tuple2<Integer, Long> tuple = Tuple2._(1, 2L);
+        Long actual = tuple.getSecond();
+        Long expected = 2L;
+        assertThat(actual, is(equalTo(expected)));
+    }
+
 }

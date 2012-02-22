@@ -130,4 +130,69 @@ public class Tuple5Test {
         assertThat(target, notNullValue());
     }
 
+    @Test
+    public void getFirst_A$() throws Exception {
+        String _1 = "foo";
+        Integer _2 = 123;
+        Long _3 = 456L;
+        Boolean _4 = true;
+        Double _5 = 7.8D;
+        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple._(_1, _2, _3, _4, _5);
+        String actual = tuple.getFirst();
+        String expected = "foo";
+        assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void getSecond_A$() throws Exception {
+        String _1 = "foo";
+        Integer _2 = 123;
+        Long _3 = 456L;
+        Boolean _4 = true;
+        Double _5 = 7.8D;
+        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple._(_1, _2, _3, _4, _5);
+        Integer actual = tuple.getSecond();
+        Integer expected = 123;
+        assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void getThird_A$() throws Exception {
+        String _1 = "foo";
+        Integer _2 = 123;
+        Long _3 = 456L;
+        Boolean _4 = true;
+        Double _5 = 7.8D;
+        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple._(_1, _2, _3, _4, _5);
+        Long actual = tuple.getThird();
+        Long expected = 456L;
+        assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void getFourth_A$() throws Exception {
+        String _1 = "foo";
+        Integer _2 = 123;
+        Long _3 = 456L;
+        Boolean _4 = true;
+        Double _5 = 7.8D;
+        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple._(_1, _2, _3, _4, _5);
+        Boolean actual = tuple.getFourth();
+        Boolean expected = true;
+        assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void getFifth_A$() throws Exception {
+        String _1 = "foo";
+        Integer _2 = 123;
+        Long _3 = 456L;
+        Boolean _4 = true;
+        Double _5 = 7.8D;
+        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple._(_1, _2, _3, _4, _5);
+        Double actual = tuple.getFifth();
+        Double expected = 7.8D;
+        assertThat(actual, is(equalTo(expected)));
+    }
+
 }

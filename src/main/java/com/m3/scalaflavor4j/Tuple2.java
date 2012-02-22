@@ -57,6 +57,20 @@ public class Tuple2<T1, T2> {
     }
 
     /**
+     * Element 1 of this Tuple2
+     */
+    public T1 getFirst() {
+        return _1();
+    }
+
+    /**
+     * Element 2 of this Tuple2
+     */
+    public T2 getSecond() {
+        return _2();
+    }
+
+    /**
      * Swaps the elements of this Tuple.
      */
     public Tuple2<T2, T1> swap() {

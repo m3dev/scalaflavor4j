@@ -92,8 +92,56 @@ public class Tuple4Test {
         Integer _2 = 123;
         Long _3 = 456L;
         Boolean _4 = true;
-        Tuple4<String, Integer, Long, Boolean> target = new Tuple4<String, Integer, Long, Boolean>(_1, _2, _3, _4);
+        Tuple4<String, Integer, Long, Boolean> target = Tuple._(_1, _2, _3, _4);
         assertThat(target, notNullValue());
+    }
+
+    @Test
+    public void getFirst_A$() throws Exception {
+        String _1 = "foo";
+        Integer _2 = 123;
+        Long _3 = 456L;
+        Boolean _4 = true;
+        Tuple4<String, Integer, Long, Boolean> tuple = Tuple._(_1, _2, _3, _4);
+        String actual = tuple.getFirst();
+        String expected = "foo";
+        assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void getSecond_A$() throws Exception {
+        String _1 = "foo";
+        Integer _2 = 123;
+        Long _3 = 456L;
+        Boolean _4 = true;
+        Tuple4<String, Integer, Long, Boolean> tuple = Tuple._(_1, _2, _3, _4);
+        Integer actual = tuple.getSecond();
+        Integer expected = 123;
+        assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void getThird_A$() throws Exception {
+        String _1 = "foo";
+        Integer _2 = 123;
+        Long _3 = 456L;
+        Boolean _4 = true;
+        Tuple4<String, Integer, Long, Boolean> tuple = Tuple._(_1, _2, _3, _4);
+        Long actual = tuple.getThird();
+        Long expected = 456L;
+        assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void getFourth_A$() throws Exception {
+        String _1 = "foo";
+        Integer _2 = 123;
+        Long _3 = 456L;
+        Boolean _4 = true;
+        Tuple4<String, Integer, Long, Boolean> tuple = Tuple._(_1, _2, _3, _4);
+        Boolean actual = tuple.getFourth();
+        Boolean expected = true;
+        assertThat(actual, is(equalTo(expected)));
     }
 
 }

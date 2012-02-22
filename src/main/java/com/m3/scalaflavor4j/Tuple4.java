@@ -74,6 +74,34 @@ public class Tuple4<T1, T2, T3, T4> {
         return _4;
     }
 
+    /**
+     * Element 1 of this Tuple4
+     */
+    public T1 getFirst() {
+        return _1();
+    }
+
+    /**
+     * Element 2 of this Tuple4
+     */
+    public T2 getSecond() {
+        return _2();
+    }
+
+    /**
+     * Element 3 of this Tuple4
+     */
+    public T3 getThird() {
+        return _3();
+    }
+
+    /**
+     * Element 4 of this Tuple4
+     */
+    public T4 getFourth() {
+        return _4();
+    }
+
     @Override
     public String toString() {
         return "(" + _1 + "," + _2 + "," + _3 + "," + _4 + ")";
