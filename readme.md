@@ -13,7 +13,7 @@ ScalaFlavor4J is available on maven central repository. Add the following depend
   <dependency>
     <groupId>com.m3</groupId>
     <artifactId>scalaflavor4j</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
   </dependency>
 </dependencies>
 ```
