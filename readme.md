@@ -6,7 +6,8 @@ ScalaFlavor4J provides you Scala flavored useful API in Java.
 
 ## Maven
 
-ScalaFlavor4J is available on maven central repository. Add the following dependency:
+ScalaFlavor4J is available on the maven central repository. 
+Add the following dependency:
 
 ```xml
 <dependencies>
@@ -20,7 +21,8 @@ ScalaFlavor4J is available on maven central repository. Add the following depend
 
 # Introduction
 
-In the beginning, please view this presentation. Sorry, We can't put iframe here.
+In the beginning, please view this presentation. 
+Sorry, We can't put iframe here.
 
 <a href="http://www.slideshare.net/seratch/scalaflavor4j-10953097" title="ScalaFlavor4J" target="_blank">ScalaFlavor4J(slideshare)</a>
 
@@ -56,8 +58,8 @@ ScalaFlavor4J:
 F1<String, Integer> getLength = new F1<String, Integer>() {
   public Integer _(String v) { return v.length(); }
 };
-int len = getLength.apply("foo"); // -> len : 3
 int len = getLength._("foo"); // -> len : 3
+int len = getLength.apply("foo"); // -> len : 3
 ```
 
 ### VoidFunction 
