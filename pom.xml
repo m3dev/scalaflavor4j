@@ -43,13 +43,6 @@
         </developer>
     </developers>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>junithelper.org releases</id>
-            <url>http://junithelper.googlecode.com/svn/trunk/mvn-repo/releases</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <dependencies>
         <dependency>
             <groupId>org.codehaus.jsr166-mirror</groupId>
