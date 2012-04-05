@@ -92,4 +92,9 @@ public class None<T> extends Option<T> {
         return Option.none();
     }
 
+    @Override
+    public <U> U fold(U ifEmpty, Function1<T, U> f) {
+        return ifEmpty;
+    }
+
 }

@@ -86,6 +86,12 @@ public abstract class Option<T> implements CollectionLike<T> {
     public abstract <U> Option<U> flatMap(Function1<T, Option<U>> f);
 
     /**
+     * Returns the result of applying $f to this $option's value if the $option
+     * is nonempty. Otherwise, evaluates expression $ifEmpty.
+     */
+    public abstract <U> U fold(U ifEmpty, Function1<T, U> f);
+
+    /**
      * Builds a new collection by applying a function to all elements of this
      * sequence.
      */

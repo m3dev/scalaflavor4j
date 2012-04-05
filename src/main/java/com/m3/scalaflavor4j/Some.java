@@ -129,4 +129,17 @@ public class Some<T> extends Option<T> {
         }
     }
 
+    @Override
+    public <U> U fold(U ifEmpty, Function1<T, U> f) {
+        try {
+            if (isEmpty()) {
+                return ifEmpty;
+            } else {
+                return f.apply(getOrNull());
+            }
+        } catch (Throwable e) {
+            throw new ScalaFlavor4JException(e);
+        }
+    }
+
 }
