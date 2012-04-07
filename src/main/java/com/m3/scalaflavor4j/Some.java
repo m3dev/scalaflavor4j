@@ -142,4 +142,17 @@ public class Some<T> extends Option<T> {
         }
     }
 
+    @Override
+    public <U> Function1<Function1<T, U>, U> fold(final U ifEmpty) {
+        return new F1<Function1<T, U>, U>() {
+            public U _(Function1<T, U> f) throws Exception {
+                if (isEmpty()) {
+                    return ifEmpty;
+                } else {
+                    return f.apply(getOrNull());
+                }
+            }
+        };
+    }
+
 }

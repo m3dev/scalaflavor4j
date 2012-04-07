@@ -91,6 +91,8 @@ public abstract class Option<T> implements CollectionLike<T> {
      */
     public abstract <U> U fold(U ifEmpty, Function1<T, U> f);
 
+    public abstract <U> Function1<Function1<T, U>, U> fold(U ifEmpty);
+
     /**
      * Builds a new collection by applying a function to all elements of this
      * sequence.

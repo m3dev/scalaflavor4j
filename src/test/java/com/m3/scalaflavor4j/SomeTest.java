@@ -250,4 +250,17 @@ public class SomeTest {
         assertThat(actual, is(equalTo(3)));
     }
 
+    @Test
+    public void fold_A$Object() throws Exception {
+        String value = "vvv";
+        Some<String> opt = new Some<String>(value);
+        Integer ifEmpty = -1;
+        Integer actual = opt.fold(ifEmpty)._(new F1<String, Integer>() {
+            public Integer _(String s) {
+                return s.length();
+            }
+        });
+        assertThat(actual, is(equalTo(3)));
+    }
+
 }
