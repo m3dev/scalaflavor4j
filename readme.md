@@ -14,7 +14,7 @@ Add the following dependency:
   <dependency>
     <groupId>com.m3</groupId>
     <artifactId>scalaflavor4j</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
   </dependency>
 </dependencies>
 ```
@@ -85,12 +85,14 @@ val some = Option(3)
 some.isDefined
 some.orNull(null)
 some.getOrElse(0)
-some map { (i: Int) => "found : " + i } getOrElse { "not found" }
+some map { i => "found : " + i } getOrElse { "not found" }
+some fold ("not found"){ i => "found : " + i }
 
 val none: Option[Int] = Option.empty
 none.isDefined
 none.getOrElse(0)
-none map { (i: Int) => "found : " + i } getOrElse { "not found" }
+none map { i => "found : " + i } getOrElse { "not found" }
+none fold ("not found"){ i => "found : " + i }
 ```
 
 ScalaFlavor4J:
@@ -105,8 +107,11 @@ some.map(new F1<Integer, String>() {
   public String _(Integer i) { return "found : " + i; }
 }).getOrElse(new F0<String>() {
   public String _() { return "not found"; }
-});
-// -> "found : 3"
+}); // -> "found : 3"
+
+some.fold("not found")._(new F1<Integer, String>() {
+  public String _(Integer i) { return "found : " + i; }
+}); // -> "found : 3"
 
 Option<Integer> none = Option._(null); // or Option.none();
 none.isDefined(); // false
@@ -117,6 +122,10 @@ none.map(new F1<Integer, String>() {
   public String _(Integer i) { return "found : " + i; }
 }).getOrElse(new F0<String>() {
   public String _() { return "not found"; }
+}); // -> "not found"
+
+none.fold("not found")._(new F1<Integer, String>() {
+  public String _(Integer i) { return "found : " + i; }
 }); // -> "not found"
 ```
 
