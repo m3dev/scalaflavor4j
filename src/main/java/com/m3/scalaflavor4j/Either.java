@@ -51,4 +51,24 @@ public abstract class Either<L, R> {
      */
     public abstract Either<R, L> swap();
 
+    /**
+     * Returns merged value to the Right type.
+     * 
+     * [NOTE] Different from Scala
+     * 
+     * @param leftToRight
+     * @return as a Right value
+     */
+    public abstract R mergeToRight(Function1<L, R> leftToRight);
+
+    /**
+     * Returns merged value to the Left type.
+     * 
+     * [NOTE] Different from Scala
+     * 
+     * @param rightToLeft
+     * @return as a Left value
+     */
+    public abstract L mergeToLeft(Function1<R, L> rightToLeft);
+
 }

@@ -78,4 +78,18 @@ public class Right<L, R> extends Either<L, R> {
         return "Right(" + value.getOrNull() + ")";
     }
 
+    @Override
+    public L mergeToLeft(Function1<R, L> rightToLeft) {
+        try {
+            return rightToLeft.apply(value.getOrNull());
+        } catch (Throwable t) {
+            throw new ScalaFlavor4JException(t);
+        }
+    }
+
+    @Override
+    public R mergeToRight(Function1<L, R> leftToRight) {
+        return value.getOrNull();
+    }
+
 }
