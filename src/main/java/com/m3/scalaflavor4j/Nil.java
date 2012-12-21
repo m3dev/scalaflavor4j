@@ -439,7 +439,12 @@ public class Nil<T> extends Seq<T> {
     @Override
     @SuppressWarnings("unchecked")
     public ParSeq<T> par() {
-        return ParSeq.<T> _();
+        return ParSeq.<T>_();
+    }
+
+    @Override
+    public Seq<T> transpose() {
+        return Nil._();
     }
 
 }

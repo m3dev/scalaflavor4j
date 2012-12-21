@@ -457,6 +457,11 @@ public abstract class Seq<T> implements CollectionLike<T> {
     public abstract Seq<T> takeWhile(Function1<T, Boolean> p);
 
     /**
+     * Transposes this list of traversable collections into a list of lists.
+     */
+    public abstract Seq<T> transpose();
+
+    /**
      * Produces a new sequence which contains all elements of this sequence and
      * also all elements of a given sequence.
      */

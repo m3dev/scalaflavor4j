@@ -16,12 +16,7 @@
 package com.m3.scalaflavor4j;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * {@link Seq} implementation
@@ -152,7 +147,7 @@ public class IndexedSeq<T> extends Seq<T> {
     @Override
     @SuppressWarnings("unchecked")
     public IndexedSeq<T> distinct() {
-        return foldLeft(IndexedSeq.<T> _(), new FoldLeftF2<IndexedSeq<T>, T>() {
+        return foldLeft(IndexedSeq.<T>_(), new FoldLeftF2<IndexedSeq<T>, T>() {
             public IndexedSeq<T> _(IndexedSeq<T> distinct, T element) {
                 if (!distinct.contains(element)) {
                     return distinct.append(element);
@@ -203,32 +198,36 @@ public class IndexedSeq<T> extends Seq<T> {
     @Override
     @SuppressWarnings("unchecked")
     public IndexedSeq<T> filter(final Function1<T, Boolean> isOk) {
-        return foldLeft(IndexedSeq.<T> _(), new FoldLeftF2<IndexedSeq<T>, T>() {
+        return foldLeft(IndexedSeq.<T>_(), new FoldLeftF2<IndexedSeq<T>, T>() {
             public IndexedSeq<T> _(IndexedSeq<T> filtered, T element) throws Exception {
                 if (isOk.apply(element)) {
                     return filtered.append(element);
                 }
                 return filtered;
-            };
+            }
+
+            ;
         });
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public IndexedSeq<T> filterNot(final Function1<T, Boolean> isOk) {
-        return foldLeft(IndexedSeq.<T> _(), new FoldLeftF2<IndexedSeq<T>, T>() {
+        return foldLeft(IndexedSeq.<T>_(), new FoldLeftF2<IndexedSeq<T>, T>() {
             public IndexedSeq<T> _(IndexedSeq<T> filtered, T element) throws Exception {
                 if (!isOk.apply(element)) {
                     return filtered.append(element);
                 }
                 return filtered;
-            };
+            }
+
+            ;
         });
     }
 
     @Override
     public Option<T> find(final Function1<T, Boolean> predicate) {
-        return foldLeft(Option.<T> none(), new FoldLeftF2<Option<T>, T>() {
+        return foldLeft(Option.<T>none(), new FoldLeftF2<Option<T>, T>() {
             public Option<T> _(Option<T> found, T element) throws Exception {
                 if (!found.isDefined() && predicate.apply(element)) {
                     return Option._(element);
@@ -241,7 +240,7 @@ public class IndexedSeq<T> extends Seq<T> {
     @Override
     @SuppressWarnings("unchecked")
     public <U> IndexedSeq<U> flatMap(final Function1<T, CollectionLike<U>> f) {
-        return foldLeft(IndexedSeq.<U> _(), new FoldLeftF2<IndexedSeq<U>, T>() {
+        return foldLeft(IndexedSeq.<U>_(), new FoldLeftF2<IndexedSeq<U>, T>() {
             public IndexedSeq<U> _(final IndexedSeq<U> seq, final T element) throws Exception {
                 CollectionLike<U> col = f.apply(element);
                 return seq.union(IndexedSeq._(col.toList()));
@@ -334,12 +333,14 @@ public class IndexedSeq<T> extends Seq<T> {
         if (isEmpty()) {
             return NIL.groupBy(getGroupName);
         }
-        return foldLeft(SMap.<U, Seq<T>> _(), new FoldLeftF2<SMap<U, Seq<T>>, T>() {
+        return foldLeft(SMap.<U, Seq<T>>_(), new FoldLeftF2<SMap<U, Seq<T>>, T>() {
             public SMap<U, Seq<T>> _(SMap<U, Seq<T>> map, T element) throws Exception {
                 U groupName = getGroupName.apply(element);
-                Seq<T> groupMembers = map.getOrElse(groupName, Seq.<T> _());
+                Seq<T> groupMembers = map.getOrElse(groupName, Seq.<T>_());
                 return map.updated(groupName, groupMembers.append(element));
-            };
+            }
+
+            ;
         });
     }
 
@@ -434,7 +435,7 @@ public class IndexedSeq<T> extends Seq<T> {
     @Override
     @SuppressWarnings("unchecked")
     public <U> IndexedSeq<U> map(final Function1<T, U> f) {
-        return foldLeft(IndexedSeq.<U> _(), new FoldLeftF2<IndexedSeq<U>, T>() {
+        return foldLeft(IndexedSeq.<U>_(), new FoldLeftF2<IndexedSeq<U>, T>() {
             public IndexedSeq<U> _(IndexedSeq<U> mapped, T element) throws Exception {
                 return mapped.append(f.apply(element));
             }
@@ -523,7 +524,7 @@ public class IndexedSeq<T> extends Seq<T> {
 
     @Override
     public ParSeq<T> par() {
-        return ParSeq.<T> _(list);
+        return ParSeq.<T>_(list);
     }
 
     /**
@@ -536,8 +537,8 @@ public class IndexedSeq<T> extends Seq<T> {
 
         @SuppressWarnings("unchecked")
         public PartitionZ() {
-            this.matched = IndexedSeq.<T> _();
-            this.unmatched = IndexedSeq.<T> _();
+            this.matched = IndexedSeq.<T>_();
+            this.unmatched = IndexedSeq.<T>_();
         }
 
         public PartitionZ(Seq<T> matched, Seq<T> unmatched) {
@@ -559,7 +560,9 @@ public class IndexedSeq<T> extends Seq<T> {
                     return new PartitionZ(z.matched.append(element), z.unmatched);
                 }
                 return new PartitionZ(z.matched, z.unmatched.append(element));
-            };
+            }
+
+            ;
         }).toResult();
     }
 
@@ -601,10 +604,12 @@ public class IndexedSeq<T> extends Seq<T> {
     @Override
     @SuppressWarnings("unchecked")
     public IndexedSeq<T> reverse() {
-        return foldRight(IndexedSeq.<T> _(), new FoldRightF2<T, IndexedSeq<T>>() {
+        return foldRight(IndexedSeq.<T>_(), new FoldRightF2<T, IndexedSeq<T>>() {
             public IndexedSeq<T> _(T element, IndexedSeq<T> reversed) {
                 return reversed.append(element);
-            };
+            }
+
+            ;
         });
     }
 
@@ -705,7 +710,7 @@ public class IndexedSeq<T> extends Seq<T> {
         if (from >= size() || until > size()) {
             return IndexedSeq._();
         }
-        return SInt._(from).until(until).foldLeft(IndexedSeq.<T> _(), new FoldLeftF2<IndexedSeq<T>, Integer>() {
+        return SInt._(from).until(until).foldLeft(IndexedSeq.<T>_(), new FoldLeftF2<IndexedSeq<T>, Integer>() {
             public IndexedSeq<T> _(IndexedSeq<T> sliced, Integer i) {
                 return sliced.append(list.get(i));
             }
@@ -721,7 +726,7 @@ public class IndexedSeq<T> extends Seq<T> {
     @SuppressWarnings("unchecked")
     public IndexedSeq<Seq<T>> sliding(final int blockSize, int step) {
         if (isEmpty()) {
-            return IndexedSeq.<Seq<T>> _();
+            return IndexedSeq.<Seq<T>>_();
         }
         final int thisAllSize = size();
         int finalStartIdx = thisAllSize - 1;
@@ -739,7 +744,7 @@ public class IndexedSeq<T> extends Seq<T> {
                         return idx < thisAllSize;
                     }
                 });
-                return indicesInBlock.foldLeft(IndexedSeq.<T> _(), new FoldLeftF2<IndexedSeq<T>, Integer>() {
+                return indicesInBlock.foldLeft(IndexedSeq.<T>_(), new FoldLeftF2<IndexedSeq<T>, Integer>() {
                     public IndexedSeq<T> _(IndexedSeq<T> seq, Integer idx) {
                         return seq.append(list.get(idx));
                     }
@@ -763,7 +768,9 @@ public class IndexedSeq<T> extends Seq<T> {
                 } catch (Throwable e) {
                     throw new ScalaFlavor4JException(e);
                 }
-            };
+            }
+
+            ;
         });
         return IndexedSeq._(copied);
     }
@@ -780,8 +787,8 @@ public class IndexedSeq<T> extends Seq<T> {
         @SuppressWarnings("unchecked")
         public SpanZ() {
             this.unmatchFound = false;
-            this.stillMatched = IndexedSeq.<T> _();
-            this.others = IndexedSeq.<T> _();
+            this.stillMatched = IndexedSeq.<T>_();
+            this.others = IndexedSeq.<T>_();
         }
 
         public SpanZ(Boolean unmatchFound, Seq<T> stillMatched, Seq<T> others) {
@@ -806,13 +813,15 @@ public class IndexedSeq<T> extends Seq<T> {
                     return new SpanZ(true, z.stillMatched, z.others.append(element));
                 }
                 return new SpanZ(z.unmatchFound, z.stillMatched.append(element), z.others);
-            };
+            }
+
+            ;
         }).toResult();
     }
 
     @Override
     public Tuple2<Seq<T>, Seq<T>> splitAt(int n) {
-        return Tuple.<Seq<T>, Seq<T>> _(take(n), drop(n));
+        return Tuple.<Seq<T>, Seq<T>>_(take(n), drop(n));
     }
 
     @Override
@@ -939,6 +948,25 @@ public class IndexedSeq<T> extends Seq<T> {
     @Override
     public IndexedSeq<Tuple2<T, Integer>> zipWithIndex() {
         return zip(indices());
+    }
+
+    @Override
+    public Seq<T> transpose() {
+        Seq<Seq<?>> xss = (Seq<Seq<?>>) this;
+        int headSize = xss.head().size();
+        List<List<?>> matrix = new ArrayList<List<?>>();
+        for (int i = 0; i < headSize; i++) {
+            List<Object> row = new ArrayList<Object>();
+            for (Seq<?> seq : xss.toList()) {
+                row.add(seq.toList().get(i));
+            }
+            matrix.add(row);
+        }
+        return (Seq<T>) Seq._(matrix).map(new F1<List<?>, Seq<?>>() {
+            public Seq<?> _(List<?> row) throws Exception {
+                return Seq._(row);
+            }
+        });
     }
 
 }

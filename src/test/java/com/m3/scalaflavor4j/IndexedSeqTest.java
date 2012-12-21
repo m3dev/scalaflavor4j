@@ -1,16 +1,11 @@
 package com.m3.scalaflavor4j;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.junit.Test;
+
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
 
 public class IndexedSeqTest {
 
@@ -1723,6 +1718,34 @@ public class IndexedSeqTest {
         assertThat(seq.corresponds(IndexedSeq._("foo", "bar"), predicate), is(false));
         assertThat(seq.corresponds(IndexedSeq._("foo"), predicate), is(false));
         assertThat(seq.corresponds(IndexedSeq._("bar", "foo", "baz"), predicate), is(false));
+    }
+
+    @Test
+    public void transpose_A$_3_2() throws Exception {
+        Seq<Seq<Integer>> seq = Seq._(Seq._(1, 2, 3), Seq._(4, 5, 6));
+        Seq<Seq<Integer>> transposed = seq.transpose();
+        assertThat(transposed.head().mkString(","), is("1,4"));
+        assertThat(transposed.tail().head().mkString(","), is("2,5"));
+        assertThat(transposed.tail().tail().head().mkString(","), is("3,6"));
+    }
+
+    @Test
+    public void transpose_A$_3_3() throws Exception {
+        Seq<Seq<Integer>> seq = Seq._(Seq._(1, 2, 3), Seq._(4, 5, 6), Seq._(7, 8, 9));
+        Seq<Seq<Integer>> transposed = seq.transpose();
+        assertThat(transposed.head().mkString(","), is("1,4,7"));
+        assertThat(transposed.tail().head().mkString(","), is("2,5,8"));
+        assertThat(transposed.tail().tail().head().mkString(","), is("3,6,9"));
+    }
+
+    @Test
+    public void transpose_A$_4_3() throws Exception {
+        Seq<Seq<Integer>> seq = Seq._(Seq._(1, 2, 3, 4), Seq._(5, 6, 7, 8), Seq._(9, 10, 11, 12));
+        Seq<Seq<Integer>> transposed = seq.transpose();
+        assertThat(transposed.head().mkString(","), is("1,5,9"));
+        assertThat(transposed.tail().head().mkString(","), is("2,6,10"));
+        assertThat(transposed.tail().tail().head().mkString(","), is("3,7,11"));
+        assertThat(transposed.tail().tail().tail().head().mkString(","), is("4,8,12"));
     }
 
 }
