@@ -14,8 +14,8 @@ public class FoldRightF2Test {
 
     @Test
     public void instantiation() throws Exception {
-        int sum = Seq._("aaa", "bbbb", "ccc").foldRight(0, new FoldRightF2<String, Integer>() {
-            public Integer _(String str, Integer sum) {
+        int sum = Seq.apply("aaa", "bbbb", "ccc").foldRight(0, new FoldRightF2<String, Integer>() {
+            public Integer apply(String str, Integer sum) {
                 return sum + str.length();
             }
         });

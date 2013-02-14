@@ -24,10 +24,6 @@ public abstract class Option<T> implements CollectionLike<T> {
 
     private static final long serialVersionUID = 1L;
 
-    public static <T> Option<T> _(T value) {
-        return apply(value);
-    }
-
     public static <T> Option<T> apply(T value) {
         if (value == null) {
             return new None<T>();

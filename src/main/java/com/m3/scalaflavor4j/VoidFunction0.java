@@ -17,26 +17,14 @@ package com.m3.scalaflavor4j;
 
 /**
  * A function of 0 parameter (return type void).
- * 
+ *
  * @see "http://www.scala-lang.org/api/2.9.1/index.html#scala.Function0"
  */
-public abstract class VoidFunction0 {
-
-    public void apply() throws Exception {
-        _();
-    }
+public interface VoidFunction0 {
 
     /**
      * Apply the body of this function to the argument.
      */
-    public abstract void _() throws Exception;
-
-    /**
-     * Creates a String representation of this object.
-     */
-    @Override
-    public String toString() {
-        return "<void-function0>";
-    }
+    void apply() throws Exception;
 
 }

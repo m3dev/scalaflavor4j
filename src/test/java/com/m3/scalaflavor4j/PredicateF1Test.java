@@ -14,8 +14,8 @@ public class PredicateF1Test {
 
     @Test
     public void instantiation() throws Exception {
-        Seq<Integer> filtered = Seq._(1, 2, 3, 4, 5).filter(new PredicateF1<Integer>() {
-            public Boolean _(Integer i) {
+        Seq<Integer> filtered = Seq.apply(1, 2, 3, 4, 5).filter(new PredicateF1<Integer>() {
+            public Boolean apply(Integer i) {
                 return i <= 3;
             }
         });

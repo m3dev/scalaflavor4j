@@ -26,29 +26,29 @@ public class ForComprehension2<T1, T2> {
     private final Generator<T2> xs2;
 
     public ForComprehension2(CollectionLike<T1> xs1, CollectionLike<T2> xs2) {
-        this.xs1 = Generator._(xs1);
-        this.xs2 = Generator._(xs2);
+        this.xs1 = Generator.apply(xs1);
+        this.xs2 = Generator.apply(xs2);
     }
 
     @SuppressWarnings("unchecked")
     public <U, V extends CollectionLike<U>> V yield(final Function1<Tuple2<T1, T2>, U> f) {
         return (V) xs1.flatMap(new FlatMapF1<T1, U>() {
-            public CollectionLike<U> _(final T1 t1) {
+            public CollectionLike<U> apply(final T1 t1) {
                 return xs2.map(new F1<T2, U>() {
-                    public U _(T2 t2) throws Exception {
-                        return f.apply(Tpl._(t1, t2));
+                    public U apply(T2 t2) throws Exception {
+                        return f.apply(Tpl.apply(t1, t2));
                     }
                 });
             }
         });
     }
 
-    public void _(final VoidFunction1<Tuple2<T1, T2>> f) {
+    public void apply(final VoidFunction1<Tuple2<T1, T2>> f) {
         xs1.foreach(new VoidF1<T1>() {
-            public void _(final T1 t1) {
+            public void apply(final T1 t1) {
                 xs2.foreach(new VoidF1<T2>() {
-                    public void _(T2 t2) throws Exception {
-                        f.apply(Tpl._(t1, t2));
+                    public void apply(T2 t2) throws Exception {
+                        f.apply(Tpl.apply(t1, t2));
                     }
                 });
             }

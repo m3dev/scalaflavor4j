@@ -25,7 +25,7 @@ public class TupleTest {
     public void __A$Object$Object() throws Exception {
         String _1 = "scala";
         Integer _2 = 291;
-        Tuple2<String, Integer> tpl = Tuple._(_1, _2);
+        Tuple2<String, Integer> tpl = Tuple.apply(_1, _2);
         assertThat(tpl._1(), is(equalTo(_1)));
         assertThat(tpl._2(), is(equalTo(_2)));
     }
@@ -46,7 +46,7 @@ public class TupleTest {
         String _1 = "scala";
         Integer _2 = 291;
         Long _3 = 1L;
-        Tuple3<String, Integer, Long> tpl = Tuple._(_1, _2, _3);
+        Tuple3<String, Integer, Long> tpl = Tuple.apply(_1, _2, _3);
         assertThat(tpl._1(), is(equalTo(_1)));
         assertThat(tpl._2(), is(equalTo(_2)));
         assertThat(tpl._3(), is(equalTo(_3)));
@@ -71,7 +71,7 @@ public class TupleTest {
         Integer _2 = 291;
         Long _3 = 1L;
         Double _4 = 0.1D;
-        Tuple4<String, Integer, Long, Double> tpl = Tuple._(_1, _2, _3, _4);
+        Tuple4<String, Integer, Long, Double> tpl = Tuple.apply(_1, _2, _3, _4);
         assertThat(tpl._1(), is(equalTo(_1)));
         assertThat(tpl._2(), is(equalTo(_2)));
         assertThat(tpl._3(), is(equalTo(_3)));
@@ -100,7 +100,7 @@ public class TupleTest {
         Long _3 = 1L;
         Double _4 = 0.1D;
         Boolean _5 = false;
-        Tuple5<String, Integer, Long, Double, Boolean> tpl = Tuple._(_1, _2, _3, _4, _5);
+        Tuple5<String, Integer, Long, Double, Boolean> tpl = Tuple.apply(_1, _2, _3, _4, _5);
         assertThat(tpl._1(), is(equalTo(_1)));
         assertThat(tpl._2(), is(equalTo(_2)));
         assertThat(tpl._3(), is(equalTo(_3)));

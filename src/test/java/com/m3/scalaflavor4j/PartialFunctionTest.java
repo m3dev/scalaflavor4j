@@ -17,7 +17,7 @@ public class PartialFunctionTest {
     public void instantiation() throws Exception {
         PartialFunction<String> target = new PartialFunction<String>(CaseClause._case(String.class)._arrow(
                 new Function1<String, String>() {
-                    public String _(String v1) throws Exception {
+                    public String apply(String v1) throws Exception {
                         return v1;
                     }
                 }));
@@ -32,9 +32,9 @@ public class PartialFunctionTest {
     @Test
     @SuppressWarnings("unchecked")
     public void __A$CaseClauseArray() throws Exception {
-        PartialFunction<String> target = PartialFunction.<String> _(CaseClause._case(String.class)._arrow(
+        PartialFunction<String> target = PartialFunction.<String> apply(CaseClause._case(String.class)._arrow(
                 new Function1<String, String>() {
-                    public String _(String v1) throws Exception {
+                    public String apply(String v1) throws Exception {
                         return v1;
                     }
                 }));
@@ -44,9 +44,9 @@ public class PartialFunctionTest {
     @Test
     @SuppressWarnings("unchecked")
     public void __A$Seq() throws Exception {
-        PartialFunction<String> target = PartialFunction.<String> _(Seq.<CaseClause<?, String>> _(CaseClause._case(
+        PartialFunction<String> target = PartialFunction.<String> apply(Seq.<CaseClause<?, String>> apply(CaseClause._case(
                 String.class)._arrow(new Function1<String, String>() {
-            public String _(String v1) throws Exception {
+            public String apply(String v1) throws Exception {
                 return v1;
             }
         })));
@@ -56,9 +56,9 @@ public class PartialFunctionTest {
     @Test
     @SuppressWarnings("unchecked")
     public void isDefinedAt_A$Object() throws Exception {
-        PartialFunction<String> target = PartialFunction.<String> _(Seq.<CaseClause<?, String>> _(CaseClause._case(
+        PartialFunction<String> target = PartialFunction.<String> apply(Seq.<CaseClause<?, String>> apply(CaseClause._case(
                 String.class)._arrow(new Function1<String, String>() {
-            public String _(String v1) throws Exception {
+            public String apply(String v1) throws Exception {
                 return v1;
             }
         })));
@@ -69,9 +69,9 @@ public class PartialFunctionTest {
     @SuppressWarnings("unchecked")
     public void orElse_A$PartialFunction() throws Exception {
 
-        PartialFunction<String> str = PartialFunction.<String> _(Seq.<CaseClause<?, String>> _(CaseClause._case(
+        PartialFunction<String> str = PartialFunction.<String> apply(Seq.<CaseClause<?, String>> apply(CaseClause._case(
                 String.class)._arrow(new Function1<String, String>() {
-            public String _(String v1) throws Exception {
+            public String apply(String v1) throws Exception {
                 return v1;
             }
         })));
@@ -81,9 +81,9 @@ public class PartialFunctionTest {
         } catch (MatchError e) {
         }
 
-        PartialF<String> integer = PartialF.<String> _(CaseClause._case(Integer.class)._arrow(
+        PartialF<String> integer = PartialF.<String> apply(CaseClause._case(Integer.class)._arrow(
                 new F1<Integer, String>() {
-                    public String _(Integer v1) throws Exception {
+                    public String apply(Integer v1) throws Exception {
                         return v1.toString();
                     }
                 }));

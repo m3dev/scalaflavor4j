@@ -27,11 +27,7 @@ public class Str {
     }
 
     public static StringLike apply(String str) {
-        return _(str);
-    }
-
-    public static StringLike _(String str) {
-        return StringLike._(str);
+        return StringLike.apply(str);
     }
 
 }

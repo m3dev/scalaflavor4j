@@ -20,60 +20,8 @@ package com.m3.scalaflavor4j;
  * 
  * @see "http://www.scala-lang.org/api/2.9.1/index.html#scala.Function4"
  */
-public abstract class Function4<T1, T2, T3, T4, R> {
+public interface Function4<T1, T2, T3, T4, R> {
 
-    public R apply(T1 v1, T2 v2, T3 v3, T4 v4) throws Exception {
-        return _(v1, v2, v3, v4);
-    }
-
-    /**
-     * Apply the body of this function to the arguments.
-     */
-    public abstract R _(T1 v1, T2 v2, T3 v3, T4 v4) throws Exception;
-
-    /**
-     * Creates a tupled version of this function: instead of 4 arguments, it
-     * accepts a single Tuple4 argument.
-     */
-    public F1<Tuple4<T1, T2, T3, T4>, R> tupled() {
-        final Function4<T1, T2, T3, T4, R> _this = this;
-        return new F1<Tuple4<T1, T2, T3, T4>, R>() {
-            public R _(Tuple4<T1, T2, T3, T4> tuple) throws Exception {
-                return _this.apply(tuple._1(), tuple._2(), tuple._3(), tuple._4());
-            }
-        };
-    }
-
-    /**
-     * Creates a curried version of this function.
-     */
-    public F1<T1, Function1<T2, Function1<T3, Function1<T4, R>>>> curried() {
-        final Function4<T1, T2, T3, T4, R> _this = this;
-        return new F1<T1, Function1<T2, Function1<T3, Function1<T4, R>>>>() {
-            public Function1<T2, Function1<T3, Function1<T4, R>>> _(final T1 v1) {
-                return new F1<T2, Function1<T3, Function1<T4, R>>>() {
-                    public Function1<T3, Function1<T4, R>> _(final T2 v2) {
-                        return new F1<T3, Function1<T4, R>>() {
-                            public Function1<T4, R> _(final T3 v3) {
-                                return new F1<T4, R>() {
-                                    public R _(T4 v4) throws Exception {
-                                        return _this.apply(v1, v2, v3, v4);
-                                    }
-                                };
-                            }
-                        };
-                    }
-                };
-            }
-        };
-    }
-
-    /**
-     * Creates a String representation of this object.
-     */
-    @Override
-    public String toString() {
-        return "<function4>";
-    }
+    R apply(T1 v1, T2 v2, T3 v3, T4 v4) throws Exception;
 
 }

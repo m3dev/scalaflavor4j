@@ -26,7 +26,7 @@ package com.m3.scalaflavor4j;
  * CaseClause ::= ‘case’ Pattern [Guard] ‘=>’ Block
  * </pre>
  */
-public class CaseClause<M, R> extends Function1<Object, Option<R>> {
+public class CaseClause<M, R> implements Function1<Object, Option<R>> {
 
     private final Extractor<M> extractor;
 
@@ -50,7 +50,7 @@ public class CaseClause<M, R> extends Function1<Object, Option<R>> {
         private Extractor<M> extractor;
 
         private Guard<M> guard = new Guard<M>() {
-            public Boolean _(M v) {
+            public Boolean apply(M v) {
                 return v != null;
             }
         };
@@ -65,7 +65,7 @@ public class CaseClause<M, R> extends Function1<Object, Option<R>> {
         }
 
         public <R> CaseClause<M, R> _arrow(Function1<M, R> block) {
-            return CaseClause._(extractor, guard, block);
+            return CaseClause.apply(extractor, guard, block);
         }
 
     }
@@ -76,16 +76,16 @@ public class CaseClause<M, R> extends Function1<Object, Option<R>> {
         this.block = block;
     }
 
-    private static <M, R> CaseClause<M, R> _(Extractor<M> extractor, Guard<M> guard, Function1<M, R> block) {
+    private static <M, R> CaseClause<M, R> apply(Extractor<M> extractor, Guard<M> guard, Function1<M, R> block) {
         return new CaseClause<M, R>(extractor, guard, block);
     }
 
     @Override
-    public Option<R> _(Object v) throws Exception {
+    public Option<R> apply(Object v) throws Exception {
         Option<M> extracted = extractor.unapply(v);
         if (extracted.isDefined()) {
             if (guard.apply(extracted.getOrNull())) {
-                return Option._(block.apply(extracted.getOrNull()));
+                return Option.apply(block.apply(extracted.getOrNull()));
             }
         }
         return Option.none();

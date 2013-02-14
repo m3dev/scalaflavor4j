@@ -14,8 +14,8 @@ public class FoldLeftF2Test {
 
     @Test
     public void instantiation() throws Exception {
-        int sum = Seq._("aaa", "bbbb", "ccc").foldLeft(0, new FoldLeftF2<Integer, String>() {
-            public Integer _(Integer sum, String str) {
+        int sum = Seq.apply("aaa", "bbbb", "ccc").foldLeft(0, new FoldLeftF2<Integer, String>() {
+            public Integer apply(Integer sum, String str) {
                 return sum + str.length();
             }
         });

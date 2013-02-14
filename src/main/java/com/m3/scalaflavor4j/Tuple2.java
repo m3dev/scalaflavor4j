@@ -17,7 +17,7 @@ package com.m3.scalaflavor4j;
 
 /**
  * A tuple of 2 elements; the canonical representation of a Product2.
- * 
+ *
  * @see "http://www.scala-lang.org/api/2.9.1/index.html#scala.Tuple2"
  */
 public class Tuple2<T1, T2> {
@@ -26,15 +26,11 @@ public class Tuple2<T1, T2> {
     private T2 _2;
 
     public static <T1, T2> Tuple2<T1, T2> apply(T1 _1, T2 _2) {
-        return _(_1, _2);
-    }
-
-    public static <T1, T2> Tuple2<T1, T2> _(T1 _1, T2 _2) {
         return new Tuple2<T1, T2>(_1, _2);
     }
 
     public static <T1, T2> Option<Tuple2<T1, T2>> unapply(Tuple2<T1, T2> tuple) {
-        return Option._(tuple);
+        return Option.apply(tuple);
     }
 
     protected Tuple2(T1 _1, T2 _2) {

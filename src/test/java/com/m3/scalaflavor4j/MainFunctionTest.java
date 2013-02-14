@@ -8,7 +8,7 @@ import org.junit.Test;
 public class MainFunctionTest {
 
     final VoidF1<Object> print = new VoidF1<Object>() {
-        public void _(Object v1) {
+        public void apply(Object v1) {
             System.out.println(v1);
         }
     };
@@ -21,7 +21,7 @@ public class MainFunctionTest {
     @Test
     public void instantiation() throws Exception {
         MainFunction main = new MainFunction() {
-            public void _(String[] args) {
+            public void apply(String[] args) {
             }
         };
         assertThat(main, notNullValue());
@@ -30,10 +30,10 @@ public class MainFunctionTest {
     @Test
     public void apply() throws Exception {
         MainFunction main = new MainFunction() {
-            public void _(String[] args) throws Exception {
+            public void apply(String[] args) throws Exception {
                 print.apply(args.length);
-                Seq._(args).foreach(new VoidF1<String>() {
-                    public void _(String arg) throws Exception {
+                Seq.apply(args).foreach(new VoidF1<String>() {
+                    public void apply(String arg) throws Exception {
                         print.apply(arg);
                     }
                 });

@@ -32,10 +32,6 @@ public class StringLike extends IndexedSeq<Character> {
     }
 
     public static StringLike apply(String str) {
-        return _(str);
-    }
-
-    public static StringLike _(String str) {
         Collection<Character> cs = new ArrayList<Character>();
         if (str != null) {
             for (char c : str.toCharArray()) {

@@ -14,16 +14,16 @@ public class ForComprehension1Test {
 
     @Test
     public void instantiation() throws Exception {
-        CollectionLike<String> xs = Seq._("foo", "barr");
+        CollectionLike<String> xs = Seq.apply("foo", "barr");
         ForComprehension1<String> lc = new ForComprehension1<String>(xs);
         assertThat(lc, notNullValue());
     }
 
     @Test
     public void yield_A$Function1() throws Exception {
-        CollectionLike<String> xs = Seq._("foo", "barr");
-        Seq<Integer> rs = For._(xs).yield(new F1<String, Integer>() {
-            public Integer _(String s) {
+        CollectionLike<String> xs = Seq.apply("foo", "barr");
+        Seq<Integer> rs = For.apply(xs).yield(new F1<String, Integer>() {
+            public Integer apply(String s) {
                 return s.length();
             }
         });
@@ -37,10 +37,10 @@ public class ForComprehension1Test {
 
     @Test
     public void __A$VoidFunction1() throws Exception {
-        CollectionLike<String> xs = Seq._("foo", "barr");
+        CollectionLike<String> xs = Seq.apply("foo", "barr");
         final Called c = new Called();
-        For._(xs)._(new VoidF1<String>() {
-            public void _(String s) {
+        For.apply(xs).apply(new VoidF1<String>() {
+            public void apply(String s) {
                 c.count++;
             }
         });

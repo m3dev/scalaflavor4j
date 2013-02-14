@@ -27,10 +27,6 @@ public class Process {
     private String command;
 
     public static Process apply(String command) {
-        return _(command);
-    }
-
-    public static Process _(String command) {
         return new Process(command);
     }
 

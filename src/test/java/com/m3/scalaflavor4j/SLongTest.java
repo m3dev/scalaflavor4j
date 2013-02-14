@@ -20,43 +20,43 @@ public class SLongTest {
 
     @Test
     public void __A$Long() throws Exception {
-        SLong actual = SLong._(123L);
+        SLong actual = SLong.apply(123L);
         assertThat(actual.getOrElse(0L), is(equalTo(123L)));
     }
 
     @Test
     public void getOrElse_A$Long() throws Exception {
-        Long actual = SLong._(123L).getOrElse(0L);
+        Long actual = SLong.apply(123L).getOrElse(0L);
         assertThat(actual, is(equalTo(123L)));
     }
 
     @Test
     public void to_A$Long() throws Exception {
-        Seq<Long> actual = SLong._(1L).to(3L);
+        Seq<Long> actual = SLong.apply(1L).to(3L);
         assertThat(actual.size(), is(equalTo(3)));
     }
 
     @Test
     public void to_A$Long$Long() throws Exception {
-        Seq<Long> actual = SLong._(1L).to(10L, 3L);
+        Seq<Long> actual = SLong.apply(1L).to(10L, 3L);
         assertThat(actual.size(), is(equalTo(4)));
     }
 
     @Test
     public void until_A$Long() throws Exception {
-        Seq<Long> actual = SLong._(1L).until(3L);
+        Seq<Long> actual = SLong.apply(1L).until(3L);
         assertThat(actual.size(), is(equalTo(2)));
     }
 
     @Test
     public void until_A$Long$Long() throws Exception {
-        Seq<Long> actual = SLong._(1L).until(10L, 3L);
+        Seq<Long> actual = SLong.apply(1L).until(10L, 3L);
         assertThat(actual.size(), is(equalTo(3)));
     }
 
     @Test
     public void toString_A$() throws Exception {
-        SLong target = SLong._(123L);
+        SLong target = SLong.apply(123L);
         String actual = target.toString();
         String expected = "SLong(123)";
         assertThat(actual, is(equalTo(expected)));

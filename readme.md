@@ -14,10 +14,17 @@ Add the following dependency:
   <dependency>
     <groupId>com.m3</groupId>
     <artifactId>scalaflavor4j</artifactId>
-    <version>[1.0,)</version>
+    <version>[1.1,)</version>
   </dependency>
 </dependencies>
 ```
+
+# Migration from version 1.0.x
+
+- `_(xxx)` methods are removed because the name is deprecated in Java 8. Please use `apply(xxx)` instead.
+
+- `FunctionN` are changed from abstract class to interface due to JSR-335 specification. If you want to use `compose` or `andThen`, please decorate `FunctionN` instances with `RichFunctionN`.
+
 
 # Introduction
 
@@ -33,6 +40,7 @@ First of all, just import the following package.
 
 ```java
 import com.m3.scalaflavor4j.*;
+import static com.m3.scalaflavor4j.Predef.*; // optional
 ```
 
 ## Function
@@ -50,15 +58,10 @@ val len = getLength("foo")
 val len = getLength.apply("foo")
 ```
 
-ScalaFlavor4J:
-
-`_` means `apply` method. In Function classes, only `_` is abstract method. `apply` calls `_` internally.
+ScalaFlavor4J on Java 8:
 
 ```java
-F1<String, Integer> getLength = new F1<String, Integer>() {
-  public Integer _(String v) { return v.length(); }
-};
-int len = getLength._("foo"); // -> len : 3
+F1<String, Integer> getLength = (v) -> v.length();
 int len = getLength.apply("foo"); // -> len : 3
 ```
 
@@ -67,11 +70,8 @@ int len = getLength.apply("foo"); // -> len : 3
 VoidFunction* does not exist in Scala.
 
 ```java
-VoidFunction1<Object> print = new VoidF1<Object>() {
-  public void _(Object v) { System.out.println(v); }
-};
+VoidFunction1<Object> print = (v) -> System.out.println(v);
 print.apply("foo"); // "foo"
-print._("foo"); // "foo"
 ```
 
 ## Option
@@ -95,38 +95,30 @@ none map { i => "found : " + i } getOrElse { "not found" }
 none fold ("not found"){ i => "found : " + i }
 ```
 
-ScalaFlavor4J:
+ScalaFlavor4J on Java 8:
 
 ```java
-Option<Integer> some = Option._(3);
+Option<Integer> some = Option.apply(3);
 some.isDefined(); // true
 some.getOrNull(); // 3
 some.getOrElse(0); // 3
 
-some.map(new F1<Integer, String>() {
-  public String _(Integer i) { return "found : " + i; }
-}).getOrElse(new F0<String>() {
-  public String _() { return "not found"; }
-}); // -> "found : 3"
+some.map(i -> "found : " + i).getOrElse(() -> "not found");
+// -> "found : 3"
 
-some.fold("not found")._(new F1<Integer, String>() {
-  public String _(Integer i) { return "found : " + i; }
-}); // -> "found : 3"
+some.fold("not found").apply(i -> "found : " + i);
+// -> "found : 3"
 
-Option<Integer> none = Option._(null); // or Option.none();
+Option<Integer> none = Option.apply(null); // or Option.none();
 none.isDefined(); // false
 none.getOrNull(); // null
 none.getOrElse(0); // 0
 
-none.map(new F1<Integer, String>() {
-  public String _(Integer i) { return "found : " + i; }
-}).getOrElse(new F0<String>() {
-  public String _() { return "not found"; }
-}); // -> "not found"
+none.map(i -> "found : " + i).getOrElse(() -> "not found");
+// -> "not found"
 
-none.fold("not found")._(new F1<Integer, String>() {
-  public String _(Integer i) { return "found : " + i; }
-}); // -> "not found"
+none.fold("not found").apply(i -> "found : " + i);
+// -> "not found"
 ```
 
 
@@ -142,20 +134,20 @@ Scala:
 val words = Seq("foo", "bar", "baz")
 ```
 
-ScalaFlavor4J:
+ScalaFlavor4J on Java 8:
 
 Using variable arguments:
 
 ```java
 import java.util.*;
-Seq<String> words = Seq._("foo", "bar", "baz");
+Seq<String> words = Seq.apply("foo", "bar", "baz");
 ```
 
 Or apply existing `java.util.List` object:
 
 ```java
 List<String> wordList = Arrays.asList("foo", "bar", "baz");
-Seq<String> words = Seq._(wordList);
+Seq<String> words = Seq.apply(wordList);
 ```
 
 Back to `java.util.List`:
@@ -175,22 +167,16 @@ Seq(1, 2, 3, 4, 5) flatMap { (i: Int) => 1 to i } mkString(",")
 Seq(Some(1), Some(2), None, Some(3), None, Some(4), Some(5)) flatMap { (e: Option[Int]) => e }
 ```
 
-ScalaFlavor4J:
+ScalaFlavor4J on Java 8:
 
 ```java
-Seq._(1, 2, 3, 4, 5).map(new F1<Integer, Long>() {
-  public Long _(Integer i) { return Long.valueOf(i * 2); }
-});
-// -> Seq._(2L, 4L, 6L, 8L, 10L)
+Seq.apply(1, 2, 3, 4, 5).map(i -> Long.valueOf(i * 2));
+// -> Seq.apply(2L, 4L, 6L, 8L, 10L)
 
-Seq._(1, 2, 3, 4, 5).flatMap(new FlatMapF1<Integer, Integer>() {
-  public Seq<Integer> _(Integer i) { return SInt._(1).to(i); }
-}).mkString(","); 
+Seq.apply(1, 2, 3, 4, 5).flatMap(i -> SInt.apply(1).to(i)).mkString(","); 
 // -> "1,1,2,1,2,3,1,2,3,4,1,2,3,4,5"
 
-Seq._(1, 2, null, 3, null, 4, 5).flatMap(new FlatMapF1<Integer, Integer>() {
-  public Option<Integer> _(Integer i) { return Option._(i); }
-}).mkString(","); 
+Seq.apply(1, 2, null, 3, null, 4, 5).flatMap(i -> Option.apply(i)).mkString(","); 
 // -> "1,2,3,4,5"
 ```
 
@@ -203,17 +189,13 @@ Seq('b', 'c', 'd').foldLeft("a"){ (z: String, c: Char) => z + c }
 Seq('b', 'c', 'd').foldRight("a"){ (c: Char, z: String) => z + c }
 ```
 
-ScalaFlavor4J:
+ScalaFlavor4J on Java 8:
 
 ```java
-String s = Seq._('b', 'c', 'd').foldLeft("a", new FoldLeftF2<String, Character>() { 
-  public String _(String z, Character c) { return z + c; }
-});
+String s = Seq.apply('b', 'c', 'd').foldLeft("a", (z, c) -> z + c);
 // -> s : "abcd"
 
-String s = Seq._('b', 'c', 'd').foldRight("a", new FoldRightF2<Character, String>() { 
-  public String _(Character c, String z) { return z + c; }
-});
+String s = Seq.apply('b', 'c', 'd').foldRight("a", (c, z) -> z + c);
 // -> s : "adcb"
 ```
 
@@ -225,14 +207,11 @@ Scala:
 Seq(1, 2, 3, 4, 5) filter { (i: Int) => i > 2 }
 ```
 
-ScalaFlavor4J:
+ScalaFlavor4J on Java 8:
 
 ```java
-Seq._(1, 2, 3, 4, 5).filter(new PredicateF1<Integer>() { 
-  // or new F1<Integer, Boolean>
-  public Boolean _(Integer i) { return i > 2; }
-}); 
-// -> Seq._(3, 4, 5)
+Seq.apply(1, 2, 3, 4, 5).filter(i -> i > 2);
+// -> Seq.apply(3, 4, 5)
 ```
 
 ### foreach
@@ -243,12 +222,10 @@ Scala:
 Seq(1, 2, 3, 4, 5) foreach { (i: Int) => println(i) }
 ```
 
-ScalaFlavor4J:
+ScalaFlavor4J on Java 8:
 
 ```java
-Seq._(1, 2, 3, 4, 5).foreach(new VoidF1<Integer>() {
-  public void _(Integer i) { System.out.println(i); }
-}); 
+Seq.apply(1, 2, 3, 4, 5).foreach(i -> println(i));
 // -> "1" "2" "3" "4" "5"
 ```
 
@@ -264,27 +241,19 @@ Scala:
 (1 to 1000).par.flatMap { (i) => print(Thread.currentThread.getId + ","); 1 to i }
 ```
 
-ScalaFlavor4J:
+ScalaFlavor4J on Java 8:
 
 ```java
-SInt._(1).to(1000).par().foreach(new VoidF1<Integer>() {
-  public void _(Integer i) {
-    System.out.println(Thread.currentThread.getId() + ",");
-  }
+SInt.apply(1).to(1000).par().foreach(i -> println(Thread.currentThread.getId() + ","));
+
+SInt.apply(1).to(1000).par().map(i -> {
+  println(Thread.currentThread.getId() + ",");
+  return i * i;
 });
 
-SInt._(1).to(1000).par().map(new F1<Integer, Integer>() {
-  public Integer _(Integer i) {
-    System.out.println(Thread.currentThread.getId() + ",");
-    return i * i;
-  }
-});
-
-SInt._(1).to(1000).par().flatMap(new F1<Integer, CollectionLike<Integer>>() {
-  public Seq<Integer> _(Integer i) {
-    System.out.println(Thread.currentThread.getId() + ",");
-    return SInt._(1).to(i);
-  }
+SInt.apply(1).to(1000).par().flatMap(i -> {
+  println(Thread.currentThread.getId() + ",");
+  return SInt.apply(1).to(i);
 });
 ```
 
@@ -301,16 +270,14 @@ val xs2 = Seq(3, 4, 5)
 val bs = for (a <- xs1; b <- xs2) yield a.length == b
 ```
 
-ScalaFlavor4J:
+ScalaFlavor4J on Java 8:
 
 ```java
-Seq<String> xs1 = Seq._("abc", "abcd", "abcde");
-Seq<Integer> xs2 = Seq._(3, 4, 5);
-Seq<Boolean> bs = For._(xs1, xs2).yield(new F1<Tuple2<String, Integer>, Boolean>() {
-  public Boolean _(Tuple2<String, Integer> tpl) {
-    return tpl._1().length() == tpl._2();
-  }
-}); // true, false, false, false, true, false, false, false, true
+Seq<String> xs1 = Seq.apply("abc", "abcd", "abcde");
+Seq<Integer> xs2 = Seq.apply(3, 4, 5);
+
+Seq<Boolean> bs = For.apply(xs1, xs2).yield(tpl -> tpl._1().length() == tpl._2());
+// true, false, false, false, true, false, false, false, true
 ```
 
 
@@ -326,7 +293,7 @@ Scala:
 val sMap = Map("Andy" -> 21, "Brian" -> 18, "Charley" -> 27)
 ```
 
-ScalaFlavor4J:
+ScalaFlavor4J on Java 8:
 
 Apply an existing `java.util.Map` object:
 
@@ -337,7 +304,7 @@ ageList.put("Andy", 21);
 ageList.put("Brian", 18);
 ageList.put("Charley", 27);
 
-SMap<String, Integer> sMap = SMap._(ageList);
+SMap<String, Integer> sMap = SMap.apply(ageList);
 ```
 
 Back to `java.util.Map`:
@@ -354,7 +321,7 @@ Scala:
 val age: Int = sMap.getOrElse("Denis", -1)
 ```
 
-ScalaFlavor4J:
+ScalaFlavor4J on Java 8:
 
 ```java
 int age = sMap.getOrElse("Denis", -1); 
@@ -371,17 +338,13 @@ sMap foreach { case (k, v) => println(k) }
 val withoutCharley = sMap filter { case (k, v) => k.contains("n") }
 ```
 
-ScalaFlavor4J:
+ScalaFlavor4J on Java 8:
 
 ```java
-sMap.foreach(new VoidF1<Tuple2<String, Integer>>() {
-  public void _(Tuple2<String, Integer> v1) { System.out.println(v1._1()); }
-}); 
+sMap.foreach(v1 -> println(v1._1()));
 // -> "Andy" "Brian" "Charley"
 
-SMap<String, Integer> withoutCharley = sMap.filter(new PredicateF1<Tuple2<String, Integer>>() { 
-  public Boolean _(Tuple2<String, Integer> v1) { return v1._1().contains("n"); }
-}); 
+SMap<String, Integer> withoutCharley = sMap.filter(v1 -> v1._1().contains("n"));
 // -> withoutCharley : ("Andy" -> 21, "Brian" -> 18)
 ```
 
@@ -391,7 +354,7 @@ SMap<String, Integer> withoutCharley = sMap.filter(new PredicateF1<Tuple2<String
 SMap<String, Integer> newMap = sMap.updated("Denis", 24); 
 // -> newMap : ("Andy" -> 21, "Brian" -> 18, "Charley" -> 27, "Denis" -> 24)
 
-SMap<String, Integer> newMap = sMap.plus(Pair._("Denis", 24), Pair._("Elle", 19)); 
+SMap<String, Integer> newMap = sMap.plus(Pair.apply("Denis", 24), Pair.apply("Elle", 19)); 
 // -> newMap : ("Andy" -> 21, "Brian" -> 18, "Charley" -> 27, "Denis" -> 24, "Elle" -> 19)
 
 SMap<String, Integer> newMap = sMap.minus("Charley", "Andy"); 
@@ -411,11 +374,11 @@ val oneUntilFive: Seq[Int] = 1 until 5
 Java:
 
 ```java
-Seq<Integer> oneToFive = SInt._(1).to(5); 
-// -> oneToFive : Seq._(1, 2, 3, 4, 5)
+Seq<Integer> oneToFive = SInt.apply(1).to(5); 
+// -> oneToFive : Seq.apply(1, 2, 3, 4, 5)
 
-Seq<Integer> oneUntilFive = SInt._(1).until(5); 
-// oneUntilFive : Seq._(1, 2, 3, 4)
+Seq<Integer> oneUntilFive = SInt.apply(1).until(5); 
+// oneUntilFive : Seq.apply(1, 2, 3, 4)
 ```
 
 
@@ -432,13 +395,11 @@ import scala.concurrent.ops._
 spawn { println("on a different thread!") }
 ```
 
-ScalaFlavor4J:
+ScalaFlavor4J on Java 8:
 
 ```java
 import static com.m3.scalaflavor4j.ConcurrentOps.*;
-spawn(new VoidF0() { public void _() { 
-  System.out.println("on a different thread!"); 
-}});
+spawn(() -> println("on a different thread!"));
 ```
 
 ### future
@@ -449,13 +410,13 @@ Scala:
 val f = future { Thread.sleep(1000L); "foo" }
 ```
 
-ScalaFlavor4J:
+ScalaFlavor4J on Java 8:
 
 ```java
-Function0<String> f = future(new F0<String>() { public String _() throws Exception {
+Function0<String> f = future(() -> {
   Thread.sleep(1000L);
   return "foo";
-}});
+});
 f.apply(); // -> "foo"
 ```
 
@@ -478,20 +439,16 @@ val result: String =
   }
 ```
 
-ScalaFlavor4J:
+ScalaFlavor4J on Java 8:
 
 ```java
 import static com.m3.scalaflavor4j.ExceptionControl.*;
 String result = catching(RuntimeException.class)
-  .withApply(new F1<Throwable, String>() {
-    public String _(Throwable t) { return "catched"; }
-  })
-  .apply(new Function0<String>(){
-    public String _() {
-      throw new RuntimeException(); // -> result : "catched"
-      // return "ok"; -> result : "ok"
-      // throw new IOException(); -> will be thrown
-    }
+  .withApply(t -> "catched")
+  .apply(() -> {
+    // return "ok"; -> result : "ok"
+    // throw new IOException(); -> will be thrown
+    throw new RuntimeException();
   });
 ```
 
@@ -502,12 +459,8 @@ Inspired by ["Scala Automatic Resource Management"](https://github.com/jsuereth/
 
 ```java
 import static com.m3.scalaflavor4j.arm.Resource.*;
-String content = managed(new FileInputStream("input.txt")).map(new F1<InputStream, Integer>() {
-  public Integer _(InputStream is) throws Exception {
-    // ...
-    return "content";
-  }
-}); // finally FileInputStream will be closed
+String content = managed(new FileInputStream("input.txt")).map(is -> "content");
+// finally FileInputStream will be closed
 ```
 
 
@@ -525,7 +478,7 @@ Seq<String> lines = source.getLines();
 ```
 
 
-# Cookbook
+# Cookbook for Java 6,7
 
 
 You can read more details abouts ScalaFlavor4J in [Cookbook](https://github.com/m3dev/scalaflavor4j/wiki/Cookbook).

@@ -14,20 +14,20 @@ public class ProcessTest {
 
     @Test
     public void instantiation() throws Exception {
-        Process target = Process._("ls");
+        Process target = Process.apply("ls");
         assertThat(target, notNullValue());
     }
 
     @Test
     public void run_A$() throws Exception {
-        int actual = Process._("ls").run();
+        int actual = Process.apply("ls").run();
         int expected = 0;
         assertThat(actual, is(equalTo(expected)));
     }
 
     @Test
     public void runAndGetStdout_A$() throws Exception {
-        Seq<String> stdout = Process._("ls").runAndGetStdout();
+        Seq<String> stdout = Process.apply("ls").runAndGetStdout();
         assertThat(stdout.size(), is(greaterThan(0)));
     }
 
@@ -39,7 +39,7 @@ public class ProcessTest {
 
     @Test
     public void __A$String() throws Exception {
-        Process process = com.m3.scalaflavor4j.Process._("ls");
+        Process process = com.m3.scalaflavor4j.Process.apply("ls");
         assertThat(process, is(notNullValue()));
     }
 

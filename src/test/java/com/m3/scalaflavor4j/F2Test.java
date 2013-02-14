@@ -15,7 +15,7 @@ public class F2Test {
     @Test
     public void instantiation() throws Exception {
         F2<String, Integer, Long> target = new F2<String, Integer, Long>() {
-            public Long _(String v1, Integer v2) {
+            public Long apply(String v1, Integer v2) {
                 return 1L;
             }
         };

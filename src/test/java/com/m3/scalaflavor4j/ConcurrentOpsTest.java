@@ -16,23 +16,23 @@ public class ConcurrentOpsTest {
     @Test
     public void future_A$Function0() throws Exception {
         F0<String> f = future(new F0<String>() {
-            public String _() throws Exception {
+            public String apply() throws Exception {
                 Thread.sleep(1000L);
                 return "foo";
             }
         });
-        assertThat(f._(), is(equalTo("foo")));
+        assertThat(f.apply(), is(equalTo("foo")));
     }
 
     @Test
     public void par_A$Function0$Function0() throws Exception {
         Tuple2<String, Integer> tuple = par(new F0<String>() {
-            public String _() throws Exception {
+            public String apply() throws Exception {
                 Thread.sleep(500L);
                 return "foo";
             }
         }, new F0<Integer>() {
-            public Integer _() throws Exception {
+            public Integer apply() throws Exception {
                 Thread.sleep(1000L);
                 return 123;
             }
@@ -49,7 +49,7 @@ public class ConcurrentOpsTest {
     public void spawn_A$VoidFunction0() throws Exception {
         final Flag called = new Flag();
         spawn(new VoidF0() {
-            public void _() throws Exception {
+            public void apply() throws Exception {
                 called.value = true;
             }
         });

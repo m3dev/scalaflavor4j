@@ -25,7 +25,7 @@ public class SNumTest {
     @Test
     public void __A$Integer() throws Exception {
         Integer i_ = 123;
-        SNum actual = SNum._(i_);
+        SNum actual = SNum.apply(i_);
         assertThat(actual.toInt(), is(equalTo(123)));
     }
 
@@ -102,14 +102,14 @@ public class SNumTest {
     @Test
     public void __A$BigDecimal() throws Exception {
         BigDecimal i_ = new BigDecimal(123);
-        SNum actual = SNum._(i_);
+        SNum actual = SNum.apply(i_);
         assertThat(actual.toInt(), is(equalTo(123)));
     }
 
     @Test
     public void toString_A$() throws Exception {
         BigDecimal i_ = new BigDecimal(123);
-        SNum snum = SNum._(i_);
+        SNum snum = SNum.apply(i_);
         String actual = snum.toString();
         String expected = "SNum(123)";
         assertThat(actual, is(equalTo(expected)));

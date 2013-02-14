@@ -26,25 +26,25 @@ public class LeftTest {
 
     @Test
     public void apply_A$Option() throws Exception {
-        Either<String, Integer> target = Left.apply(Option._("foo"));
+        Either<String, Integer> target = Left.apply(Option.apply("foo"));
         assertThat(target, notNullValue());
     }
 
     @Test
     public void __A$Object() throws Exception {
-        Either<String, Integer> target = Left._("foo");
+        Either<String, Integer> target = Left.apply("foo");
         assertThat(target, notNullValue());
     }
 
     @Test
     public void __A$Option() throws Exception {
-        Either<String, Integer> target = Left._(Option._("foo"));
+        Either<String, Integer> target = Left.apply(Option.apply("foo"));
         assertThat(target, notNullValue());
     }
 
     @Test
     public void isLeft_A$() throws Exception {
-        Either<String, Integer> target = Left._("foo");
+        Either<String, Integer> target = Left.apply("foo");
         boolean actual = target.isLeft();
         boolean expected = true;
         assertThat(actual, is(equalTo(expected)));
@@ -52,7 +52,7 @@ public class LeftTest {
 
     @Test
     public void isRight_A$() throws Exception {
-        Either<String, Integer> target = Left._("foo");
+        Either<String, Integer> target = Left.apply("foo");
         boolean actual = target.isRight();
         boolean expected = false;
         assertThat(actual, is(equalTo(expected)));
@@ -60,7 +60,7 @@ public class LeftTest {
 
     @Test
     public void left_A$() throws Exception {
-        Either<String, Integer> target = Left._("foo");
+        Either<String, Integer> target = Left.apply("foo");
         Option<String> actual = target.left();
         assertThat(actual.isDefined(), is(true));
         assertThat(actual.getOrNull(), is(equalTo("foo")));
@@ -68,7 +68,7 @@ public class LeftTest {
 
     @Test
     public void right_A$() throws Exception {
-        Either<String, Integer> target = Left._("foo");
+        Either<String, Integer> target = Left.apply("foo");
         Option<Integer> actual = target.right();
         assertThat(actual.isDefined(), is(false));
         assertThat(actual.getOrNull(), is(nullValue()));
@@ -76,7 +76,7 @@ public class LeftTest {
 
     @Test
     public void swap_A$() throws Exception {
-        Either<String, Integer> target = Left._("foo");
+        Either<String, Integer> target = Left.apply("foo");
         Either<Integer, String> swapped = target.swap();
         Option<String> right = swapped.right();
         assertThat(right.isDefined(), is(true));
@@ -85,7 +85,7 @@ public class LeftTest {
 
     @Test
     public void toString_A$() throws Exception {
-        Either<String, Integer> target = Left._("foo");
+        Either<String, Integer> target = Left.apply("foo");
         String actual = target.toString();
         String expected = "Left(foo)";
         assertThat(actual, is(equalTo(expected)));
@@ -94,9 +94,9 @@ public class LeftTest {
     @Test
     public void mergeToLeft_A$Function1() throws Exception {
         String value = "xxx";
-        Either<String, Integer> target = Left._(value);
+        Either<String, Integer> target = Left.apply(value);
         Function1<Integer, String> rightToLeft = new F1<Integer, String>() {
-            public String _(Integer v) {
+            public String apply(Integer v) {
                 return v.toString();
             }
         };
@@ -108,9 +108,9 @@ public class LeftTest {
     @Test
     public void mergeToRight_A$Function1() throws Exception {
         String value = "xxx";
-        Either<String, Integer> target = Left._(value);
+        Either<String, Integer> target = Left.apply(value);
         Function1<String, Integer> leftToRight = new F1<String, Integer>() {
-            public Integer _(String v) throws Exception {
+            public Integer apply(String v) throws Exception {
                 return v.length();
             }
         };

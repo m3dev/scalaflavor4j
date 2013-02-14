@@ -15,23 +15,16 @@
  */
 package com.m3.scalaflavor4j;
 
-import static com.m3.scalaflavor4j.arm.Resource.*;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.m3.scalaflavor4j.arm.Resource.*;
 
 /**
  * This object provides convenience methods to create an iterable representation
  * of a source file.
- * 
+ *
  * @see "http://www.scala-lang.org/api/current/index.html#scala.io.BufferedSource"
  */
 public class BufferedSource {
@@ -63,15 +56,15 @@ public class BufferedSource {
      */
     public Seq<Byte> toByteSeq() throws IOException {
         return managed(stream).map(new F1<InputStream, Seq<Byte>>() {
-            public Seq<Byte> _(InputStream stream) throws Exception {
+            public Seq<Byte> apply(InputStream stream) throws Exception {
                 return managed(getInputStreamReader()).map(new F1<InputStreamReader, Seq<Byte>>() {
-                    public Seq<Byte> _(InputStreamReader isr) throws Exception {
+                    public Seq<Byte> apply(InputStreamReader isr) throws Exception {
                         List<Byte> bs = new ArrayList<Byte>();
                         int b;
                         while ((b = isr.read()) != -1) {
                             bs.add((byte) b);
                         }
-                        return Seq._(bs);
+                        return Seq.apply(bs);
                     }
                 });
             }
@@ -83,15 +76,15 @@ public class BufferedSource {
      */
     public Seq<Character> toCharSeq() throws IOException {
         return managed(stream).map(new F1<InputStream, Seq<Character>>() {
-            public Seq<Character> _(InputStream stream) throws Exception {
+            public Seq<Character> apply(InputStream stream) throws Exception {
                 return managed(getInputStreamReader()).map(new F1<InputStreamReader, Seq<Character>>() {
-                    public Seq<Character> _(InputStreamReader isr) throws Exception {
+                    public Seq<Character> apply(InputStreamReader isr) throws Exception {
                         List<Character> cs = new ArrayList<Character>();
                         int c;
                         while ((c = isr.read()) != -1) {
                             cs.add((char) c);
                         }
-                        return Seq._(cs);
+                        return Seq.apply(cs);
                     }
                 });
             }
@@ -110,17 +103,17 @@ public class BufferedSource {
      */
     public Seq<String> getLines() throws IOException {
         return managed(stream).map(new F1<InputStream, Seq<String>>() {
-            public Seq<String> _(InputStream stream) throws Exception {
+            public Seq<String> apply(InputStream stream) throws Exception {
                 return managed(getInputStreamReader()).map(new F1<InputStreamReader, Seq<String>>() {
-                    public Seq<String> _(InputStreamReader isr) throws Exception {
+                    public Seq<String> apply(InputStreamReader isr) throws Exception {
                         return managed(new BufferedReader(isr)).map(new F1<BufferedReader, Seq<String>>() {
-                            public Seq<String> _(BufferedReader br) throws Exception {
+                            public Seq<String> apply(BufferedReader br) throws Exception {
                                 List<String> lines = new ArrayList<String>();
                                 String line;
                                 while ((line = br.readLine()) != null) {
                                     lines.add(line);
                                 }
-                                return Seq._(lines);
+                                return Seq.apply(lines);
                             }
                         });
                     }

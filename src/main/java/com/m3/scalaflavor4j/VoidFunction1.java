@@ -17,26 +17,14 @@ package com.m3.scalaflavor4j;
 
 /**
  * A function of 1 parameter (return type void).
- * 
+ *
  * @see "http://www.scala-lang.org/api/2.9.1/index.html#scala.Function1"
  */
-public abstract class VoidFunction1<T1> {
-
-    public void apply(T1 v1) throws Exception {
-        _(v1);
-    }
+public interface VoidFunction1<T1> {
 
     /**
      * Apply the body of this function to the argument.
      */
-    public abstract void _(T1 v1) throws Exception;
-
-    /**
-     * Creates a String representation of this object.
-     */
-    @Override
-    public String toString() {
-        return "<void-function1>";
-    }
+    void apply(T1 v1) throws Exception;
 
 }

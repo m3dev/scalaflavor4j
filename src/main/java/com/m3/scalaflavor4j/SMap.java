@@ -15,16 +15,12 @@
  */
 package com.m3.scalaflavor4j;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * scala.collection.Map
- * 
+ *
  * @see "http://www.scala-lang.org/api/2.9.1/index.html#scala.collection.Map"
  */
 public class SMap<K, V> {
@@ -42,47 +38,28 @@ public class SMap<K, V> {
     /**
      * Retrieves the value which is associated with the given key.
      */
-    public static <K, V> SMap<K, V> apply(Map<K, V> map) {
-        return _(map);
-    }
-
-    public static <K, V> SMap<K, V> _() {
-        return apply();
-    }
-
     public static <K, V> SMap<K, V> apply() {
         return new SMap<K, V>();
     }
 
-    public static <K, V> SMap<K, V> _(Map<K, V> map) {
+    public static <K, V> SMap<K, V> apply(Map<K, V> map) {
         return new SMap<K, V>(map);
     }
 
     public static <K, V> SMap<K, V> apply(Seq<Tuple2<K, V>> tuples) {
-        return _(tuples);
-    }
-
-    public static <K, V> SMap<K, V> _(Seq<Tuple2<K, V>> tuples) {
         Map<K, V> map = tuples.foldLeft(new ConcurrentHashMap<K, V>(), new F2<Map<K, V>, Tuple2<K, V>, Map<K, V>>() {
-            public Map<K, V> _(Map<K, V> map, Tuple2<K, V> tuple) {
+            public Map<K, V> apply(Map<K, V> map, Tuple2<K, V> tuple) {
                 map.put(tuple._1(), tuple._2());
                 return map;
             }
         });
-        return _(map);
+        return apply(map);
     }
 
     /**
      * Retrieves the value which is associated with the given key.
      */
     public V apply(K key) {
-        return _(key);
-    }
-
-    /**
-     * Retrieves the value which is associated with the given key.
-     */
-    public V _(K key) {
         return map.get(key);
     }
 
@@ -100,7 +77,7 @@ public class SMap<K, V> {
         List<Tuple2<K, V>> list = new ArrayList<Tuple2<K, V>>();
         Set<K> keys = map.keySet();
         for (K key : keys) {
-            list.add(Tuple._(key, map.get(key)));
+            list.add(Tuple.apply(key, map.get(key)));
         }
         return list;
     }
@@ -110,14 +87,14 @@ public class SMap<K, V> {
      */
     public SMap<K, V> copy() {
         return map(new F1<Tuple2<K, V>, Tuple2<K, V>>() {
-            public Tuple2<K, V> _(Tuple2<K, V> e) {
+            public Tuple2<K, V> apply(Tuple2<K, V> e) {
                 return e;
             }
         });
     }
 
     public Seq<Tuple2<K, V>> toSeq() {
-        return Seq._(toList());
+        return Seq.apply(toList());
     }
 
     public boolean isEmpty() {
@@ -149,14 +126,14 @@ public class SMap<K, V> {
      */
     public SMap<K, V> filter(final Function1<Tuple2<K, V>, Boolean> f) {
         Map<K, V> map = toSeq().foldLeft(new ConcurrentHashMap<K, V>(), new F2<Map<K, V>, Tuple2<K, V>, Map<K, V>>() {
-            public Map<K, V> _(Map<K, V> map, Tuple2<K, V> tuple) throws Exception {
+            public Map<K, V> apply(Map<K, V> map, Tuple2<K, V> tuple) throws Exception {
                 if (f.apply(tuple)) {
                     map.put(tuple._1(), tuple._2());
                 }
                 return map;
             }
         });
-        return SMap._(map);
+        return SMap.apply(map);
     }
 
     /**
@@ -172,13 +149,13 @@ public class SMap<K, V> {
      */
     public <L, M> SMap<L, M> map(final Function1<Tuple2<K, V>, Tuple2<L, M>> f) {
         Map<L, M> map = toSeq().foldLeft(new ConcurrentHashMap<L, M>(), new F2<Map<L, M>, Tuple2<K, V>, Map<L, M>>() {
-            public Map<L, M> _(Map<L, M> map, Tuple2<K, V> tuple) throws Exception {
-                Tuple2<L, M> mapped = f._(tuple);
+            public Map<L, M> apply(Map<L, M> map, Tuple2<K, V> tuple) throws Exception {
+                Tuple2<L, M> mapped = f.apply(tuple);
                 map.put(mapped._1(), mapped._2());
                 return map;
             }
         });
-        return SMap._(map);
+        return SMap.apply(map);
     }
 
     /**
@@ -187,8 +164,8 @@ public class SMap<K, V> {
      */
     public SMap<K, V> minus(K... keys) {
         final SMap<K, V> copied = copy();
-        Seq._(keys).dropNull().foreach(new VoidF1<K>() {
-            public void _(K key) {
+        Seq.apply(keys).dropNull().foreach(new VoidF1<K>() {
+            public void apply(K key) {
                 copied.toMap().remove(key);
             }
         });
@@ -201,12 +178,12 @@ public class SMap<K, V> {
      */
     public SMap<K, V> plus(Tuple2<K, V>... elems) {
         final SMap<K, V> copied = copy();
-        Seq._(elems).dropNull().filter(new PredicateF1<Tuple2<K, V>>() {
-            public Boolean _(Tuple2<K, V> elem) {
+        Seq.apply(elems).dropNull().filter(new PredicateF1<Tuple2<K, V>>() {
+            public Boolean apply(Tuple2<K, V> elem) {
                 return elem._1() != null && elem._2() != null;
             }
         }).foreach(new VoidF1<Tuple2<K, V>>() {
-            public void _(Tuple2<K, V> elem) {
+            public void apply(Tuple2<K, V> elem) {
                 copied.toMap().put(elem._1(), elem._2());
             }
         });
@@ -233,12 +210,12 @@ public class SMap<K, V> {
         final List<K> ks = new ArrayList<K>();
         final List<V> vs = new ArrayList<V>();
         toSeq().foreach(new VoidF1<Tuple2<K, V>>() {
-            public void _(Tuple2<K, V> tuple) {
+            public void apply(Tuple2<K, V> tuple) {
                 ks.add(tuple._1());
                 vs.add(tuple._2());
             }
         });
-        return Tuple._(Seq._(ks), Seq._(vs));
+        return Tuple.apply(Seq.apply(ks), Seq.apply(vs));
     }
 
     @Override
@@ -246,7 +223,7 @@ public class SMap<K, V> {
         StringBuilder sb = new StringBuilder();
         sb.append("SMap(");
         sb.append(toSeq().map(new F1<Tuple2<K, V>, String>() {
-            public String _(Tuple2<K, V> e) {
+            public String apply(Tuple2<K, V> e) {
                 return e._1() + " -> " + e._2();
             }
         }).mkString(", "));

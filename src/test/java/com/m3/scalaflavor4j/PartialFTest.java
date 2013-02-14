@@ -9,7 +9,7 @@ import org.junit.Test;
 public class PartialFTest {
 
     CaseClause<CSV, CSV> csvCase = _case(CSV.class)._arrow(new F1<CSV, CSV>() {
-        public CSV _(CSV csv) {
+        public CSV apply(CSV csv) {
             return csv;
         }
     });
@@ -30,14 +30,14 @@ public class PartialFTest {
     @Test
     @SuppressWarnings("unchecked")
     public void __A$PatternFunctionArray() throws Exception {
-        PartialF<CSV> pf = PartialF.<CSV> _(csvCase);
+        PartialF<CSV> pf = PartialF.<CSV> apply(csvCase);
         assertThat(pf, notNullValue());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void create_A$Seq() throws Exception {
-        PartialF<CSV> pf = PartialF.<CSV> _(csvCase);
+        PartialF<CSV> pf = PartialF.<CSV> apply(csvCase);
         assertThat(pf, notNullValue());
         assertThat(pf.apply(new CSV("foo,bar,baz")), is(notNullValue()));
         try {
@@ -57,15 +57,15 @@ public class PartialFTest {
     @Test
     @SuppressWarnings("unchecked")
     public void __A$CaseClauseArray() throws Exception {
-        PartialF<CSV> actual = PartialF.<CSV> _(csvCase);
+        PartialF<CSV> actual = PartialF.<CSV> apply(csvCase);
         assertThat(actual, notNullValue());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void __A$Seq() throws Exception {
-        Seq<CaseClause<?, CSV>> seq = Seq.<CaseClause<?, CSV>> _(csvCase);
-        PartialF<CSV> actual = PartialF.<CSV> _(seq);
+        Seq<CaseClause<?, CSV>> seq = Seq.<CaseClause<?, CSV>> apply(csvCase);
+        PartialF<CSV> actual = PartialF.<CSV> apply(seq);
         assertThat(actual, notNullValue());
     }
 

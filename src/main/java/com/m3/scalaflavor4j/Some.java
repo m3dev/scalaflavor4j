@@ -88,7 +88,7 @@ public class Some<T> extends Option<T> {
     @Override
     public <U> Option<U> map(Function1<T, U> f) {
         try {
-            return Option._(f.apply(value));
+            return Option.apply(f.apply(value));
         } catch (Throwable e) {
             throw new ScalaFlavor4JException(e);
         }
@@ -145,7 +145,7 @@ public class Some<T> extends Option<T> {
     @Override
     public <U> Function1<Function1<T, U>, U> fold(final U ifEmpty) {
         return new F1<Function1<T, U>, U>() {
-            public U _(Function1<T, U> f) throws Exception {
+            public U apply(Function1<T, U> f) throws Exception {
                 if (isEmpty()) {
                     return ifEmpty;
                 } else {

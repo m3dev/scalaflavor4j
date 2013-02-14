@@ -30,22 +30,6 @@ public abstract class Seq<T> implements CollectionLike<T> {
     private static final long serialVersionUID = 1L;
 
     public static <T> Seq<T> apply(T... values) {
-        return _(values);
-    }
-
-    public static <T> Seq<T> apply(Enumeration<T> e) {
-        return _(e);
-    }
-
-    public static <T> Seq<T> apply(Iterator<T> iter) {
-        return _(iter);
-    }
-
-    public static <T> Seq<T> apply(Iterable<T> iterable) {
-        return _(iterable);
-    }
-
-    public static <T> Seq<T> _(T... values) {
         Collection<T> list = new ArrayList<T>();
         if (values != null) {
             for (T value : values) {
@@ -55,9 +39,9 @@ public abstract class Seq<T> implements CollectionLike<T> {
         return applyCollection(list);
     }
 
-    public static <T> Seq<T> _(Enumeration<T> e) {
+    public static <T> Seq<T> apply(Enumeration<T> e) {
         if (e == null) {
-            return Nil.<T> _();
+            return Nil.<T> apply();
         } else {
             Collection<T> col = new ArrayList<T>();
             while (e.hasMoreElements()) {
@@ -67,9 +51,9 @@ public abstract class Seq<T> implements CollectionLike<T> {
         }
     }
 
-    public static <T> Seq<T> _(Iterator<T> iter) {
+    public static <T> Seq<T> apply(Iterator<T> iter) {
         if (iter == null) {
-            return Nil.<T> _();
+            return Nil.<T> apply();
         } else {
             Collection<T> col = new ArrayList<T>();
             while (iter.hasNext()) {
@@ -79,11 +63,11 @@ public abstract class Seq<T> implements CollectionLike<T> {
         }
     }
 
-    public static <T> Seq<T> _(Iterable<T> iterable) {
+    public static <T> Seq<T> apply(Iterable<T> iterable) {
         if (iterable == null) {
-            return Nil.<T> _();
+            return Nil.<T> apply();
         } else {
-            return _(iterable.iterator());
+            return apply(iterable.iterator());
         }
     }
 
@@ -91,7 +75,7 @@ public abstract class Seq<T> implements CollectionLike<T> {
         if (col == null || col.size() == 0) {
             return Nil.apply();
         }
-        return IndexedSeq._(new ArrayList<T>(col));
+        return IndexedSeq.apply(new ArrayList<T>(col));
     }
 
     /**
@@ -113,7 +97,7 @@ public abstract class Seq<T> implements CollectionLike<T> {
     public abstract <U> boolean corresponds(Seq<U> that, Function2<T, U, Boolean> p);
 
     /**
-     * Curried {@link Seq#corresponds(Seq, Function1)}
+     * Curried {@link Seq#corresponds(Seq)}
      */
     public abstract <U> Function1<Function2<T, U, Boolean>, Boolean> corresponds(Seq<U> that);
 

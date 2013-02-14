@@ -55,7 +55,7 @@ public class SInt {
         for (int i = value; i <= j; i++) {
             range.add(i);
         }
-        return IndexedSeq._(range);
+        return IndexedSeq.apply(range);
     }
 
     public IndexedSeq<Integer> to(Integer j, Integer step) {
@@ -63,7 +63,7 @@ public class SInt {
         for (int i = value; i <= j; i += step) {
             range.add(i);
         }
-        return IndexedSeq._(range);
+        return IndexedSeq.apply(range);
     }
 
     public IndexedSeq<Integer> until(Integer j) {
@@ -71,7 +71,7 @@ public class SInt {
         for (int i = value; i < j; i++) {
             range.add(i);
         }
-        return IndexedSeq._(range);
+        return IndexedSeq.apply(range);
     }
 
     public IndexedSeq<Integer> until(Integer j, Integer step) {
@@ -79,7 +79,7 @@ public class SInt {
         for (int i = value; i < j; i += step) {
             range.add(i);
         }
-        return IndexedSeq._(range);
+        return IndexedSeq.apply(range);
     }
 
     @Override

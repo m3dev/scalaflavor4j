@@ -28,7 +28,7 @@ public class SeqTest {
 
     @Test
     public void toList_A$_Nil() throws Exception {
-        Seq<String> seq = Seq._(emptyList);
+        Seq<String> seq = Seq.apply(emptyList);
         List<String> actual = seq.toList();
         assertThat(actual.isEmpty(), is(true));
         assertThat(actual.size(), is(0));
@@ -36,7 +36,7 @@ public class SeqTest {
 
     @Test
     public void toList_A$() throws Exception {
-        Seq<String> seq = Seq._(list);
+        Seq<String> seq = Seq.apply(list);
         List<String> actual = seq.toList();
         assertThat(actual.isEmpty(), is(false));
         assertThat(actual.size(), is(3));
@@ -44,7 +44,7 @@ public class SeqTest {
 
     @Test
     public void isEmpty_A$_Nil() throws Exception {
-        Seq<String> seq = Seq._(emptyList);
+        Seq<String> seq = Seq.apply(emptyList);
         boolean actual = seq.isEmpty();
         boolean expected = true;
         assertThat(actual, is(equalTo(expected)));
@@ -52,7 +52,7 @@ public class SeqTest {
 
     @Test
     public void isEmpty_A$() throws Exception {
-        Seq<String> seq = Seq._(list);
+        Seq<String> seq = Seq.apply(list);
         boolean actual = seq.isEmpty();
         boolean expected = false;
         assertThat(actual, is(equalTo(expected)));
@@ -60,9 +60,9 @@ public class SeqTest {
 
     @Test
     public void map_A$Function1_Nil() throws Exception {
-        Seq<String> seq = Seq._(emptyList);
+        Seq<String> seq = Seq.apply(emptyList);
         Seq<Integer> actual = seq.map(new F1<String, Integer>() {
-            public Integer _(String v1) {
+            public Integer apply(String v1) {
                 return v1.length();
             }
         });
@@ -73,11 +73,11 @@ public class SeqTest {
     @Test
     public void map_A$Function1() throws Exception {
         F1<String, Integer> f = new F1<String, Integer>() {
-            public Integer _(String v1) {
+            public Integer apply(String v1) {
                 return v1 == null ? 0 : v1.length();
             }
         };
-        Seq<String> seq = Seq._(list);
+        Seq<String> seq = Seq.apply(list);
         Seq<Integer> actual = seq.map(f);
         assertThat(actual.isEmpty(), is(false));
         assertThat(actual.toList().size(), is(3));
@@ -86,22 +86,22 @@ public class SeqTest {
     @Test
     public void foreach_A$VoidFunction1() throws Exception {
         VoidF1<String> f = new VoidF1<String>() {
-            public void _(String v1) {
+            public void apply(String v1) {
                 System.out.println(v1);
             }
         };
-        Seq._(emptyList).foreach(f);
-        Seq._(list).foreach(f);
+        Seq.apply(emptyList).foreach(f);
+        Seq.apply(list).foreach(f);
     }
 
     @Test
     public void flatMap_A$Function1_emptyList() throws Exception {
         F1<String, CollectionLike<Integer>> f = new F1<String, CollectionLike<Integer>>() {
-            public Option<Integer> _(String v1) {
-                return Option._(v1.length());
+            public Option<Integer> apply(String v1) {
+                return Option.apply(v1.length());
             }
         };
-        Seq<Integer> actual = Seq._(emptyList).flatMap(f);
+        Seq<Integer> actual = Seq.apply(emptyList).flatMap(f);
         assertThat(actual.isEmpty(), is(true));
         assertThat(actual.toList().size(), is(0));
     }
@@ -109,20 +109,20 @@ public class SeqTest {
     @Test
     public void flatMap_A$Function1() throws Exception {
         F1<String, CollectionLike<Integer>> f = new F1<String, CollectionLike<Integer>>() {
-            public Option<Integer> _(String v1) {
-                return v1 == null ? Option._(0) : Option._(v1.length());
+            public Option<Integer> apply(String v1) {
+                return v1 == null ? Option.apply(0) : Option.apply(v1.length());
             }
         };
-        Seq<Integer> actual = Seq._(list).flatMap(f);
+        Seq<Integer> actual = Seq.apply(list).flatMap(f);
         assertThat(actual.isEmpty(), is(false));
         assertThat(actual.toList().size(), is(3));
     }
 
     @Test
     public void flatMap_A$Function1_FlatMapF1() throws Exception {
-        Seq<Integer> actual = Seq._(list).flatMap(new FlatMapF1<String, Integer>() {
-            public Option<Integer> _(String str) {
-                return str == null ? Option._(0) : Option._(str.length());
+        Seq<Integer> actual = Seq.apply(list).flatMap(new FlatMapF1<String, Integer>() {
+            public Option<Integer> apply(String str) {
+                return str == null ? Option.apply(0) : Option.apply(str.length());
             }
         });
         assertThat(actual.isEmpty(), is(false));
@@ -132,77 +132,77 @@ public class SeqTest {
     @Test
     public void filter_A$Function1_Nil() throws Exception {
         F1<String, Boolean> f = new F1<String, Boolean>() {
-            public Boolean _(String v1) {
+            public Boolean apply(String v1) {
                 return v1.contains("f");
             }
         };
-        Seq<String> actual = Seq._(emptyList).filter(f);
+        Seq<String> actual = Seq.apply(emptyList).filter(f);
         assertThat(actual.toList().size(), is(equalTo(0)));
     }
 
     @Test
     public void filter_A$Function1() throws Exception {
         F1<String, Boolean> f = new F1<String, Boolean>() {
-            public Boolean _(String v1) {
+            public Boolean apply(String v1) {
                 return v1 == null ? false : v1.contains("f");
             }
         };
-        Seq<String> actual = Seq._(list).filter(f);
+        Seq<String> actual = Seq.apply(list).filter(f);
         assertThat(actual.toList().size(), is(equalTo(1)));
     }
 
     @Test
     public void filterNot_A$Function1_Nil() throws Exception {
         F1<String, Boolean> f = new F1<String, Boolean>() {
-            public Boolean _(String v1) {
+            public Boolean apply(String v1) {
                 return v1.contains("b");
             }
         };
-        Seq<String> actual = Seq._(emptyList).filterNot(f);
+        Seq<String> actual = Seq.apply(emptyList).filterNot(f);
         assertThat(actual.toList().size(), is(equalTo(0)));
     }
 
     @Test
     public void filterNot_A$Function1() throws Exception {
         F1<String, Boolean> f = new F1<String, Boolean>() {
-            public Boolean _(String v1) {
+            public Boolean apply(String v1) {
                 return v1.contains("b");
             }
         };
-        Seq<String> actual = Seq._("aaa", "bbb", "ccc").filterNot(f);
+        Seq<String> actual = Seq.apply("aaa", "bbb", "ccc").filterNot(f);
         assertThat(actual.toList().size(), is(equalTo(2)));
     }
 
     @Test
     public void head_A$_Nil() throws Exception {
-        String actual = Seq._(emptyList).head();
+        String actual = Seq.apply(emptyList).head();
         assertThat(actual, is(nullValue()));
     }
 
     @Test
     public void head_A$() throws Exception {
-        String actual = Seq._(list).head();
+        String actual = Seq.apply(list).head();
         String expected = "foo";
         assertThat(actual, is(equalTo(expected)));
     }
 
     @Test
     public void tail_A$_Nil() throws Exception {
-        Seq<String> actual = Seq._(emptyList).tail();
+        Seq<String> actual = Seq.apply(emptyList).tail();
         assertThat(actual.isEmpty(), is(true));
         assertThat(actual.toList().size(), is(0));
     }
 
     @Test
     public void tail_A$() throws Exception {
-        Seq<String> actual = Seq._(list).tail();
+        Seq<String> actual = Seq.apply(list).tail();
         assertThat(actual.isEmpty(), is(false));
         assertThat(actual.toList().size(), is(2));
     }
 
     @Test
     public void mkString_A$String_Nil() throws Exception {
-        Seq<String> seq = Seq._(emptyList);
+        Seq<String> seq = Seq.apply(emptyList);
         String sep = "-";
         String actual = seq.mkString(sep);
         String expected = "";
@@ -211,7 +211,7 @@ public class SeqTest {
 
     @Test
     public void mkString_A$String() throws Exception {
-        Seq<String> seq = Seq._(list);
+        Seq<String> seq = Seq.apply(list);
         String sep = "-";
         String actual = seq.mkString(sep);
         String expected = "foo-null-bar";
@@ -221,11 +221,11 @@ public class SeqTest {
     @Test
     public void sortWith_A$Function2_Nil() throws Exception {
         F2<Integer, Integer, Boolean> f = new F2<Integer, Integer, Boolean>() {
-            public Boolean _(Integer v1, Integer v2) {
+            public Boolean apply(Integer v1, Integer v2) {
                 return v1 < v2;
             }
         };
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         List<Integer> sorted = seq.sortWith(f).toList();
         assertThat(sorted.isEmpty(), is(true));
         assertThat(sorted.size(), is(equalTo(0)));
@@ -234,11 +234,11 @@ public class SeqTest {
     @Test
     public void sortWith_A$Function2() throws Exception {
         F2<Integer, Integer, Boolean> f = new F2<Integer, Integer, Boolean>() {
-            public Boolean _(Integer v1, Integer v2) {
+            public Boolean apply(Integer v1, Integer v2) {
                 return v1 < v2;
             }
         };
-        Seq<Integer> seq = Seq._(3, 4, 2, 0, 5, 1);
+        Seq<Integer> seq = Seq.apply(3, 4, 2, 0, 5, 1);
         List<Integer> sorted = seq.sortWith(f).toList();
         assertThat(sorted.get(0), is(equalTo(0)));
         assertThat(sorted.get(1), is(equalTo(1)));
@@ -250,7 +250,7 @@ public class SeqTest {
 
     @Test
     public void take_A$int_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         int n = 3;
         Seq<Integer> actual = seq.take(n);
         assertThat(actual.size(), is(equalTo(0)));
@@ -258,7 +258,7 @@ public class SeqTest {
 
     @Test
     public void take_A$int() throws Exception {
-        Seq<Integer> seq = Seq._(3, 4, 2, 0, 5, 1);
+        Seq<Integer> seq = Seq.apply(3, 4, 2, 0, 5, 1);
         int n = 3;
         Seq<Integer> actual = seq.take(n);
         assertThat(actual.toList().size(), is(equalTo(3)));
@@ -269,9 +269,9 @@ public class SeqTest {
 
     @Test
     public void foldLeft_A$Object$Function2_None() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         String actual = seq.foldLeft("foo", new F2<String, Integer, String>() {
-            public String _(String v1, Integer v2) {
+            public String apply(String v1, Integer v2) {
                 return v1 + v2;
             }
         });
@@ -280,9 +280,9 @@ public class SeqTest {
 
     @Test
     public void foldLeft_A$Object$Function2_1() throws Exception {
-        Seq<Integer> seq = Seq._(3, 4, 2, 0, 5, 1);
+        Seq<Integer> seq = Seq.apply(3, 4, 2, 0, 5, 1);
         String actual = seq.foldLeft("foo", new F2<String, Integer, String>() {
-            public String _(String v1, Integer v2) {
+            public String apply(String v1, Integer v2) {
                 return v1 + v2;
             }
         });
@@ -291,9 +291,9 @@ public class SeqTest {
 
     @Test
     public void foldLeft_A$Object$Function2_2() throws Exception {
-        Seq<Integer> seq = Seq._(3, 4, 2, 0, 5, 1);
+        Seq<Integer> seq = Seq.apply(3, 4, 2, 0, 5, 1);
         Integer actual = seq.foldLeft(0, new F2<Integer, Integer, Integer>() {
-            public Integer _(Integer v1, Integer v2) {
+            public Integer apply(Integer v1, Integer v2) {
                 return v1 + v2;
             }
         });
@@ -302,7 +302,7 @@ public class SeqTest {
 
     @Test
     public void zipWithIndex_A$_Nil() throws Exception {
-        Seq<String> seq = Seq._();
+        Seq<String> seq = Seq.apply();
         Seq<Tuple2<String, Integer>> actual = seq.zipWithIndex();
         assertThat(actual.isEmpty(), is(true));
         assertThat(actual.size(), is(0));
@@ -310,7 +310,7 @@ public class SeqTest {
 
     @Test
     public void zipWithIndex_A$() throws Exception {
-        Seq<String> seq = Seq._("A", "B", "C");
+        Seq<String> seq = Seq.apply("A", "B", "C");
         Seq<Tuple2<String, Integer>> actual = seq.zipWithIndex();
         assertThat(actual.toList().size(), is(3));
         assertThat(actual.toList().get(0)._1(), is("A"));
@@ -323,9 +323,9 @@ public class SeqTest {
 
     @Test
     public void foldRight_A$Object$Function2_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         String actual = seq.foldRight("foo", new F2<Integer, String, String>() {
-            public String _(Integer v1, String v2) {
+            public String apply(Integer v1, String v2) {
                 return v1 + v2;
             }
         });
@@ -334,9 +334,9 @@ public class SeqTest {
 
     @Test
     public void foldRight_A$Object$Function2() throws Exception {
-        Seq<Integer> seq = Seq._(3, 4, 2, 0, 5, 1);
+        Seq<Integer> seq = Seq.apply(3, 4, 2, 0, 5, 1);
         String actual = seq.foldRight("foo", new F2<Integer, String, String>() {
-            public String _(Integer v1, String v2) {
+            public String apply(Integer v1, String v2) {
                 return v1 + v2;
             }
         });
@@ -345,7 +345,7 @@ public class SeqTest {
 
     @Test
     public void headOption_A$_Nil() throws Exception {
-        Seq<String> seq = Seq._();
+        Seq<String> seq = Seq.apply();
         Option<String> actual = seq.headOption();
         assertThat(actual.isDefined(), is(false));
         assertThat(actual.isEmpty(), is(true));
@@ -353,7 +353,7 @@ public class SeqTest {
 
     @Test
     public void headOption_A$_none() throws Exception {
-        Seq<String> seq = Seq._(new ArrayList<String>());
+        Seq<String> seq = Seq.apply(new ArrayList<String>());
         Option<String> actual = seq.headOption();
         assertThat(actual.isDefined(), is(false));
         assertThat(actual.isEmpty(), is(true));
@@ -363,7 +363,7 @@ public class SeqTest {
     public void headOption_A$() throws Exception {
         List<String> list = new ArrayList<String>();
         list.add("foo");
-        Seq<String> seq = Seq._(list);
+        Seq<String> seq = Seq.apply(list);
         Option<String> actual = seq.headOption();
         assertThat(actual.isDefined(), is(true));
         assertThat(actual.getOrNull(), is(equalTo("foo")));
@@ -371,7 +371,7 @@ public class SeqTest {
 
     @Test
     public void distinct_A$_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         Seq<Integer> actual = seq.distinct();
         assertThat(actual.size(), is(equalTo(0)));
     }
@@ -379,7 +379,7 @@ public class SeqTest {
     @Test
     public void distinct_A$() throws Exception {
         List<Integer> list = Arrays.asList(1, 3, 2, 2, 3, 4, 5, 2, 3, 2, 5);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         Seq<Integer> actual = seq.distinct();
         assertThat(actual.size(), is(equalTo(5)));
         assertThat(actual.toList().get(0), is(equalTo(1)));
@@ -391,7 +391,7 @@ public class SeqTest {
 
     @Test
     public void size_A$_Nil() throws Exception {
-        Seq<String> seq = Seq._();
+        Seq<String> seq = Seq.apply();
         Integer actual = seq.size();
         Integer expected = 0;
         assertThat(actual, is(equalTo(expected)));
@@ -400,7 +400,7 @@ public class SeqTest {
     @Test
     public void size_A$() throws Exception {
         List<String> list = Arrays.asList("a", "b", "c");
-        Seq<String> seq = Seq._(list);
+        Seq<String> seq = Seq.apply(list);
         Integer actual = seq.size();
         Integer expected = 3;
         assertThat(actual, is(equalTo(expected)));
@@ -408,9 +408,9 @@ public class SeqTest {
 
     @Test
     public void groupBy_A$Function1_Nil() throws Exception {
-        Seq<String> seq = Seq._();
+        Seq<String> seq = Seq.apply();
         SMap<String, Seq<String>> actual = seq.groupBy(new F1<String, String>() {
-            public String _(String v1) {
+            public String apply(String v1) {
                 return v1;
             }
         });
@@ -421,9 +421,9 @@ public class SeqTest {
     @Test
     public void groupBy_A$Function1_1() throws Exception {
         List<String> list = Arrays.asList("a", "b", "a", "a", "c", "b");
-        Seq<String> seq = Seq._(list);
+        Seq<String> seq = Seq.apply(list);
         SMap<String, Seq<String>> actual = seq.groupBy(new F1<String, String>() {
-            public String _(String v1) {
+            public String apply(String v1) {
                 return v1;
             }
         });
@@ -437,9 +437,9 @@ public class SeqTest {
     @Test
     public void groupBy_A$Function1_2() throws Exception {
         List<String> list = Arrays.asList("foo", "bar", "foofoo");
-        Seq<String> seq = Seq._(list);
+        Seq<String> seq = Seq.apply(list);
         SMap<Integer, Seq<String>> actual = seq.groupBy(new F1<String, Integer>() {
-            public Integer _(String v1) {
+            public Integer apply(String v1) {
                 return v1.length();
             }
         });
@@ -451,7 +451,7 @@ public class SeqTest {
 
     @Test
     public void last_A$_Nil() throws Exception {
-        Seq<String> seq = Seq._();
+        Seq<String> seq = Seq.apply();
         String actual = seq.last();
         assertThat(actual, is(nullValue()));
     }
@@ -459,7 +459,7 @@ public class SeqTest {
     @Test
     public void last_A$() throws Exception {
         List<String> list = Arrays.asList("a", "b", "a", "a", "c", "z");
-        Seq<String> seq = Seq._(list);
+        Seq<String> seq = Seq.apply(list);
         String actual = seq.last();
         String expected = "z";
         assertThat(actual, is(equalTo(expected)));
@@ -467,7 +467,7 @@ public class SeqTest {
 
     @Test
     public void lastOption_A$_Nil() throws Exception {
-        Seq<String> seq = Seq._();
+        Seq<String> seq = Seq.apply();
         Option<String> actual = seq.lastOption();
         assertThat(actual.isDefined(), is(false));
     }
@@ -475,16 +475,16 @@ public class SeqTest {
     @Test
     public void lastOption_A$() throws Exception {
         List<String> list = Arrays.asList("a", "b", "a", "a", "c", "z");
-        Seq<String> seq = Seq._(list);
+        Seq<String> seq = Seq.apply(list);
         Option<String> actual = seq.lastOption();
         assertThat(actual.getOrNull(), is(equalTo("z")));
     }
 
     @Test
     public void find_A$Function1_Nil() throws Exception {
-        Seq<String> seq = Seq._();
+        Seq<String> seq = Seq.apply();
         F1<String, Boolean> p = new F1<String, Boolean>() {
-            public Boolean _(String v1) {
+            public Boolean apply(String v1) {
                 return v1.equals("c");
             }
         };
@@ -495,9 +495,9 @@ public class SeqTest {
     @Test
     public void find_A$Function1() throws Exception {
         List<String> list = Arrays.asList("a", "b", "a", "a", "c", "z");
-        Seq<String> seq = Seq._(list);
+        Seq<String> seq = Seq.apply(list);
         F1<String, Boolean> p = new F1<String, Boolean>() {
-            public Boolean _(String v1) {
+            public Boolean apply(String v1) {
                 return v1.equals("c");
             }
         };
@@ -507,9 +507,9 @@ public class SeqTest {
 
     @Test
     public void partition_A$Function1_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         Tuple2<Seq<Integer>, Seq<Integer>> actual = seq.partition(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 < 3;
             }
         });
@@ -520,9 +520,9 @@ public class SeqTest {
     @Test
     public void partition_A$Function1() throws Exception {
         List<Integer> list = Arrays.asList(1, 5, 2, 3, 4);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         Tuple2<Seq<Integer>, Seq<Integer>> actual = seq.partition(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 < 3;
             }
         });
@@ -532,7 +532,7 @@ public class SeqTest {
 
     @Test
     public void reverse_A$_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         Seq<Integer> actual = seq.reverse();
         assertThat(actual.mkString(""), is(equalTo("")));
     }
@@ -540,14 +540,14 @@ public class SeqTest {
     @Test
     public void reverse_A$() throws Exception {
         List<Integer> list = Arrays.asList(1, 5, 2, 3, 4);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         Seq<Integer> actual = seq.reverse();
         assertThat(actual.mkString(""), is(equalTo("43251")));
     }
 
     @Test
     public void slice_A$int$int_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         Integer from = 2;
         Integer until = 4;
         Seq<Integer> actual = seq.slice(from, until);
@@ -557,7 +557,7 @@ public class SeqTest {
     @Test
     public void slice_A$int$int() throws Exception {
         List<Integer> list = Arrays.asList(1, 5, 2, 3, 4);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         Integer from = 2;
         Integer until = 4;
         Seq<Integer> actual = seq.slice(from, until);
@@ -568,7 +568,7 @@ public class SeqTest {
 
     @Test
     public void sliding_A$int_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         Integer size = 3;
         Seq<Seq<Integer>> actual = seq.sliding(size);
         assertThat(actual.size(), is(equalTo(0)));
@@ -577,7 +577,7 @@ public class SeqTest {
     @Test
     public void sliding_A$int_3() throws Exception {
         List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         Integer size = 3;
         Seq<Seq<Integer>> actual = seq.sliding(size);
         assertThat(actual.size(), is(equalTo(3)));
@@ -589,7 +589,7 @@ public class SeqTest {
     @Test
     public void sliding_A$int$int_3_2() throws Exception {
         List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         Integer size = 3;
         Integer step = 2;
         Seq<Seq<Integer>> actual = seq.sliding(size, step);
@@ -601,7 +601,7 @@ public class SeqTest {
     @Test
     public void sliding_A$int$int_3_3() throws Exception {
         List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         Integer size = 3;
         Integer step = 3;
         Seq<Seq<Integer>> actual = seq.sliding(size, step);
@@ -613,7 +613,7 @@ public class SeqTest {
     @Test
     public void sliding_A$int$int_6_3() throws Exception {
         List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         Integer size = 6;
         Integer step = 3;
         Seq<Seq<Integer>> actual = seq.sliding(size, step);
@@ -623,9 +623,9 @@ public class SeqTest {
 
     @Test
     public void span_A$Function1_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         Tuple2<Seq<Integer>, Seq<Integer>> actual = seq.span(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 < 3;
             }
         });
@@ -636,9 +636,9 @@ public class SeqTest {
     @Test
     public void span_A$Function1() throws Exception {
         List<Integer> list = Arrays.asList(1, 5, 2, 3, 4);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         Tuple2<Seq<Integer>, Seq<Integer>> actual = seq.span(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 < 3;
             }
         });
@@ -648,7 +648,7 @@ public class SeqTest {
 
     @Test
     public void takeRight_A$int_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         int n = 3;
         Seq<Integer> actual = seq.takeRight(n);
         assertThat(actual.mkString(""), is(equalTo("")));
@@ -657,7 +657,7 @@ public class SeqTest {
     @Test
     public void takeRight_A$int() throws Exception {
         List<Integer> list = Arrays.asList(1, 5, 2, 3, 4);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         int n = 3;
         Seq<Integer> actual = seq.takeRight(n);
         assertThat(actual.mkString(""), is(equalTo("234")));
@@ -665,9 +665,9 @@ public class SeqTest {
 
     @Test
     public void takeWhile_A$Function1_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         Seq<Integer> actual = seq.takeWhile(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 < 3;
             }
         });
@@ -677,9 +677,9 @@ public class SeqTest {
     @Test
     public void takeWhile_A$Function1() throws Exception {
         List<Integer> list = Arrays.asList(1, 2, 5, 3, 4);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         Seq<Integer> actual = seq.takeWhile(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 <= 3;
             }
         });
@@ -688,7 +688,7 @@ public class SeqTest {
 
     @Test
     public void splitAt_A$int_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         Integer n = 3;
         Tuple2<Seq<Integer>, Seq<Integer>> actual = seq.splitAt(n);
         assertThat(actual._1().mkString(""), is(equalTo("")));
@@ -698,7 +698,7 @@ public class SeqTest {
     @Test
     public void splitAt_A$int() throws Exception {
         List<Integer> list = Arrays.asList(1, 5, 2, 3, 4);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         Integer n = 3;
         Tuple2<Seq<Integer>, Seq<Integer>> actual = seq.splitAt(n);
         assertThat(actual._1().mkString(""), is(equalTo("152")));
@@ -707,9 +707,9 @@ public class SeqTest {
 
     @Test
     public void exists_A$Function1_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         boolean actual = seq.exists(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 < 3;
             }
         });
@@ -720,9 +720,9 @@ public class SeqTest {
     @Test
     public void exists_A$Function1() throws Exception {
         List<Integer> list = Arrays.asList(1, 5, 2, 3, 4);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         boolean actual = seq.exists(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 < 3;
             }
         });
@@ -733,9 +733,9 @@ public class SeqTest {
     @Test
     public void exists_A$Function1_false() throws Exception {
         List<Integer> list = Arrays.asList(1, 5, 2, 3, 4);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         boolean actual = seq.exists(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 > 6;
             }
         });
@@ -745,9 +745,9 @@ public class SeqTest {
 
     @Test
     public void forall_A$Function1_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         boolean actual = seq.forall(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 < 3;
             }
         });
@@ -758,9 +758,9 @@ public class SeqTest {
     @Test
     public void forall_A$Function1() throws Exception {
         List<Integer> list = Arrays.asList(1, 5, 2, 3, 4);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         boolean actual = seq.forall(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 < 3;
             }
         });
@@ -770,9 +770,9 @@ public class SeqTest {
 
     @Test
     public void count_A$Function1_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         Integer actual = seq.count(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 < 3;
             }
         });
@@ -783,9 +783,9 @@ public class SeqTest {
     @Test
     public void count_A$Function1() throws Exception {
         List<Integer> list = Arrays.asList(1, 5, 2, 3, 4);
-        Seq<Integer> seq = Seq._(list);
+        Seq<Integer> seq = Seq.apply(list);
         Integer actual = seq.count(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 < 3;
             }
         });
@@ -795,7 +795,7 @@ public class SeqTest {
 
     @Test
     public void drop_A$int_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         int n = 3;
         Seq<Integer> actual = seq.drop(n);
         assertThat(actual.size(), is(equalTo(0)));
@@ -803,7 +803,7 @@ public class SeqTest {
 
     @Test
     public void drop_A$int() throws Exception {
-        Seq<Integer> seq = Seq._(3, 4, 2, 0, 5, 1);
+        Seq<Integer> seq = Seq.apply(3, 4, 2, 0, 5, 1);
         int n = 3;
         Seq<Integer> actual = seq.drop(n);
         assertThat(actual.toList().size(), is(equalTo(3)));
@@ -814,7 +814,7 @@ public class SeqTest {
 
     @Test
     public void dropRight_A$int_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         int n = 3;
         Seq<Integer> actual = seq.dropRight(n);
         assertThat(actual.size(), is(equalTo(0)));
@@ -822,7 +822,7 @@ public class SeqTest {
 
     @Test
     public void dropRight_A$int() throws Exception {
-        Seq<Integer> seq = Seq._(3, 4, 2, 0, 5, 1);
+        Seq<Integer> seq = Seq.apply(3, 4, 2, 0, 5, 1);
         int n = 3;
         Seq<Integer> actual = seq.dropRight(n);
         assertThat(actual.toList().size(), is(equalTo(3)));
@@ -833,9 +833,9 @@ public class SeqTest {
 
     @Test
     public void dropWhile_A$Function1_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         Seq<Integer> actual = seq.dropWhile(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 >= 3;
             }
         });
@@ -844,9 +844,9 @@ public class SeqTest {
 
     @Test
     public void dropWhile_A$Function1() throws Exception {
-        Seq<Integer> seq = Seq._(3, 4, 2, 0, 5, 1);
+        Seq<Integer> seq = Seq.apply(3, 4, 2, 0, 5, 1);
         Seq<Integer> actual = seq.dropWhile(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 >= 3;
             }
         });
@@ -859,16 +859,16 @@ public class SeqTest {
 
     @Test
     public void zip_A$Seq_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
-        Seq<String> that = Seq._("a");
+        Seq<Integer> seq = Seq.apply();
+        Seq<String> that = Seq.apply("a");
         Seq<Tuple2<Integer, String>> actual = seq.zip(that);
         assertThat(actual.size(), is(equalTo(0)));
     }
 
     @Test
     public void zip_A$Seq_thisIsLonger() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3, 4, 5);
-        Seq<String> that = Seq._("a", "b", "c");
+        Seq<Integer> seq = Seq.apply(1, 2, 3, 4, 5);
+        Seq<String> that = Seq.apply("a", "b", "c");
         Seq<Tuple2<Integer, String>> actual = seq.zip(that);
         assertThat(actual.size(), is(equalTo(3)));
         assertThat(actual.toList().get(0)._1(), is(equalTo(1)));
@@ -881,8 +881,8 @@ public class SeqTest {
 
     @Test
     public void zip_A$Seq_thatIsLonger() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
-        Seq<String> that = Seq._("a", "b", "c", "d", "e");
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
+        Seq<String> that = Seq.apply("a", "b", "c", "d", "e");
         Seq<Tuple2<Integer, String>> actual = seq.zip(that);
         assertThat(actual.size(), is(equalTo(3)));
         assertThat(actual.toList().get(0)._1(), is(equalTo(1)));
@@ -895,7 +895,7 @@ public class SeqTest {
 
     @Test
     public void contains_A$Object_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         Integer elem = 2;
         boolean actual = seq.contains(elem);
         boolean expected = false;
@@ -904,7 +904,7 @@ public class SeqTest {
 
     @Test
     public void contains_A$Object_containsNull() throws Exception {
-        Seq<Integer> seq = Seq._(null, 1, 2, null, 3);
+        Seq<Integer> seq = Seq.apply(null, 1, 2, null, 3);
         Integer elem = 2;
         boolean actual = seq.contains(elem);
         boolean expected = true;
@@ -913,7 +913,7 @@ public class SeqTest {
 
     @Test
     public void contains_A$Object_true() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         Integer elem = 2;
         boolean actual = seq.contains(elem);
         boolean expected = true;
@@ -922,7 +922,7 @@ public class SeqTest {
 
     @Test
     public void contains_A$Object_false() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         Integer elem = 4;
         boolean actual = seq.contains(elem);
         boolean expected = false;
@@ -931,16 +931,16 @@ public class SeqTest {
 
     @Test
     public void diff_A$Seq_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
-        Seq<Integer> that = Seq._(2, 4);
+        Seq<Integer> seq = Seq.apply();
+        Seq<Integer> that = Seq.apply(2, 4);
         Seq<Integer> actual = seq.diff(that);
         assertThat(actual.size(), is(equalTo(0)));
     }
 
     @Test
     public void diff_A$Seq() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
-        Seq<Integer> that = Seq._(2, 4);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
+        Seq<Integer> that = Seq.apply(2, 4);
         Seq<Integer> actual = seq.diff(that);
         assertThat(actual.size(), is(equalTo(2)));
         assertThat(actual.toList().get(0), is(equalTo(1)));
@@ -949,8 +949,8 @@ public class SeqTest {
 
     @Test
     public void diff_A$Seq_containsNull1() throws Exception {
-        Seq<Integer> seq = Seq._(null, 1, 2, 3);
-        Seq<Integer> that = Seq._(2, 4);
+        Seq<Integer> seq = Seq.apply(null, 1, 2, 3);
+        Seq<Integer> that = Seq.apply(2, 4);
         Seq<Integer> actual = seq.diff(that);
         assertThat(actual.size(), is(equalTo(3)));
         assertThat(actual.toList().get(0), is(equalTo(null)));
@@ -960,8 +960,8 @@ public class SeqTest {
 
     @Test
     public void diff_A$Seq_containsNull2() throws Exception {
-        Seq<Integer> seq = Seq._(null, 1, 2, 3);
-        Seq<Integer> that = Seq._(2, 4, null);
+        Seq<Integer> seq = Seq.apply(null, 1, 2, 3);
+        Seq<Integer> that = Seq.apply(2, 4, null);
         Seq<Integer> actual = seq.diff(that);
         assertThat(actual.size(), is(equalTo(2)));
         assertThat(actual.toList().get(0), is(equalTo(1)));
@@ -970,8 +970,8 @@ public class SeqTest {
 
     @Test
     public void startsWith_A$Seq_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
-        Seq<Integer> that = Seq._(1, 2);
+        Seq<Integer> seq = Seq.apply();
+        Seq<Integer> that = Seq.apply(1, 2);
         boolean actual = seq.startsWith(that);
         boolean expected = false;
         assertThat(actual, is(equalTo(expected)));
@@ -979,8 +979,8 @@ public class SeqTest {
 
     @Test
     public void startsWith_A$Seq_true() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
-        Seq<Integer> that = Seq._(1, 2);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
+        Seq<Integer> that = Seq.apply(1, 2);
         boolean actual = seq.startsWith(that);
         boolean expected = true;
         assertThat(actual, is(equalTo(expected)));
@@ -988,8 +988,8 @@ public class SeqTest {
 
     @Test
     public void startsWith_A$Seq_containsNull1() throws Exception {
-        Seq<Integer> seq = Seq._(1, null, 2, 3);
-        Seq<Integer> that = Seq._(1, 2);
+        Seq<Integer> seq = Seq.apply(1, null, 2, 3);
+        Seq<Integer> that = Seq.apply(1, 2);
         boolean actual = seq.startsWith(that);
         boolean expected = false;
         assertThat(actual, is(equalTo(expected)));
@@ -997,8 +997,8 @@ public class SeqTest {
 
     @Test
     public void startsWith_A$Seq_containsNull2() throws Exception {
-        Seq<Integer> seq = Seq._(1, null, 2, 3);
-        Seq<Integer> that = Seq._(1, null, 2);
+        Seq<Integer> seq = Seq.apply(1, null, 2, 3);
+        Seq<Integer> that = Seq.apply(1, null, 2);
         boolean actual = seq.startsWith(that);
         boolean expected = true;
         assertThat(actual, is(equalTo(expected)));
@@ -1006,8 +1006,8 @@ public class SeqTest {
 
     @Test
     public void startsWith_A$Seq_false() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
-        Seq<Integer> that = Seq._(1, 4);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
+        Seq<Integer> that = Seq.apply(1, 4);
         boolean actual = seq.startsWith(that);
         boolean expected = false;
         assertThat(actual, is(equalTo(expected)));
@@ -1015,8 +1015,8 @@ public class SeqTest {
 
     @Test
     public void startsWith_A$Seq$int_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
-        Seq<Integer> that = Seq._(2, 3);
+        Seq<Integer> seq = Seq.apply();
+        Seq<Integer> that = Seq.apply(2, 3);
         int offset = 1;
         boolean actual = seq.startsWith(that, offset);
         boolean expected = false;
@@ -1025,8 +1025,8 @@ public class SeqTest {
 
     @Test
     public void startsWith_A$Seq$int_true() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
-        Seq<Integer> that = Seq._(2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
+        Seq<Integer> that = Seq.apply(2, 3);
         int offset = 1;
         boolean actual = seq.startsWith(that, offset);
         boolean expected = true;
@@ -1035,8 +1035,8 @@ public class SeqTest {
 
     @Test
     public void startsWith_A$Seq$int_false() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
-        Seq<Integer> that = Seq._(2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
+        Seq<Integer> that = Seq.apply(2, 3);
         int offset = 0;
         boolean actual = seq.startsWith(that, offset);
         boolean expected = false;
@@ -1045,8 +1045,8 @@ public class SeqTest {
 
     @Test
     public void startsWith_A$Seq$int_outOfIndex() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
-        Seq<Integer> that = Seq._(1, 2);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
+        Seq<Integer> that = Seq.apply(1, 2);
         int offset = 100;
         boolean actual = seq.startsWith(that, offset);
         boolean expected = false;
@@ -1055,8 +1055,8 @@ public class SeqTest {
 
     @Test
     public void endsWith_A$Seq_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
-        Seq<Integer> that = Seq._(2, 3);
+        Seq<Integer> seq = Seq.apply();
+        Seq<Integer> that = Seq.apply(2, 3);
         boolean actual = seq.endsWith(that);
         boolean expected = false;
         assertThat(actual, is(equalTo(expected)));
@@ -1064,8 +1064,8 @@ public class SeqTest {
 
     @Test
     public void endsWith_A$Seq_true() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
-        Seq<Integer> that = Seq._(2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
+        Seq<Integer> that = Seq.apply(2, 3);
         boolean actual = seq.endsWith(that);
         boolean expected = true;
         assertThat(actual, is(equalTo(expected)));
@@ -1073,8 +1073,8 @@ public class SeqTest {
 
     @Test
     public void endsWith_A$Seq_false() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
-        Seq<Integer> that = Seq._(1, 2);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
+        Seq<Integer> that = Seq.apply(1, 2);
         boolean actual = seq.endsWith(that);
         boolean expected = false;
         assertThat(actual, is(equalTo(expected)));
@@ -1082,7 +1082,7 @@ public class SeqTest {
 
     @Test
     public void indexOf_A$Object_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         Integer elem = 2;
         int actual = seq.indexOf(elem);
         int expected = -1;
@@ -1091,7 +1091,7 @@ public class SeqTest {
 
     @Test
     public void indexOf_A$Object_exists() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         Integer elem = 2;
         int actual = seq.indexOf(elem);
         int expected = 1;
@@ -1100,7 +1100,7 @@ public class SeqTest {
 
     @Test
     public void indexOf_A$Object_notExists() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         Integer elem = 1000;
         int actual = seq.indexOf(elem);
         int expected = -1;
@@ -1109,7 +1109,7 @@ public class SeqTest {
 
     @Test
     public void isDefinedAt_A$int_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         for (int i = -3; i < 3; i++) {
             boolean actual = seq.isDefinedAt(i);
             boolean expected = false;
@@ -1119,7 +1119,7 @@ public class SeqTest {
 
     @Test
     public void isDefinedAt_A$int() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         for (int i = -3; i < 0; i++) {
             boolean actual = seq.isDefinedAt(i);
             boolean expected = false;
@@ -1139,14 +1139,14 @@ public class SeqTest {
 
     @Test
     public void indices_A$_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         Seq<Integer> actual = seq.indices();
         assertThat(actual.size(), is(equalTo(0)));
     }
 
     @Test
     public void indices_A$() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         Seq<Integer> actual = seq.indices();
         assertThat(actual.size(), is(equalTo(3)));
         assertThat(actual.toList().get(0), is(equalTo(0)));
@@ -1156,9 +1156,9 @@ public class SeqTest {
 
     @Test
     public void reverseMap_A$Function1_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         Seq<String> actual = seq.reverseMap(new F1<Integer, String>() {
-            public String _(Integer v1) {
+            public String apply(Integer v1) {
                 return v1.toString();
             }
         });
@@ -1167,9 +1167,9 @@ public class SeqTest {
 
     @Test
     public void reverseMap_A$Function1() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         Seq<String> actual = seq.reverseMap(new F1<Integer, String>() {
-            public String _(Integer v1) {
+            public String apply(Integer v1) {
                 return v1.toString();
             }
         });
@@ -1181,9 +1181,9 @@ public class SeqTest {
 
     @Test
     public void patch_A$int$Seq$int_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         int from = 1;
-        Seq<Integer> patch = Seq._(7, 8, 9);
+        Seq<Integer> patch = Seq.apply(7, 8, 9);
         int replaced = 1;
         Seq<Integer> actual = seq.patch(from, patch, replaced);
         assertThat(actual.size(), is(equalTo(3)));
@@ -1194,9 +1194,9 @@ public class SeqTest {
 
     @Test
     public void patch_A$int$Seq$int() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         int from = 1;
-        Seq<Integer> patch = Seq._(7, 8, 9);
+        Seq<Integer> patch = Seq.apply(7, 8, 9);
         int replaced = 1;
         Seq<Integer> actual = seq.patch(from, patch, replaced);
         assertThat(actual.size(), is(equalTo(5)));
@@ -1209,7 +1209,7 @@ public class SeqTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void updated_A$int$Object_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         int index = 0;
         Integer elem = 4;
         seq.updated(index, elem);
@@ -1217,7 +1217,7 @@ public class SeqTest {
 
     @Test
     public void updated_A$int$Object() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         int index = 0;
         Integer elem = 4;
         Seq<Integer> actual = seq.updated(index, elem);
@@ -1251,7 +1251,7 @@ public class SeqTest {
 
     @Test
     public void __A$ObjectArray() throws Exception {
-        Seq<Integer> actual = Seq._(1, 2, 3);
+        Seq<Integer> actual = Seq.apply(1, 2, 3);
         assertThat(actual.size(), is(equalTo(3)));
     }
 
@@ -1261,7 +1261,7 @@ public class SeqTest {
         list_.add(1);
         list_.add(2);
         list_.add(3);
-        Seq<Integer> actual = Seq._(list_);
+        Seq<Integer> actual = Seq.apply(list_);
         assertThat(actual.size(), is(equalTo(3)));
     }
 
@@ -1271,14 +1271,14 @@ public class SeqTest {
         list_.add(1);
         list_.add(2);
         list_.add(3);
-        Seq<Integer> actual = Seq._(list_);
+        Seq<Integer> actual = Seq.apply(list_);
         assertThat(actual.size(), is(equalTo(3)));
     }
 
     @Test
     public void union_A$Seq() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
-        Seq<Integer> that = Seq._(2, 3, 4);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
+        Seq<Integer> that = Seq.apply(2, 3, 4);
         Seq<Integer> actual = seq.union(that);
         assertThat(actual.size(), is(equalTo(6)));
         assertThat(actual.toList().get(0), is(equalTo(1)));
@@ -1291,90 +1291,90 @@ public class SeqTest {
 
     @Test
     public void sum_A$_Int() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         SNum actual = seq.sum();
         assertThat(actual.toInt(), is(equalTo(6)));
     }
 
     @Test
     public void sum_A$_Int_containsNull() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, null, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, null, 3);
         SNum actual = seq.sum();
         assertThat(actual.toInt(), is(equalTo(6)));
     }
 
     @Test
     public void sum_A$_Double() throws Exception {
-        Seq<Double> seq = Seq._(0.1D, 0.2D, 0.3D);
+        Seq<Double> seq = Seq.apply(0.1D, 0.2D, 0.3D);
         SNum actual = seq.sum();
         assertThat(actual.toDouble(), is(equalTo(0.6D)));
     }
 
     @Test
     public void sum_A$_Long() throws Exception {
-        Seq<Long> seq = Seq._(1L, 2L, 3L);
+        Seq<Long> seq = Seq.apply(1L, 2L, 3L);
         SNum actual = seq.sum();
         assertThat(actual.toLong(), is(equalTo(6L)));
     }
 
     @Test(expected = ScalaFlavor4JException.class)
     public void sum_A$_String() throws Exception {
-        Seq<String> seq = Seq._("a", "b", "c");
+        Seq<String> seq = Seq.apply("a", "b", "c");
         SNum actual = seq.sum();
         assertThat(actual.toInt(), is(equalTo(6)));
     }
 
     @Test
     public void max_A$() throws Exception {
-        Seq<Integer> seq = Seq._(1, 4, 5, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 4, 5, 2, 3);
         SNum actual = seq.max();
         assertThat(actual.toInt(), is(equalTo(5)));
     }
 
     @Test
     public void max_A$_containsNull() throws Exception {
-        Seq<Integer> seq = Seq._(1, 4, 5, null, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 4, 5, null, 2, 3);
         SNum actual = seq.max();
         assertThat(actual.toInt(), is(equalTo(5)));
     }
 
     @Test(expected = ScalaFlavor4JException.class)
     public void max_A$_String() throws Exception {
-        Seq<String> seq = Seq._("a", "b", "c");
+        Seq<String> seq = Seq.apply("a", "b", "c");
         SNum actual = seq.max();
         assertThat(actual.toInt(), is(equalTo(5)));
     }
 
     @Test
     public void min_A$() throws Exception {
-        Seq<Integer> seq = Seq._(4, 5, 2, 1, 3);
+        Seq<Integer> seq = Seq.apply(4, 5, 2, 1, 3);
         SNum actual = seq.min();
         assertThat(actual.toInt(), is(equalTo(1)));
     }
 
     @Test
     public void min_A$_containsNull() throws Exception {
-        Seq<Integer> seq = Seq._(4, 5, 2, null, 1, 3);
+        Seq<Integer> seq = Seq.apply(4, 5, 2, null, 1, 3);
         SNum actual = seq.min();
         assertThat(actual.toInt(), is(equalTo(1)));
     }
 
     @Test(expected = ScalaFlavor4JException.class)
     public void min_A$_String() throws Exception {
-        Seq<String> seq = Seq._("a", "b", "c");
+        Seq<String> seq = Seq.apply("a", "b", "c");
         SNum actual = seq.min();
         assertThat(actual.toInt(), is(equalTo(1)));
     }
 
     @Test
     public void sameElements_A$Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
+        Seq<Integer> seq = Seq.apply();
         {
-            boolean actual = seq.sameElements(Seq._(1, 2, 3));
+            boolean actual = seq.sameElements(Seq.apply(1, 2, 3));
             assertThat(actual, is(equalTo(false)));
         }
         {
-            Seq<Integer> nil = Seq._();
+            Seq<Integer> nil = Seq.apply();
             boolean actual = seq.sameElements(nil);
             assertThat(actual, is(equalTo(true)));
         }
@@ -1382,8 +1382,8 @@ public class SeqTest {
 
     @Test
     public void sameElements_A$Seq_true() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
-        Seq<Integer> that = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
+        Seq<Integer> that = Seq.apply(1, 2, 3);
         boolean actual = seq.sameElements(that);
         boolean expected = true;
         assertThat(actual, is(equalTo(expected)));
@@ -1391,8 +1391,8 @@ public class SeqTest {
 
     @Test
     public void sameElements_A$Seq_containsNull() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, null, 3);
-        Seq<Integer> that = Seq._(1, 2, null, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, null, 3);
+        Seq<Integer> that = Seq.apply(1, 2, null, 3);
         boolean actual = seq.sameElements(that);
         boolean expected = true;
         assertThat(actual, is(equalTo(expected)));
@@ -1400,29 +1400,29 @@ public class SeqTest {
 
     @Test
     public void sameElements_A$Seq_false() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         {
-            Seq<Integer> that = Seq._(1, 2, 3, 4);
+            Seq<Integer> that = Seq.apply(1, 2, 3, 4);
             assertThat(seq.sameElements(that), is(false));
         }
         {
-            Seq<Integer> that = Seq._(3, 2, 1);
+            Seq<Integer> that = Seq.apply(3, 2, 1);
             assertThat(seq.sameElements(that), is(false));
         }
     }
 
     @Test
     public void intersect_A$Seq_Nil() throws Exception {
-        Seq<Integer> seq = Seq._();
-        Seq<Integer> that = Seq._(3, 4, 5);
+        Seq<Integer> seq = Seq.apply();
+        Seq<Integer> that = Seq.apply(3, 4, 5);
         Seq<Integer> actual = seq.intersect(that);
         assertThat(actual.size(), is(equalTo(0)));
     }
 
     @Test
     public void intersect_A$Seq() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3, 4, 5);
-        Seq<Integer> that = Seq._(3, 4, 5, 6, 7);
+        Seq<Integer> seq = Seq.apply(1, 2, 3, 4, 5);
+        Seq<Integer> that = Seq.apply(3, 4, 5, 6, 7);
         Seq<Integer> actual = seq.intersect(that);
         assertThat(actual.size(), is(equalTo(3)));
         assertThat(actual.toList().get(0), is(equalTo(3)));
@@ -1432,7 +1432,7 @@ public class SeqTest {
 
     @Test
     public void mkString_A$String$String$String() throws Exception {
-        Seq<String> seq = Seq._("090", "1111", "2222");
+        Seq<String> seq = Seq.apply("090", "1111", "2222");
         String start = "Tel:";
         String sep = "-";
         String end = "";
@@ -1443,7 +1443,7 @@ public class SeqTest {
 
     @Test
     public void mkString_A$() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3, 4, 5);
+        Seq<Integer> seq = Seq.apply(1, 2, 3, 4, 5);
         String actual = seq.mkString();
         String expected = "12345";
         assertThat(actual, is(equalTo(expected)));
@@ -1451,7 +1451,7 @@ public class SeqTest {
 
     @Test
     public void padTo_A$int$Object_minusValue() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         int len = -3;
         Seq<Integer> actual = seq.padTo(len, 9);
         assertThat(actual.size(), is(equalTo(3)));
@@ -1460,7 +1460,7 @@ public class SeqTest {
 
     @Test
     public void padTo_A$int$Object_lessLength() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         int len = 2;
         Seq<Integer> actual = seq.padTo(len, 9);
         assertThat(actual.size(), is(equalTo(3)));
@@ -1469,7 +1469,7 @@ public class SeqTest {
 
     @Test
     public void padTo_A$int$Object_sameLength() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         int len = 3;
         Seq<Integer> actual = seq.padTo(len, 9);
         assertThat(actual.size(), is(equalTo(3)));
@@ -1478,7 +1478,7 @@ public class SeqTest {
 
     @Test
     public void padTo_A$int$Object() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         int len = 5;
         Seq<Integer> actual = seq.padTo(len, 9);
         assertThat(actual.size(), is(equalTo(5)));
@@ -1487,9 +1487,9 @@ public class SeqTest {
 
     @Test
     public void scanLeft_A$Object$Function2() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         Seq<Integer> actual = seq.scanLeft(0, new F2<Integer, Integer, Integer>() {
-            public Integer _(Integer acm, Integer i) {
+            public Integer apply(Integer acm, Integer i) {
                 return acm + i;
             }
         });
@@ -1502,9 +1502,9 @@ public class SeqTest {
 
     @Test
     public void scanLeft_A$Object() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
-        Seq<Integer> actual = seq.scanLeft(0)._(new F2<Integer, Integer, Integer>() {
-            public Integer _(Integer acm, Integer i) {
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
+        Seq<Integer> actual = seq.scanLeft(0).apply(new F2<Integer, Integer, Integer>() {
+            public Integer apply(Integer acm, Integer i) {
                 return acm + i;
             }
         });
@@ -1517,9 +1517,9 @@ public class SeqTest {
 
     @Test
     public void scanRight_A$Object$Function2() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         Seq<Integer> actual = seq.scanRight(0, new F2<Integer, Integer, Integer>() {
-            public Integer _(Integer acm, Integer i) {
+            public Integer apply(Integer acm, Integer i) {
                 return acm + i;
             }
         });
@@ -1532,9 +1532,9 @@ public class SeqTest {
 
     @Test
     public void scanRight_A$Object() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
-        Seq<Integer> actual = seq.scanRight(0)._(new F2<Integer, Integer, Integer>() {
-            public Integer _(Integer acm, Integer i) {
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
+        Seq<Integer> actual = seq.scanRight(0).apply(new F2<Integer, Integer, Integer>() {
+            public Integer apply(Integer acm, Integer i) {
                 return acm + i;
             }
         });
@@ -1547,7 +1547,7 @@ public class SeqTest {
 
     @Test
     public void append_A$ObjectArray() throws Exception {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         Seq<Integer> actual = seq.append(4, 5, 6);
         assertThat(actual.size(), is(equalTo(6)));
         assertThat(actual.toList().get(0), is(equalTo(1)));
@@ -1582,7 +1582,7 @@ public class SeqTest {
     @Test
     public void __A$Enumeration() throws Exception {
         Enumeration<Object> e = new StringTokenizer("日 本 語");
-        Seq<Object> seq = Seq._(e);
+        Seq<Object> seq = Seq.apply(e);
         assertThat(seq.size(), is(equalTo(3)));
     }
 

@@ -21,15 +21,11 @@ package com.m3.scalaflavor4j;
 public class Tpl3<T1, T2, T3> extends Tuple3<T1, T2, T3> {
 
     public static <T1, T2, T3> Tpl3<T1, T2, T3> apply(T1 _1, T2 _2, T3 _3) {
-        return _(_1, _2, _3);
-    }
-
-    public static <T1, T2, T3> Tpl3<T1, T2, T3> _(T1 _1, T2 _2, T3 _3) {
         return new Tpl3<T1, T2, T3>(_1, _2, _3);
     }
 
     public static <T1, T2, T3> Option<Tpl3<T1, T2, T3>> unapply(Tpl3<T1, T2, T3> tuple) {
-        return Option._(tuple);
+        return Option.apply(tuple);
     }
 
     protected Tpl3(T1 _1, T2 _2, T3 _3) {

@@ -17,7 +17,7 @@ package com.m3.scalaflavor4j;
 
 /**
  * scala.util.control.Exception
- * 
+ *
  * @see "http://www.scala-lang.org/api/2.9.1/index.html#scala.util.control.Exception$"
  */
 public class ExceptionControl {
@@ -29,7 +29,7 @@ public class ExceptionControl {
      * Creates a Catch object which will catch any of the supplied exceptions.
      */
     public static CatchBuilder catching(Class<? extends Throwable>... catcher) {
-        CatchBuilder builder = new CatchBuilder(Seq._(catcher));
+        CatchBuilder builder = new CatchBuilder(Seq.apply(catcher));
         builder.setPromiscuously(false);
         return builder;
     }
@@ -38,7 +38,7 @@ public class ExceptionControl {
      * Creates a Catch object which will catch any of the supplied exceptions.
      */
     public static CatchBuilder catchingPromiscuously(Class<? extends Throwable>... catcher) {
-        CatchBuilder builder = new CatchBuilder(Seq._(catcher));
+        CatchBuilder builder = new CatchBuilder(Seq.apply(catcher));
         builder.setPromiscuously(true);
         return builder;
     }
@@ -47,7 +47,7 @@ public class ExceptionControl {
      * Creates a Catch object which will catch any of the supplied exceptions.
      */
     public static HandlingByBuilder handling(Class<? extends Throwable>... catcher) {
-        HandlingByBuilder builder = new HandlingByBuilder(Seq._(catcher));
+        HandlingByBuilder builder = new HandlingByBuilder(Seq.apply(catcher));
         builder.setPromiscuously(false);
         return builder;
     }
@@ -57,8 +57,8 @@ public class ExceptionControl {
      * exceptions.
      */
     public static <R> Catch<R> ignoring(Class<? extends Throwable>... catcher) {
-        return new CatchBuilder(Seq._(catcher)).withApply(new F1<Throwable, R>() {
-            public R _(Throwable v1) throws Exception {
+        return new CatchBuilder(Seq.apply(catcher)).withApply(new F1<Throwable, R>() {
+            public R apply(Throwable v1) throws Exception {
                 return null;
             }
         });
@@ -69,7 +69,7 @@ public class ExceptionControl {
      */
     @SuppressWarnings("unchecked")
     public static <R> Catch<R> ultimately(VoidFunction0 body) {
-        Catch<R> c = new Catch<R>(Seq.<Class<? extends Throwable>> _(), null, false);
+        Catch<R> c = new Catch<R>(Seq.<Class<? extends Throwable>>apply(), null, false);
         c.andFinally(body);
         return c;
     }
@@ -79,7 +79,7 @@ public class ExceptionControl {
      */
     @SuppressWarnings("unchecked")
     public static CatchBuilder allCatch() {
-        return new CatchBuilder(Seq.<Class<? extends Throwable>> _(Throwable.class));
+        return new CatchBuilder(Seq.<Class<? extends Throwable>>apply(Throwable.class));
     }
 
     public static class HandlingByBuilder extends CatchBuilder {
@@ -126,13 +126,13 @@ public class ExceptionControl {
 
     /**
      * scala.util.control.Exception.Catch
-     * 
+     *
      * @see "http://www.scala-lang.org/api/2.9.1/index.html#scala.util.control.Exception$$Catch"
      */
-    public static class Catch<R> extends F1<Function0<R>, R> {
+    public static class Catch<R> implements F1<Function0<R>, R> {
 
         private VoidF0 defaultFinallyHandler = new VoidF0() {
-            public void _() {
+            public void apply() {
             }
         };
 
@@ -167,22 +167,13 @@ public class ExceptionControl {
 
         @SuppressWarnings("unchecked")
         public Catch(Seq<Class<? extends Throwable>> classes, Function1<Throwable, R> withApply, boolean promiscuously) {
-            this.handlerDefinitions = Seq.<HandlerDef> _(new HandlerDef(classes, withApply));
+            this.handlerDefinitions = Seq.<HandlerDef>apply(new HandlerDef(classes, withApply));
             this.promiscuously = promiscuously;
         }
 
         public Catch<R> andFinally(VoidFunction0 body) {
             this.finallyHandler = body;
             return this;
-        }
-
-        @Override
-        public R apply(Function0<R> f) {
-            try {
-                return super.apply(f);
-            } catch (Throwable e) {
-                throw new ScalaFlavor4JException(e);
-            }
         }
 
         /**
@@ -194,9 +185,9 @@ public class ExceptionControl {
             try {
                 Applied applied = _apply(block);
                 if (applied.handled.isDefined()) {
-                    return Left._(applied.handled);
+                    return Left.apply(applied.handled);
                 } else {
-                    return Right._(applied.result);
+                    return Right.apply(applied.result);
                 }
             } catch (Throwable e) {
                 throw new ScalaFlavor4JException(e);
@@ -213,7 +204,7 @@ public class ExceptionControl {
                 if (applied.handled.isDefined()) {
                     return Option.none();
                 } else {
-                    return Option._(applied.result);
+                    return Option.apply(applied.result);
                 }
             } catch (Throwable e) {
                 throw new ScalaFlavor4JException(e);
@@ -233,7 +224,7 @@ public class ExceptionControl {
 
             public Applied(R result, Throwable handled) {
                 this.result = result;
-                this.handled = Option._(handled);
+                this.handled = Option.apply(handled);
             }
         }
 
@@ -246,9 +237,9 @@ public class ExceptionControl {
                     throw e;
                 }
                 Option<HandlerDef> handlerDefinition = handlerDefinitions.find(new PredicateF1<HandlerDef>() {
-                    public Boolean _(HandlerDef handlerDef) {
+                    public Boolean apply(HandlerDef handlerDef) {
                         return handlerDef.classesToHandle.find(new PredicateF1<Class<? extends Throwable>>() {
-                            public Boolean _(Class<? extends Throwable> targetClass) throws Exception {
+                            public Boolean apply(Class<? extends Throwable> targetClass) throws Exception {
                                 try {
                                     return targetClass.cast(e) != null;
                                 } catch (ClassCastException cce) {
@@ -266,7 +257,7 @@ public class ExceptionControl {
                 try {
                     Class<? extends Throwable> classToHandle = classesToHandle.find(
                             new PredicateF1<Class<? extends Throwable>>() {
-                                public Boolean _(Class<? extends Throwable> classToHandle) {
+                                public Boolean apply(Class<? extends Throwable> classToHandle) {
                                     try {
                                         return classToHandle.cast(e) != null;
                                     } catch (ClassCastException cce) {
@@ -290,8 +281,12 @@ public class ExceptionControl {
         }
 
         @Override
-        public R _(Function0<R> block) throws Exception {
-            return _apply(block).result;
+        public R apply(Function0<R> block) {
+            try {
+                return _apply(block).result;
+            } catch (Exception e) {
+                throw new ScalaFlavor4JException(e);
+            }
         }
 
         /**

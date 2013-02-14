@@ -49,7 +49,7 @@ public class ConcurrentOps {
         });
         forkJoinPool.execute(future);
         return new F0<R>() {
-            public R _() throws InterruptedException, ExecutionException {
+            public R apply() throws InterruptedException, ExecutionException {
                 return future.get();
             }
         };
@@ -72,7 +72,7 @@ public class ConcurrentOps {
         });
         forkJoinPool.execute(xpFuture);
         forkJoinPool.execute(ypFuture);
-        return Tuple._(xpFuture.get(), ypFuture.get());
+        return Tuple.apply(xpFuture.get(), ypFuture.get());
     }
 
     /**

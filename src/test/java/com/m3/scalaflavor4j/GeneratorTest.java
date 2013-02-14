@@ -17,29 +17,29 @@ public class GeneratorTest {
 
     @Test
     public void instantiation() throws Exception {
-        CollectionLike<String> xs = Option._("foo");
+        CollectionLike<String> xs = Option.apply("foo");
         Generator<String> target = new Generator<String>(xs);
         assertThat(target, notNullValue());
     }
 
     @Test
     public void apply_A$CollectionLike() throws Exception {
-        CollectionLike<String> xs = Option._("foo");
+        CollectionLike<String> xs = Option.apply("foo");
         Generator<String> actual = Generator.apply(xs);
         assertThat(actual, notNullValue());
     }
 
     @Test
     public void __A$CollectionLike() throws Exception {
-        CollectionLike<String> xs = Option._("foo");
-        Generator<String> actual = Generator._(xs);
+        CollectionLike<String> xs = Option.apply("foo");
+        Generator<String> actual = Generator.apply(xs);
         assertThat(actual, notNullValue());
     }
 
     @Test
     public void toCollectionLike_A$List_Option() throws Exception {
-        CollectionLike<String> xs = Option._("foo");
-        Generator<String> gen = Generator._(xs);
+        CollectionLike<String> xs = Option.apply("foo");
+        Generator<String> gen = Generator.apply(xs);
         List<String> xs_ = new ArrayList<String>();
         CollectionLike<String> cl = gen.toCollectionLike(xs_);
         assertThat(cl.isEmpty(), is(true));
@@ -47,8 +47,8 @@ public class GeneratorTest {
 
     @Test
     public void toCollectionLike_A$List_Seq() throws Exception {
-        CollectionLike<String> xs = Seq._("foo", "bar");
-        Generator<String> gen = Generator._(xs);
+        CollectionLike<String> xs = Seq.apply("foo", "bar");
+        Generator<String> gen = Generator.apply(xs);
         List<String> xs_ = new ArrayList<String>();
         CollectionLike<String> cl = gen.toCollectionLike(xs_);
         assertThat(cl.isEmpty(), is(true));
@@ -56,10 +56,10 @@ public class GeneratorTest {
 
     @Test
     public void map_A$Function1_Option() throws Exception {
-        CollectionLike<String> xs = Option._("foo");
-        Generator<String> gen = Generator._(xs);
+        CollectionLike<String> xs = Option.apply("foo");
+        Generator<String> gen = Generator.apply(xs);
         CollectionLike<Integer> cl = gen.map(new F1<String, Integer>() {
-            public Integer _(String s) throws Exception {
+            public Integer apply(String s) throws Exception {
                 return s.length();
             }
         });
@@ -69,10 +69,10 @@ public class GeneratorTest {
 
     @Test
     public void map_A$Function1_Seq() throws Exception {
-        CollectionLike<String> xs = Seq._("foo", "barr");
-        Generator<String> gen = Generator._(xs);
+        CollectionLike<String> xs = Seq.apply("foo", "barr");
+        Generator<String> gen = Generator.apply(xs);
         CollectionLike<Integer> cl = gen.map(new F1<String, Integer>() {
-            public Integer _(String s) throws Exception {
+            public Integer apply(String s) throws Exception {
                 return s.length();
             }
         });
@@ -83,11 +83,11 @@ public class GeneratorTest {
 
     @Test
     public void flatMap_A$Function1_Option() throws Exception {
-        CollectionLike<String> xs = Option._("foo");
-        Generator<String> gen = Generator._(xs);
+        CollectionLike<String> xs = Option.apply("foo");
+        Generator<String> gen = Generator.apply(xs);
         CollectionLike<Integer> cl = gen.flatMap(new FlatMapF1<String, Integer>() {
-            public CollectionLike<Integer> _(String s) throws Exception {
-                return SInt._(0).until(s.length());
+            public CollectionLike<Integer> apply(String s) throws Exception {
+                return SInt.apply(0).until(s.length());
             }
         });
         assertThat(cl.toList().size(), is(equalTo(3)));
@@ -95,11 +95,11 @@ public class GeneratorTest {
 
     @Test
     public void flatMap_A$Function1_Seq() throws Exception {
-        CollectionLike<String> xs = Seq._("foo", "barr");
-        Generator<String> gen = Generator._(xs);
+        CollectionLike<String> xs = Seq.apply("foo", "barr");
+        Generator<String> gen = Generator.apply(xs);
         CollectionLike<Integer> cl = gen.flatMap(new FlatMapF1<String, Integer>() {
-            public CollectionLike<Integer> _(String s) throws Exception {
-                return SInt._(0).until(s.length());
+            public CollectionLike<Integer> apply(String s) throws Exception {
+                return SInt.apply(0).until(s.length());
             }
         });
         assertThat(cl.toList().size(), is(equalTo(7)));
@@ -111,12 +111,12 @@ public class GeneratorTest {
 
     @Test
     public void foreach_A$VoidFunction1_Option() throws Exception {
-        CollectionLike<String> xs = Option._("foo");
-        Generator<String> gen = Generator._(xs);
+        CollectionLike<String> xs = Option.apply("foo");
+        Generator<String> gen = Generator.apply(xs);
 
         final Called called = new Called();
         gen.foreach(new VoidF1<String>() {
-            public void _(String s) throws Exception {
+            public void apply(String s) throws Exception {
                 called.count++;
             }
         });
@@ -125,12 +125,12 @@ public class GeneratorTest {
 
     @Test
     public void foreach_A$VoidFunction1_Seq() throws Exception {
-        CollectionLike<String> xs = Seq._("foo", "barr");
-        Generator<String> gen = Generator._(xs);
+        CollectionLike<String> xs = Seq.apply("foo", "barr");
+        Generator<String> gen = Generator.apply(xs);
 
         final Called called = new Called();
         gen.foreach(new VoidF1<String>() {
-            public void _(String s) throws Exception {
+            public void apply(String s) throws Exception {
                 called.count++;
             }
         });

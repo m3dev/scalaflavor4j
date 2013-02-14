@@ -15,7 +15,7 @@ public class Function1Test {
     @Test
     public void instantiation() throws Exception {
         Function1<String, Integer> count = new Function1<String, Integer>() {
-            public Integer _(String t) {
+            public Integer apply(String t) {
                 return t.length();
             };
         };
@@ -25,10 +25,10 @@ public class Function1Test {
     @Test
     public void __A$() throws Exception {
         assertThat(new Function1<String, Integer>() {
-            public Integer _(String t) {
+            public Integer apply(String t) {
                 return t.length();
             };
-        }._("foo"), is(equalTo(3)));
+        }.apply("foo"), is(equalTo(3)));
     }
 
     static class Something {
@@ -40,55 +40,53 @@ public class Function1Test {
     public void __A$_withCheckedException() throws Exception {
 
         assertThat(new Function1<String, Integer>() {
-            public Integer _(String t) throws Exception {
+            public Integer apply(String t) throws Exception {
                 new Something().doSomething();
                 return t.length();
             };
-        }._("foo"), is(equalTo(3)));
+        }.apply("foo"), is(equalTo(3)));
     }
 
     @Test
     public void compose_A$Function1() throws Exception {
         Function1<Long, Integer> f = new Function1<Long, Integer>() {
-            public Integer _(Long v1) {
+            public Integer apply(Long v1) {
                 return v1.intValue();
             }
         };
-        Function1<String, Long> g = new Function1<String, Long>() {
-            @Override
-            public Long _(String v1) {
+        RichFunction1<String, Long> g = new RichFunction1(new Function1<String, Long>() {
+            public Long apply(String v1) {
                 return Long.valueOf(v1.length());
             }
-        };
-        Function1<String, Integer> composed = f.compose(g);
-        assertThat(composed._("foo"), is(equalTo(3)));
+        });
+        RichFunction1<String, Integer> composed = new RichFunction1<Long, Integer>(f).compose(g);
+        assertThat(composed.apply("foo"), is(equalTo(3)));
     }
 
     @Test
     public void andThen_A$Function1() throws Exception {
         Function1<String, Long> f = new Function1<String, Long>() {
             @Override
-            public Long _(String v1) {
+            public Long apply(String v1) {
                 return Long.valueOf(v1.length());
             }
         };
-        Function1<Long, Integer> g = new Function1<Long, Integer>() {
-            @Override
-            public Integer _(Long v1) {
+        RichFunction1<Long, Integer> g = new RichFunction1(new Function1<Long, Integer>() {
+            public Integer apply(Long v1) {
                 return v1.intValue();
             }
-        };
-        Function1<String, Integer> fAndThenG = f.andThen(g);
-        assertThat(fAndThenG._("foo"), is(equalTo(3)));
+        });
+        RichFunction1<String, Integer> fAndThenG = new RichFunction1(f).andThen(g);
+        assertThat(fAndThenG.apply("foo"), is(equalTo(3)));
     }
 
     @Test
     public void toString_A$() throws Exception {
-        Function1<String, Integer> count = new Function1<String, Integer>() {
-            public Integer _(String t) {
+        RichFunction1<String, Integer> count = new RichFunction1(new Function1<String, Integer>() {
+            public Integer apply(String t) {
                 return t.length();
             };
-        };
+        });
         String actual = count.toString();
         String expected = "<function1>";
         assertThat(actual, is(equalTo(expected)));

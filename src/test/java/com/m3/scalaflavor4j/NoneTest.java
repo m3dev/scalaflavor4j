@@ -75,7 +75,7 @@ public class NoneTest {
         None<Integer> target = new None<Integer>();
         F1<Integer, Integer> f = new F1<Integer, Integer>() {
             @Override
-            public Integer _(Integer arg) {
+            public Integer apply(Integer arg) {
                 return arg * 2;
             }
         };
@@ -88,7 +88,7 @@ public class NoneTest {
         final Flag flag = new Flag();
         None<Integer> target = new None<Integer>();
         target.foreach(new VoidF1<Integer>() {
-            public void _(Integer arg) {
+            public void apply(Integer arg) {
                 flag.toggle();
             }
         });
@@ -100,7 +100,7 @@ public class NoneTest {
         None<String> target = new None<String>();
         F1<String, Boolean> isStartsWithv = new F1<String, Boolean>() {
             @Override
-            public Boolean _(String v1) {
+            public Boolean apply(String v1) {
                 return v1.startsWith("v");
             }
         };
@@ -113,8 +113,8 @@ public class NoneTest {
         None<String> target = new None<String>();
         F1<String, Option<Integer>> f = new F1<String, Option<Integer>>() {
             @Override
-            public Option<Integer> _(String v1) {
-                return Option._(v1.length());
+            public Option<Integer> apply(String v1) {
+                return Option.apply(v1.length());
             }
         };
         Option<Integer> actual = target.flatMap(f);
@@ -141,7 +141,7 @@ public class NoneTest {
         None<String> opt = new None<String>();
         Integer ifEmpty = -1;
         Integer actual = opt.fold(ifEmpty, new F1<String, Integer>() {
-            public Integer _(String s) {
+            public Integer apply(String s) {
                 return s.length();
             }
         });
@@ -152,8 +152,8 @@ public class NoneTest {
     public void fold_A$Object() throws Exception {
         None<String> opt = new None<String>();
         Integer ifEmpty = -1;
-        Integer actual = opt.fold(ifEmpty)._(new F1<String, Integer>() {
-            public Integer _(String s) {
+        Integer actual = opt.fold(ifEmpty).apply(new F1<String, Integer>() {
+            public Integer apply(String s) {
                 return s.length();
             }
         });

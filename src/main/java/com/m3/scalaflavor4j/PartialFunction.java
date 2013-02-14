@@ -21,20 +21,20 @@ package com.m3.scalaflavor4j;
  * isDefinedAt allows to test dynamically if a value is in the domain of the
  * function.
  */
-public class PartialFunction<R> extends Function1<Object, R> {
+public class PartialFunction<R> implements Function1<Object, R> {
 
     private final Seq<CaseClause<?, R>> caseClauses;
 
-    public static <R> PartialF<R> _(CaseClause<?, R>... caseClauses) {
+    public static <R> PartialF<R> apply(CaseClause<?, R>... caseClauses) {
         return new PartialF<R>(caseClauses);
     }
 
-    public static <R> PartialF<R> _(Seq<CaseClause<?, R>> caseClauses) {
+    public static <R> PartialF<R> apply(Seq<CaseClause<?, R>> caseClauses) {
         return new PartialF<R>(caseClauses);
     }
 
     PartialFunction(CaseClause<?, R>... caseClauses) {
-        this.caseClauses = Seq._(caseClauses);
+        this.caseClauses = Seq.apply(caseClauses);
     }
 
     PartialFunction(Seq<CaseClause<?, R>> caseClauses) {
@@ -46,10 +46,10 @@ public class PartialFunction<R> extends Function1<Object, R> {
     }
 
     @Override
-    public R _(final Object v) throws Exception {
+    public R apply(final Object v) throws Exception {
         Option<R> matched = getCaseClauses().foldLeft(Option.<R> none(),
                 new F2<Option<R>, CaseClause<?, R>, Option<R>>() {
-                    public Option<R> _(Option<R> alreadyMatched, CaseClause<?, R> caseClause) throws Exception {
+                    public Option<R> apply(Option<R> alreadyMatched, CaseClause<?, R> caseClause) throws Exception {
                         if (alreadyMatched.isDefined()) {
                             return alreadyMatched;
                         } else {
@@ -73,7 +73,7 @@ public class PartialFunction<R> extends Function1<Object, R> {
      */
     public boolean isDefinedAt(final Object v) {
         return getCaseClauses().foldLeft(false, new F2<Boolean, CaseClause<?, R>, Boolean>() {
-            public Boolean _(Boolean isDefinedAt, CaseClause<?, R> caseClause) throws Exception {
+            public Boolean apply(Boolean isDefinedAt, CaseClause<?, R> caseClause) throws Exception {
                 if (isDefinedAt) {
                     return true;
                 }
@@ -89,4 +89,5 @@ public class PartialFunction<R> extends Function1<Object, R> {
     public PartialFunction<R> orElse(PartialFunction<R> that) {
         return new PartialFunction<R>(getCaseClauses().union(that.getCaseClauses()));
     }
+
 }

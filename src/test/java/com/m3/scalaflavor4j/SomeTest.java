@@ -109,7 +109,7 @@ public class SomeTest {
         Some<String> target = new Some<String>(value);
         F1<String, Integer> f = new F1<String, Integer>() {
             @Override
-            public Integer _(String v1) {
+            public Integer apply(String v1) {
                 return v1.length();
             }
         };
@@ -123,7 +123,7 @@ public class SomeTest {
         int value = 1;
         Some<Integer> target = new Some<Integer>(value);
         target.foreach(new VoidF1<Integer>() {
-            public void _(Integer arg) {
+            public void apply(Integer arg) {
                 flag.toggle();
             }
         });
@@ -136,13 +136,13 @@ public class SomeTest {
         Some<String> target = new Some<String>(value);
         F1<String, Boolean> isStartsWithv = new F1<String, Boolean>() {
             @Override
-            public Boolean _(String v1) {
+            public Boolean apply(String v1) {
                 return v1.startsWith("v");
             }
         };
         F1<String, Boolean> isStartsWithw = new F1<String, Boolean>() {
             @Override
-            public Boolean _(String v1) {
+            public Boolean apply(String v1) {
                 return v1.startsWith("w");
             }
         };
@@ -159,8 +159,8 @@ public class SomeTest {
         Some<String> target = new Some<String>(value);
         F1<String, Option<Integer>> f = new F1<String, Option<Integer>>() {
             @Override
-            public Option<Integer> _(String v1) {
-                return Option._(v1.length());
+            public Option<Integer> apply(String v1) {
+                return Option.apply(v1.length());
             }
         };
         Option<Integer> actual = target.flatMap(f);
@@ -191,7 +191,7 @@ public class SomeTest {
         Some<String> target = new Some<String>(value);
         F1<String, String> f = new F1<String, String>() {
             @Override
-            public String _(String v1) {
+            public String apply(String v1) {
                 return v1;
             }
         };
@@ -204,7 +204,7 @@ public class SomeTest {
         String value = "vvv";
         Some<String> target = new Some<String>(value);
         target.foreach(new VoidF1<String>() {
-            public void _(String v1) {
+            public void apply(String v1) {
             }
         });
     }
@@ -215,7 +215,7 @@ public class SomeTest {
         Some<String> target = new Some<String>(value);
         F1<String, Boolean> f = new F1<String, Boolean>() {
             @Override
-            public Boolean _(String v1) {
+            public Boolean apply(String v1) {
                 return true;
             }
         };
@@ -229,8 +229,8 @@ public class SomeTest {
         Some<String> target = new Some<String>(value);
         F1<String, Option<String>> f = new F1<String, Option<String>>() {
             @Override
-            public Option<String> _(String v1) {
-                return Option._(v1);
+            public Option<String> apply(String v1) {
+                return Option.apply(v1);
             }
         };
         Option<String> actual = target.flatMap(f);
@@ -243,7 +243,7 @@ public class SomeTest {
         Some<String> opt = new Some<String>(value);
         Integer ifEmpty = -1;
         Integer actual = opt.fold(ifEmpty, new F1<String, Integer>() {
-            public Integer _(String s) {
+            public Integer apply(String s) {
                 return s.length();
             }
         });
@@ -255,8 +255,8 @@ public class SomeTest {
         String value = "vvv";
         Some<String> opt = new Some<String>(value);
         Integer ifEmpty = -1;
-        Integer actual = opt.fold(ifEmpty)._(new F1<String, Integer>() {
-            public Integer _(String s) {
+        Integer actual = opt.fold(ifEmpty).apply(new F1<String, Integer>() {
+            public Integer apply(String s) {
                 return s.length();
             }
         });
