@@ -21,9 +21,9 @@ Add the following dependency:
 
 # Migration from version 1.0.x
 
-- `apply(xxx)` methods are removed because the name is deprecated on Java 8. Please use `apply(xxx)` instead.
+- `_(xxx)` methods are removed because the name is deprecated in Java 8. Please use `apply(xxx)` instead.
 
-- FunctionN are changed from abstract class to interface due to JSR-335 specification. If you want to use `compose` or `andThen`, please decorate the instance with `RichFunctionN`.
+- `FunctionN` are changed from abstract class to interface due to JSR-335 specification. If you want to use `compose` or `andThen`, please decorate `FunctionN` instances with `RichFunctionN`.
 
 
 # Introduction
