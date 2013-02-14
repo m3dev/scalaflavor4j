@@ -29,15 +29,11 @@ public class Tuple5<T1, T2, T3, T4, T5> {
     private T5 _5;
 
     public static <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> apply(T1 _1, T2 _2, T3 _3, T4 _4, T5 _5) {
-        return _(_1, _2, _3, _4, _5);
-    }
-
-    public static <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> _(T1 _1, T2 _2, T3 _3, T4 _4, T5 _5) {
         return new Tuple5<T1, T2, T3, T4, T5>(_1, _2, _3, _4, _5);
     }
 
     public static <T1, T2, T3, T4, T5> Option<Tuple5<T1, T2, T3, T4, T5>> unapply(Tuple5<T1, T2, T3, T4, T5> tuple) {
-        return Option._(tuple);
+        return Option.apply(tuple);
     }
 
     protected Tuple5(T1 _1, T2 _2, T3 _3, T4 _4, T5 _5) {

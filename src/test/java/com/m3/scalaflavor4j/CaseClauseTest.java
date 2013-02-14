@@ -38,43 +38,43 @@ public class CaseClauseTest {
     @Test
     public void __A$Object_null() throws Exception {
         CaseClause<String, String> caseClause = CaseClause._case(String.class)._arrow(new F1<String, String>() {
-            public String _(String v1) throws Exception {
+            public String apply(String v1) throws Exception {
                 return v1;
             }
         });
         Object v = null;
-        Option<String> actual = caseClause._(v);
+        Option<String> actual = caseClause.apply(v);
         assertThat(actual.isDefined(), is(false));
     }
 
     @Test
     public void __A$Object_Integer() throws Exception {
         CaseClause<String, String> caseClause = CaseClause._case(String.class)._arrow(new F1<String, String>() {
-            public String _(String v1) throws Exception {
+            public String apply(String v1) throws Exception {
                 return v1;
             }
         });
         Object v = 123;
-        Option<String> actual = caseClause._(v);
+        Option<String> actual = caseClause.apply(v);
         assertThat(actual.isDefined(), is(false));
     }
 
     @Test
     public void __A$Object_String() throws Exception {
         CaseClause<String, String> caseClause = CaseClause._case(String.class)._arrow(new F1<String, String>() {
-            public String _(String v1) throws Exception {
+            public String apply(String v1) throws Exception {
                 return v1;
             }
         });
         Object v = "foo";
-        Option<String> actual = caseClause._(v);
+        Option<String> actual = caseClause.apply(v);
         assertThat(actual.isDefined(), is(true));
     }
 
     @Test
     public void isDefinedAt_A$Object_null() throws Exception {
         CaseClause<String, String> caseClause = CaseClause._case(String.class)._arrow(new F1<String, String>() {
-            public String _(String v1) throws Exception {
+            public String apply(String v1) throws Exception {
                 return v1;
             }
         });

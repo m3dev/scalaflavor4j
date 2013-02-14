@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * scala.runtime.RichLong
- * 
+ *
  * @see "http://www.scala-lang.org/api/2.9.1/index.html#scala.runtime.RichLong"
  */
 public class SLong {
@@ -28,10 +28,6 @@ public class SLong {
     private final Long value;
 
     public static SLong apply(Long i) {
-        return _(i);
-    }
-
-    public static SLong _(Long i) {
         return new SLong(i);
     }
 
@@ -55,7 +51,7 @@ public class SLong {
         for (long i = value; i <= j; i++) {
             range.add(i);
         }
-        return IndexedSeq._(range);
+        return IndexedSeq.apply(range);
     }
 
     public IndexedSeq<Long> to(Long j, Long step) {
@@ -63,7 +59,7 @@ public class SLong {
         for (long i = value; i <= j; i += step) {
             range.add(i);
         }
-        return IndexedSeq._(range);
+        return IndexedSeq.apply(range);
     }
 
     public IndexedSeq<Long> until(Long j) {
@@ -71,7 +67,7 @@ public class SLong {
         for (long i = value; i < j; i++) {
             range.add(i);
         }
-        return IndexedSeq._(range);
+        return IndexedSeq.apply(range);
     }
 
     public IndexedSeq<Long> until(Long j, Long step) {
@@ -79,7 +75,7 @@ public class SLong {
         for (long i = value; i < j; i += step) {
             range.add(i);
         }
-        return IndexedSeq._(range);
+        return IndexedSeq.apply(range);
     }
 
     @Override

@@ -32,14 +32,14 @@ public class StringLikeTest {
 
     @Test
     public void __A$String_Null() throws Exception {
-        StringLike sl = StringLike._((String) null);
+        StringLike sl = StringLike.apply((String) null);
         assertThat(sl.size(), is(equalTo(0)));
         assertThat(sl.headOption().isDefined(), is(false));
     }
 
     @Test
     public void __A$String_Empty() throws Exception {
-        StringLike sl = StringLike._("");
+        StringLike sl = StringLike.apply("");
         assertThat(sl.size(), is(equalTo(0)));
         assertThat(sl.headOption().isDefined(), is(false));
     }
@@ -47,7 +47,7 @@ public class StringLikeTest {
     @Test
     public void __A$String() throws Exception {
         String str = "あかさたな";
-        StringLike sl = StringLike._(str);
+        StringLike sl = StringLike.apply(str);
         assertThat(sl.size(), is(equalTo(5)));
         assertThat(sl.head(), is(equalTo('あ')));
     }

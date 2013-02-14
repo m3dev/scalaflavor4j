@@ -26,7 +26,7 @@ public class PairTest {
 
     @Test
     public void __A$Object$Object() throws Exception {
-        Pair<String, Integer> actual = Pair._("1", 2);
+        Pair<String, Integer> actual = Pair.apply("1", 2);
         assertThat(actual, notNullValue());
     }
 

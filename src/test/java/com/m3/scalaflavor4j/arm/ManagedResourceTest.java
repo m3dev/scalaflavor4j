@@ -31,7 +31,7 @@ public class ManagedResourceTest {
     public void map_A$Function1() throws Exception {
         ByteArrayInputStream closable = new ByteArrayInputStream(new byte[] { 83, 99, 97, 108, 97 });
         String result = managed(closable).map(new F1<ByteArrayInputStream, String>() {
-            public String _(ByteArrayInputStream is) throws Exception {
+            public String apply(ByteArrayInputStream is) throws Exception {
                 byte[] bytes = new byte[5];
                 is.read(bytes);
                 return new String(bytes);
@@ -52,7 +52,7 @@ public class ManagedResourceTest {
     public void map_A$Function1_callingClose() throws Exception {
         DummyStream ds = new DummyStream();
         String result = managed(ds).map(new F1<DummyStream, String>() {
-            public String _(DummyStream ds) throws Exception {
+            public String apply(DummyStream ds) throws Exception {
                 return "ok";
             }
         });
@@ -64,7 +64,7 @@ public class ManagedResourceTest {
     public void foreach_A$VoidFunction1() throws Exception {
         ByteArrayInputStream closable = new ByteArrayInputStream(new byte[] { 83, 99, 97, 108, 97 });
         managed(closable).foreach(new VoidF1<ByteArrayInputStream>() {
-            public void _(ByteArrayInputStream is) throws Exception {
+            public void apply(ByteArrayInputStream is) throws Exception {
                 byte[] bytes = new byte[5];
                 is.read(bytes);
                 for (byte b : bytes) {
@@ -78,7 +78,7 @@ public class ManagedResourceTest {
     public void foreach_A$VoidFunction1_callingClose() throws Exception {
         DummyStream ds = new DummyStream();
         managed(ds).foreach(new VoidF1<DummyStream>() {
-            public void _(DummyStream ds) throws Exception {
+            public void apply(DummyStream ds) throws Exception {
             }
         });
         assertThat(ds.isClosed, is(true));

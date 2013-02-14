@@ -33,18 +33,10 @@ public class SNum {
     }
 
     public static SNum apply(Integer i) {
-        return _(i);
-    }
-
-    public static SNum _(Integer i) {
         return new SNum(new BigDecimal(i));
     }
 
     public static SNum apply(BigDecimal i) {
-        return _(i);
-    }
-
-    public static SNum _(BigDecimal i) {
         return new SNum(i);
     }
 
@@ -73,11 +65,11 @@ public class SNum {
     }
 
     public SInt toSInt() {
-        return SInt._(value.intValue());
+        return SInt.apply(value.intValue());
     }
 
     public SLong toSLong() {
-        return SLong._(value.longValue());
+        return SLong.apply(value.longValue());
     }
 
     @Override

@@ -21,9 +21,9 @@ public class StrTest {
     }
 
     @Test
-    public void __A$String() throws Exception {
+    public void apply_A$String_2() throws Exception {
         String str = "日本語１２３abc";
-        Seq<Character> cs = Str._(str);
+        Seq<Character> cs = Str.apply(str);
         assertThat(cs.size(), is(equalTo(9)));
         assertThat(cs.head(), is(equalTo('日')));
     }

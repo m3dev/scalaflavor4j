@@ -95,7 +95,7 @@ public class Tuple5Test {
         Long _3 = 456L;
         Boolean _4 = true;
         Double _5 = 7.8D;
-        Tuple5<String, Integer, Long, Boolean, Double> actual = Tuple5._(_1, _2, _3, _4, _5);
+        Tuple5<String, Integer, Long, Boolean, Double> actual = Tuple5.apply(_1, _2, _3, _4, _5);
         assertThat(actual, is(notNullValue()));
     }
 
@@ -106,14 +106,14 @@ public class Tuple5Test {
         Long _3 = 456L;
         Boolean _4 = true;
         Double _5 = 7.8D;
-        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple5._(_1, _2, _3, _4, _5);
+        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple5.apply(_1, _2, _3, _4, _5);
         Option<Tuple5<String, Integer, Long, Boolean, Double>> actual = Tuple5.unapply(tuple);
         assertThat(actual.isDefined(), is(true));
     }
 
     @Test
     public void toString_A$() throws Exception {
-        String actual = Tuple5._(1, 2, 3, 4, 5).toString();
+        String actual = Tuple5.apply(1, 2, 3, 4, 5).toString();
         String expected = "(1,2,3,4,5)";
         assertThat(actual, is(equalTo(expected)));
     }
@@ -137,7 +137,7 @@ public class Tuple5Test {
         Long _3 = 456L;
         Boolean _4 = true;
         Double _5 = 7.8D;
-        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple._(_1, _2, _3, _4, _5);
+        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple.apply(_1, _2, _3, _4, _5);
         String actual = tuple.getFirst();
         String expected = "foo";
         assertThat(actual, is(equalTo(expected)));
@@ -150,7 +150,7 @@ public class Tuple5Test {
         Long _3 = 456L;
         Boolean _4 = true;
         Double _5 = 7.8D;
-        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple._(_1, _2, _3, _4, _5);
+        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple.apply(_1, _2, _3, _4, _5);
         Integer actual = tuple.getSecond();
         Integer expected = 123;
         assertThat(actual, is(equalTo(expected)));
@@ -163,7 +163,7 @@ public class Tuple5Test {
         Long _3 = 456L;
         Boolean _4 = true;
         Double _5 = 7.8D;
-        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple._(_1, _2, _3, _4, _5);
+        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple.apply(_1, _2, _3, _4, _5);
         Long actual = tuple.getThird();
         Long expected = 456L;
         assertThat(actual, is(equalTo(expected)));
@@ -176,7 +176,7 @@ public class Tuple5Test {
         Long _3 = 456L;
         Boolean _4 = true;
         Double _5 = 7.8D;
-        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple._(_1, _2, _3, _4, _5);
+        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple.apply(_1, _2, _3, _4, _5);
         Boolean actual = tuple.getFourth();
         Boolean expected = true;
         assertThat(actual, is(equalTo(expected)));
@@ -189,7 +189,7 @@ public class Tuple5Test {
         Long _3 = 456L;
         Boolean _4 = true;
         Double _5 = 7.8D;
-        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple._(_1, _2, _3, _4, _5);
+        Tuple5<String, Integer, Long, Boolean, Double> tuple = Tuple.apply(_1, _2, _3, _4, _5);
         Double actual = tuple.getFifth();
         Double expected = 7.8D;
         assertThat(actual, is(equalTo(expected)));

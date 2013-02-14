@@ -1,9 +1,9 @@
 package com.m3.scalaflavor4j;
 
+import org.junit.Test;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-
-import org.junit.Test;
 
 public class VoidFunction4Test {
 
@@ -15,7 +15,7 @@ public class VoidFunction4Test {
     @Test
     public void instantiation() throws Exception {
         VoidF4<String, String, String, String> vf = new VoidF4<String, String, String, String>() {
-            public void _(String v1, String v2, String v3, String v4) {
+            public void apply(String v1, String v2, String v3, String v4) {
                 System.out.println(v1 + v2 + v3 + v4);
             }
         };
@@ -24,23 +24,23 @@ public class VoidFunction4Test {
 
     @Test
     public void tupled_A$() throws Exception {
-        VoidF4<String, String, String, String> vf = new VoidF4<String, String, String, String>() {
-            public void _(String v1, String v2, String v3, String v4) {
+        RichVoidFunction4<String, String, String, String> vf = new RichVoidFunction4(new VoidF4<String, String, String, String>() {
+            public void apply(String v1, String v2, String v3, String v4) {
                 System.out.println(v1 + v2 + v3 + v4);
             }
-        };
+        });
         VoidFunction1<Tuple4<String, String, String, String>> actual = vf.tupled();
         assertThat(actual, is(notNullValue()));
-        actual._(Tuple4._("a", "b", "c", "d"));
+        actual.apply(Tuple4.apply("a", "b", "c", "d"));
     }
 
     @Test
     public void toString_A$() throws Exception {
-        VoidF4<String, String, String, String> vf = new VoidF4<String, String, String, String>() {
-            public void _(String v1, String v2, String v3, String v4) {
+        RichVoidFunction4<String, String, String, String> vf = new RichVoidFunction4(new VoidF4<String, String, String, String>() {
+            public void apply(String v1, String v2, String v3, String v4) {
                 System.out.println(v1 + v2 + v3 + v4);
             }
-        };
+        });
         String actual = vf.toString();
         String expected = "<void-function4>";
         assertThat(actual, is(equalTo(expected)));

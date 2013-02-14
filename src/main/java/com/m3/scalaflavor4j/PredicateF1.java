@@ -18,6 +18,6 @@ package com.m3.scalaflavor4j;
 /**
  * {@link Function1} alias for predicate functions
  */
-public abstract class PredicateF1<T1> extends Function1<T1, Boolean> {
+public interface PredicateF1<T1> extends Function1<T1, Boolean> {
 
 }

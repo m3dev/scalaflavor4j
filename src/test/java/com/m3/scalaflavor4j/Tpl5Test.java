@@ -50,7 +50,7 @@ public class Tpl5Test {
         Long _3 = 1L;
         Double _4 = 0.1D;
         Boolean _5 = false;
-        Tpl5<String, Integer, Long, Double, Boolean> tpl = Tpl5._(_1, _2, _3, _4, _5);
+        Tpl5<String, Integer, Long, Double, Boolean> tpl = Tpl5.apply(_1, _2, _3, _4, _5);
         assertThat(tpl._1(), is(equalTo(_1)));
         assertThat(tpl._2(), is(equalTo(_2)));
         assertThat(tpl._3(), is(equalTo(_3)));
@@ -65,7 +65,7 @@ public class Tpl5Test {
         Long _3 = 456L;
         Boolean _4 = true;
         Double _5 = 7.8D;
-        Tpl5<String, Integer, Long, Boolean, Double> tuple = Tpl5._(_1, _2, _3, _4, _5);
+        Tpl5<String, Integer, Long, Boolean, Double> tuple = Tpl5.apply(_1, _2, _3, _4, _5);
         Option<Tpl5<String, Integer, Long, Boolean, Double>> actual = Tpl5.unapply(tuple);
         assertThat(actual.isDefined(), is(true));
     }

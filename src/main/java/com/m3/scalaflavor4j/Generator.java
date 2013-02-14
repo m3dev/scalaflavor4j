@@ -30,10 +30,6 @@ public class Generator<T> {
     }
 
     public static <T> Generator<T> apply(CollectionLike<T> xs) {
-        return _(xs);
-    }
-
-    public static <T> Generator<T> _(CollectionLike<T> xs) {
         return new Generator<T>(xs);
     }
 
@@ -42,16 +38,16 @@ public class Generator<T> {
             if (xs != null && xs.size() == 0) {
                 return Option.none();
             } else if (xs != null && xs.size() == 1) {
-                return Option._(xs.get(0));
+                return Option.apply(xs.get(0));
             }
         }
-        return Seq._(xs);
+        return Seq.apply(xs);
     }
 
     public <U> CollectionLike<U> map(final Function1<T, U> f) {
         final List<U> xs = new ArrayList<U>();
         _xs.foreach(new VoidF1<T>() {
-            public void _(T x) throws Exception {
+            public void apply(T x) throws Exception {
                 xs.add(f.apply(x));
             }
         });
@@ -61,13 +57,13 @@ public class Generator<T> {
     public <U> CollectionLike<U> flatMap(final Function1<T, CollectionLike<U>> f) {
         final List<CollectionLike<U>> unflatten = new ArrayList<CollectionLike<U>>();
         _xs.foreach(new VoidF1<T>() {
-            public void _(T x) throws Exception {
+            public void apply(T x) throws Exception {
                 unflatten.add(f.apply(x));
             }
         });
         final List<U> xs = new ArrayList<U>();
-        Seq._(unflatten).foreach(new VoidF1<CollectionLike<U>>() {
-            public void _(CollectionLike<U> col) throws Exception {
+        Seq.apply(unflatten).foreach(new VoidF1<CollectionLike<U>>() {
+            public void apply(CollectionLike<U> col) throws Exception {
                 xs.addAll(col.toList());
             }
         });

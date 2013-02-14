@@ -15,50 +15,16 @@
  */
 package com.m3.scalaflavor4j;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-
-import jsr166y.ForkJoinPool;
-
 /**
  * A function of 0 parameter.
- * 
+ *
  * @see "http://www.scala-lang.org/api/2.9.1/index.html#scala.Function0"
  */
-public abstract class Function0<R> {
-
-    private static ForkJoinPool forkJoinPool = new ForkJoinPool();
-
-    public R apply() throws Exception {
-        return _();
-    }
+public interface Function0<R> {
 
     /**
      * Apply the body of this function to the arguments.
      */
-    public abstract R _() throws Exception;
-
-    /**
-     * Creates a String representation of this object.
-     */
-    @Override
-    public String toString() {
-        return "<function0>";
-    }
-
-    /**
-     * [Original] Converts to {@link java.util.concurrent.Future}
-     */
-    public Future<R> toJucFuture() {
-        final Function0<R> _this = this;
-        FutureTask<R> future = new FutureTask<R>(new Callable<R>() {
-            public R call() throws Exception {
-                return _this.apply();
-            }
-        });
-        forkJoinPool.execute(future);
-        return future;
-    }
+    R apply() throws Exception;
 
 }

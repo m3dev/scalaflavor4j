@@ -23,15 +23,11 @@ package com.m3.scalaflavor4j;
 public class Pair<T1, T2> extends Tuple2<T1, T2> {
 
     public static <T1, T2> Pair<T1, T2> apply(T1 _1, T2 _2) {
-        return _(_1, _2);
-    }
-
-    public static <T1, T2> Pair<T1, T2> _(T1 _1, T2 _2) {
         return new Pair<T1, T2>(_1, _2);
     }
 
     public static <T1, T2> Option<Tuple2<T1, T2>> unapply(Tuple2<T1, T2> tuple) {
-        return Option._(tuple);
+        return Option.apply(tuple);
     }
 
     protected Pair(T1 _1, T2 _2) {

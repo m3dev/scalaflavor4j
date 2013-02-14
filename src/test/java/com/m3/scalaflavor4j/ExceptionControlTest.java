@@ -29,31 +29,31 @@ public class ExceptionControlTest {
 
         Catch<String> NPE_AE = catching(NullPointerException.class, ArithmeticException.class).withApply(
                 new F1<Throwable, String>() {
-                    public String _(Throwable t) {
+                    public String apply(Throwable t) {
                         return t.getMessage();
                     }
                 }).andFinally(new VoidF0() {
-            public void _() throws Exception {
+            public void apply() throws Exception {
                 counter.i++;
             }
         });
 
         String ok = NPE_AE.apply(new F0<String>() {
-            public String _() {
+            public String apply() {
                 return "ok";
             }
         });
         assertThat(ok, is(equalTo("ok")));
 
         String npe = NPE_AE.apply(new F0<String>() {
-            public String _() {
+            public String apply() {
                 throw new NullPointerException("npe");
             }
         });
         assertThat(npe, is(equalTo("npe")));
 
         String ae = NPE_AE.apply(new F0<String>() {
-            public String _() {
+            public String apply() {
                 throw new ArithmeticException("ae");
             }
         });
@@ -61,7 +61,7 @@ public class ExceptionControlTest {
 
         try {
             NPE_AE.apply(new F0<String>() {
-                public String _() throws Exception {
+                public String apply() throws Exception {
                     throw new IOException("foo");
                 }
             });
@@ -74,46 +74,46 @@ public class ExceptionControlTest {
 
         // or
         Catch<String> OR = catching(NullPointerException.class).withApply(new F1<Throwable, String>() {
-            public String _(Throwable t) {
+            public String apply(Throwable t) {
                 return t.getMessage();
             }
         }).or(catching(ArithmeticException.class).withApply(new F1<Throwable, String>() {
-            public String _(Throwable v1) throws Exception {
+            public String apply(Throwable v1) throws Exception {
                 return "---";
             }
         }));
 
         assertThat(OR.apply(new F0<String>() {
-            public String _() {
+            public String apply() {
                 throw new NullPointerException("npe");
             }
         }), is(equalTo("npe")));
         assertThat(OR.apply(new F0<String>() {
-            public String _() {
+            public String apply() {
                 throw new ArithmeticException("ae");
             }
         }), is(equalTo("---")));
 
         Catch<String> npeCatcher = catching(NullPointerException.class).withApply(new F1<Throwable, String>() {
-            public String _(Throwable t) {
+            public String apply(Throwable t) {
                 return t.getMessage();
             }
         });
 
         // opt
         assertThat(npeCatcher.opt(new F0<String>() {
-            public String _() throws Exception {
+            public String apply() throws Exception {
                 return "foo";
             }
         }).getOrNull(), is(equalTo("foo")));
         assertThat(npeCatcher.opt(new F0<String>() {
-            public String _() throws Exception {
+            public String apply() throws Exception {
                 throw new NullPointerException();
             }
         }).isDefined(), is(false));
         try {
             npeCatcher.opt(new F0<String>() {
-                public String _() throws Exception {
+                public String apply() throws Exception {
                     throw new Exception();
                 }
             });
@@ -123,18 +123,18 @@ public class ExceptionControlTest {
 
         // either
         assertThat(npeCatcher.either(new F0<String>() {
-            public String _() throws Exception {
+            public String apply() throws Exception {
                 return "foo";
             }
         }).isRight(), is(true));
         assertThat(npeCatcher.either(new F0<String>() {
-            public String _() throws Exception {
+            public String apply() throws Exception {
                 throw new NullPointerException();
             }
         }).isLeft(), is(true));
         try {
             npeCatcher.either(new F0<String>() {
-                public String _() throws Exception {
+                public String apply() throws Exception {
                     throw new Exception();
                 }
             });
@@ -144,11 +144,11 @@ public class ExceptionControlTest {
 
         try {
             catching(Exception.class).withApply(new F1<Throwable, String>() {
-                public String _(Throwable v1) {
+                public String apply(Throwable v1) {
                     return null;
                 }
             }).apply(new F0<String>() {
-                public String _() throws Exception {
+                public String apply() throws Exception {
                     throw new InterruptedException();
                 }
             });
@@ -161,11 +161,11 @@ public class ExceptionControlTest {
     @Test
     public void allCatch_A$() throws Exception {
         String result = allCatch().withApply(new F1<Throwable, String>() {
-            public String _(Throwable v1) throws Exception {
+            public String apply(Throwable v1) throws Exception {
                 return "catched!";
             }
         }).apply(new F0<String>() {
-            public String _() throws Exception {
+            public String apply() throws Exception {
                 throw new Exception();
             }
         });
@@ -177,7 +177,7 @@ public class ExceptionControlTest {
     public void ignoring_A$ClassArray() throws Exception {
         Catch<String> ignore = ignoring(Exception.class);
         String result = ignore.apply(new F0<String>() {
-            public String _() throws Exception {
+            public String apply() throws Exception {
                 throw new RuntimeException();
             }
         });
@@ -189,11 +189,11 @@ public class ExceptionControlTest {
     public void catchingPromiscuously_A$ClassArray() throws Exception {
         try {
             catchingPromiscuously(Exception.class).withApply(new F1<Throwable, String>() {
-                public String _(Throwable v1) {
+                public String apply(Throwable v1) {
                     return null;
                 }
             }).apply(new F0<String>() {
-                public String _() throws Exception {
+                public String apply() throws Exception {
                     throw new InterruptedException();
                 }
             });
@@ -206,11 +206,11 @@ public class ExceptionControlTest {
     @SuppressWarnings("unchecked")
     public void handling_A$ClassArray() throws Exception {
         String message = handling(NullPointerException.class).by(new F1<Throwable, String>() {
-            public String _(Throwable t) {
+            public String apply(Throwable t) {
                 return t.getMessage();
             }
         }).apply(new F0<String>() {
-            public String _() throws Exception {
+            public String apply() throws Exception {
                 throw new NullPointerException("foo");
             }
         });
@@ -221,12 +221,12 @@ public class ExceptionControlTest {
     public void ultimately_A$VoidFunction0() throws Exception {
         final Counter counter = new Counter();
         Catch<String> ultimately = ultimately(new VoidF0() {
-            public void _() throws Exception {
+            public void apply() throws Exception {
                 counter.i++;
             }
         });
         String result = ultimately.apply(new F0<String>() {
-            public String _() throws Exception {
+            public String apply() throws Exception {
                 return "foo";
             }
         });

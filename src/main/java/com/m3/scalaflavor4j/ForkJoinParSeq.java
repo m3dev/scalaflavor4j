@@ -15,18 +15,14 @@
  */
 package com.m3.scalaflavor4j;
 
-import static com.m3.scalaflavor4j.ConcurrentOps.*;
-import static com.m3.scalaflavor4j.ExceptionControl.*;
+import jsr166y.ForkJoinPool;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jsr166y.ForkJoinPool;
+import static com.m3.scalaflavor4j.ConcurrentOps.*;
+import static com.m3.scalaflavor4j.ExceptionControl.*;
 
 /**
  * {@link ParSeq} implementation
@@ -35,7 +31,7 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
 
     private static final long serialVersionUID = 1L;
 
-    private final Nil<T> NIL = Nil._();
+    private final Nil<T> NIL = Nil.apply();
 
     private static final Logger logger = Logger.getLogger(ForkJoinParSeq.class.getCanonicalName());
 
@@ -44,20 +40,12 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
     protected final Collection<T> collection;
 
     public static <T> ForkJoinParSeq<T> apply(T... values) {
-        return _(values);
-    }
-
-    public static <T> ForkJoinParSeq<T> _(T... values) {
         LinkedList<T> list = new LinkedList<T>();
         Collections.addAll(list, values);
-        return _(list);
+        return apply(list);
     }
 
     public static <T> ForkJoinParSeq<T> apply(Collection<T> collection) {
-        return _(collection);
-    }
-
-    public static <T> ForkJoinParSeq<T> _(Collection<T> collection) {
         return new ForkJoinParSeq<T>(collection);
     }
 
@@ -69,14 +57,14 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T doBlocking(final F0<T> future) {
+    private static <T> T doBlocking(final F0<T> future) throws Exception {
         return handling(Exception.class).by(new F1<Throwable, T>() {
-            public T _(Throwable t) throws Exception {
+            public T apply(Throwable t) throws Exception {
                 throw new ScalaFlavor4JException(t);
             }
         }).apply(new F0<T>() {
-            public T _() throws Exception {
-                return future._();
+            public T apply() throws Exception {
+                return future.apply();
             }
 
         });
@@ -88,11 +76,11 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
             return NIL.count(predicate);
         }
         return map(new F1<T, Integer>() {
-            public Integer _(T element) throws Exception {
+            public Integer apply(T element) throws Exception {
                 return predicate.apply(element) ? 1 : 0;
             }
         }).toSeq().foldLeft(0, new FoldLeftF2<Integer, Integer>() {
-            public Integer _(Integer sum, Integer i) throws Exception {
+            public Integer apply(Integer sum, Integer i) throws Exception {
                 return sum + i;
             }
         });
@@ -104,7 +92,7 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
             return NIL.exists(predicate);
         }
         return map(new F1<T, Boolean>() {
-            public Boolean _(T element) throws Exception {
+            public Boolean apply(T element) throws Exception {
                 return predicate.apply(element);
             }
         }).toSeq().contains(true);
@@ -113,12 +101,12 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
     @Override
     public ParSeq<T> filter(final Function1<T, Boolean> predicate) {
         if (isEmpty()) {
-            return ParSeq._(NIL.filter(predicate).toList());
+            return ParSeq.apply(NIL.filter(predicate).toList());
         }
         return flatMap(new FlatMapF1<T, T>() {
-            public CollectionLike<T> _(T element) throws Exception {
+            public CollectionLike<T> apply(T element) throws Exception {
                 if (predicate.apply(element)) {
-                    return Option._(element);
+                    return Option.apply(element);
                 }
                 return Option.none();
             }
@@ -128,12 +116,12 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
     @Override
     public ParSeq<T> filterNot(final Function1<T, Boolean> predicate) {
         if (isEmpty()) {
-            return ParSeq._(NIL.filterNot(predicate).toList());
+            return ParSeq.apply(NIL.filterNot(predicate).toList());
         }
         return flatMap(new FlatMapF1<T, T>() {
-            public CollectionLike<T> _(T element) throws Exception {
+            public CollectionLike<T> apply(T element) throws Exception {
                 if (!predicate.apply(element)) {
-                    return Option._(element);
+                    return Option.apply(element);
                 }
                 return Option.none();
             }
@@ -143,21 +131,25 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
     @Override
     public <U> ParSeq<U> flatMap(final Function1<T, CollectionLike<U>> f) {
         if (isEmpty()) {
-            return ParSeq._(NIL.flatMap(f).toList());
+            return ParSeq.apply(NIL.flatMap(f).toList());
         }
         LinkedList<F0<CollectionLike<U>>> futures = new LinkedList<F0<CollectionLike<U>>>();
         for (final T element : collection) {
             futures.add(future(new F0<CollectionLike<U>>() {
-                public CollectionLike<U> _() throws Exception {
+                public CollectionLike<U> apply() throws Exception {
                     return f.apply(element);
                 }
             }));
         }
         LinkedList<U> results = new LinkedList<U>();
         for (F0<CollectionLike<U>> future : futures) {
-            results.addAll(doBlocking(future).toList());
+            try {
+                results.addAll(doBlocking(future).toList());
+            } catch (Exception e) {
+                throw new ScalaFlavor4JException(e);
+            }
         }
-        return ParSeq._(results);
+        return ParSeq.apply(results);
     }
 
     @Override
@@ -166,7 +158,7 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
             return NIL.forall(predicate);
         }
         Seq<Boolean> result = map(new F1<T, Boolean>() {
-            public Boolean _(T element) throws Exception {
+            public Boolean apply(T element) throws Exception {
                 return predicate.apply(element);
             }
         }).toSeq().distinct();
@@ -209,16 +201,18 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
             return NIL.groupBy(getGroupName);
         }
         ParSeq<GroupEntry<U>> entries = map(new F1<T, GroupEntry<U>>() {
-            public GroupEntry<U> _(T element) throws Exception {
+            public GroupEntry<U> apply(T element) throws Exception {
                 U name = getGroupName.apply(element);
                 return new GroupEntry<U>(name, element);
             }
         });
-        return entries.toSeq().foldLeft(SMap.<U, Seq<T>> _(), new FoldLeftF2<SMap<U, Seq<T>>, GroupEntry<U>>() {
-            public SMap<U, Seq<T>> _(SMap<U, Seq<T>> map, GroupEntry<U> entry) throws Exception {
-                Seq<T> groupMembers = map.getOrElse(entry.groupName, Seq.<T> _());
+        return entries.toSeq().foldLeft(SMap.<U, Seq<T>>apply(), new FoldLeftF2<SMap<U, Seq<T>>, GroupEntry<U>>() {
+            public SMap<U, Seq<T>> apply(SMap<U, Seq<T>> map, GroupEntry<U> entry) throws Exception {
+                Seq<T> groupMembers = map.getOrElse(entry.groupName, Seq.<T>apply());
                 return map.updated(entry.groupName, groupMembers.append(entry.member));
-            };
+            }
+
+            ;
         });
     }
 
@@ -230,21 +224,25 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
     @Override
     public <U> ParSeq<U> map(final Function1<T, U> f) {
         if (isEmpty()) {
-            return ParSeq._(NIL.map(f).toList());
+            return ParSeq.apply(NIL.map(f).toList());
         }
         LinkedList<F0<U>> futures = new LinkedList<F0<U>>();
         for (final T element : collection) {
             futures.add(future(new F0<U>() {
-                public U _() throws Exception {
+                public U apply() throws Exception {
                     return f.apply(element);
                 }
             }));
         }
         LinkedList<U> results = new LinkedList<U>();
         for (F0<U> future : futures) {
-            results.add(doBlocking(future));
+            try {
+                results.add(doBlocking(future));
+            } catch (Exception e) {
+                throw new ScalaFlavor4JException(e);
+            }
         }
-        return ParSeq._(results);
+        return ParSeq.apply(results);
     }
 
     @Override
@@ -254,7 +252,7 @@ public class ForkJoinParSeq<T> extends ParSeq<T> {
 
     @Override
     public Seq<T> toSeq() {
-        return Seq._(new ArrayList<T>(collection));
+        return Seq.apply(new ArrayList<T>(collection));
     }
 
 }

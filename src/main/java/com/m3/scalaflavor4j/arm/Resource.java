@@ -15,17 +15,18 @@
  */
 package com.m3.scalaflavor4j.arm;
 
-import static com.m3.scalaflavor4j.ExceptionControl.*;
-
-import java.lang.reflect.Method;
-
 import com.m3.scalaflavor4j.F0;
 import com.m3.scalaflavor4j.F1;
 import com.m3.scalaflavor4j.ScalaFlavor4JException;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
+
+import static com.m3.scalaflavor4j.ExceptionControl.*;
+
 /**
  * Resource (Scala ARM like, not exactly)
- * 
+ *
  * @see "https://github.com/jsuereth/scala-arm/blob/master/src/main/scala/resource/package.scala"
  */
 public class Resource {
@@ -62,36 +63,40 @@ public class Resource {
     }
 
     @SuppressWarnings("unchecked")
-    static void ensureClosable(final Object closable) {
-        catching(SecurityException.class, NoSuchMethodException.class).withApply(new F1<Throwable, Object>() {
-            public Object _(Throwable t) throws Exception {
-                throw new IllegalArgumentException(closable.getClass().getCanonicalName()
-                        + " does not have close method.");
-            }
-        }).apply(new F0<Object>() {
-            public Object _() throws SecurityException, NoSuchMethodException {
-                boolean isCloseMethodFound = false;
-                Class<?> clazz = closable.getClass();
-                while (clazz != Object.class) {
-                    try {
-                        clazz.getDeclaredMethod("close", (Class<?>[]) null);
-                        isCloseMethodFound = true;
-                        break;
-                    } catch (Throwable e) {
+    static void ensureClosable(final Object closable) throws IOException {
+        try {
+            catching(SecurityException.class, NoSuchMethodException.class).withApply(new F1<Throwable, Object>() {
+                public Object apply(Throwable t) throws Exception {
+                    throw new IllegalArgumentException(closable.getClass().getCanonicalName()
+                            + " does not have close method.");
+                }
+            }).apply(new F0<Object>() {
+                public Object apply() throws SecurityException, NoSuchMethodException {
+                    boolean isCloseMethodFound = false;
+                    Class<?> clazz = closable.getClass();
+                    while (clazz != Object.class) {
+                        try {
+                            clazz.getDeclaredMethod("close", (Class<?>[]) null);
+                            isCloseMethodFound = true;
+                            break;
+                        } catch (Throwable e) {
+                        }
+                        clazz = clazz.getSuperclass();
                     }
-                    clazz = clazz.getSuperclass();
+                    if (isCloseMethodFound) {
+                        return closable;
+                    } else {
+                        // will be handled by withApply
+                        throw new IllegalArgumentException();
+                    }
                 }
-                if (isCloseMethodFound) {
-                    return closable;
-                } else {
-                    // will be handled by withApply
-                    throw new IllegalArgumentException();
-                }
-            }
-        });
+            });
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
     }
 
-    public static <R> ManagedResource<R> managed(R closable) {
+    public static <R> ManagedResource<R> managed(R closable) throws IOException {
         ensureClosable(closable);
         return new ManagedResource<R>(new Resource(closable));
     }

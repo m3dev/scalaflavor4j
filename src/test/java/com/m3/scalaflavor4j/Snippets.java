@@ -19,7 +19,7 @@ import com.m3.scalaflavor4j.ExceptionControl.Catch;
 public class Snippets {
 
     final VoidFunction1<Object> print = new VoidFunction1<Object>() {
-        public void _(Object v1) {
+        public void apply(Object v1) {
             System.out.println(v1);
         }
     };
@@ -31,7 +31,7 @@ public class Snippets {
     public void seq() {
 
         // same type parameters
-        Seq<Integer> oneTwoThree1 = Seq._(1, 2, 3);
+        Seq<Integer> oneTwoThree1 = Seq.apply(1, 2, 3);
         assertThat(oneTwoThree1.mkString(","), is(equalTo("1,2,3")));
 
         // _ java.util.List
@@ -39,7 +39,7 @@ public class Snippets {
         list.add(1);
         list.add(2);
         list.add(3);
-        Seq<Integer> oneTwoThree2 = Seq._(list);
+        Seq<Integer> oneTwoThree2 = Seq.apply(list);
         assertThat(oneTwoThree2.mkString(","), is(equalTo("1,2,3")));
 
         // to java.util.List
@@ -58,17 +58,17 @@ public class Snippets {
     public void function() throws Exception {
 
         // instantiate Function1
-        Function1<String, Integer> getLength = new Function1<String, Integer>() {
-            public Integer _(String v1) {
+        RichFunction1<String, Integer> getLength = new RichFunction1(new Function1<String, Integer>() {
+            public Integer apply(String v1) {
                 return v1.length();
             }
-        };
-        Integer len1 = getLength._("foo");
+        });
+        Integer len1 = getLength.apply("foo");
         assertThat(len1, is(equalTo(3)));
 
         // instantiate and then _
         int len2 = new Function1<String, Integer>() {
-            public Integer _(String v1) {
+            public Integer apply(String v1) {
                 return v1.length();
             }
         }.apply("fooo");
@@ -76,51 +76,51 @@ public class Snippets {
 
         // F1 is a shorter alias
         int len3 = new F1<String, Integer>() {
-            public Integer _(String v1) {
+            public Integer apply(String v1) {
                 return v1.length();
             }
         }.apply("foooo");
         assertThat(len3, is(equalTo(5)));
 
         // andThen
-        F1<Integer, Long> intToLong = new F1<Integer, Long>() {
-            public Long _(Integer v1) {
+        RichFunction1<Integer, Long> intToLong = new RichFunction1(new F1<Integer, Long>() {
+            public Long apply(Integer v1) {
                 return v1.longValue();
             }
-        };
-        Function1<String, Long> getLengthAsLong = getLength.andThen(intToLong);
+        });
+        RichFunction1<String, Long> getLengthAsLong = getLength.andThen(intToLong);
         Long len4 = getLengthAsLong.apply("fooooo");
         assertThat(len4, is(equalTo(6L)));
 
         // compose
-        F1<Integer, String> intToString = new F1<Integer, String>() {
-            public String _(Integer v1) {
+        RichFunction1<Integer, String> intToString = new RichFunction1(new F1<Integer, String>() {
+            public String apply(Integer v1) {
                 return v1.toString();
             }
-        };
+        });
         Function1<Integer, Integer> getDigit = getLength.compose(intToString);
         Integer digit = getDigit.apply(12345);
         assertThat(digit, is(equalTo(5)));
 
-        F2<String, Integer, Boolean> lengthChecker = new F2<String, Integer, Boolean>() {
-            public Boolean _(String v1, Integer v2) {
+        RichFunction2<String, Integer, Boolean> lengthChecker = new RichFunction2(new F2<String, Integer, Boolean>() {
+            public Boolean apply(String v1, Integer v2) {
                 return v1.length() == v2;
             }
-        };
+        });
         // tupled
         F1<Tuple2<String, Integer>, Boolean> lengthCheckerTupled = lengthChecker.tupled();
-        boolean res0 = lengthCheckerTupled.apply(Tuple._("foo", 3));
+        boolean res0 = lengthCheckerTupled.apply(Tuple.apply("foo", 3));
         assertThat(res0, is(true));
 
         // currying
-        boolean res1 = lengthChecker._("foo", 3);
+        boolean res1 = lengthChecker.apply("foo", 3);
         Function1<String, Function1<Integer, Boolean>> curriedLengthChecker = lengthChecker.curried();
         boolean res2 = curriedLengthChecker.apply("foo").apply(3);
         assertThat(res1 == res2, is(true));
 
         // void function
         VoidFunction1<String> printTwice = new VoidFunction1<String>() {
-            public void _(String v1) {
+            public void apply(String v1) {
                 System.out.println(v1 + v1);
             }
         };
@@ -128,7 +128,7 @@ public class Snippets {
 
         // VoidF1 is a shorter alias
         new VoidF1<String>() {
-            public void _(String v1) throws Exception {
+            public void apply(String v1) throws Exception {
                 print.apply(v1);
             }
         }.apply("fooo");
@@ -139,13 +139,13 @@ public class Snippets {
      */
     @Test
     public void foreach() {
-        Seq._(1, 2, 3).foreach(new VoidFunction1<Integer>() {
-            public void _(Integer i) throws Exception {
+        Seq.apply(1, 2, 3).foreach(new VoidFunction1<Integer>() {
+            public void apply(Integer i) throws Exception {
                 print.apply(i);
             }
         });
-        Seq._(1, 2, 3).foreach(new VoidF1<Integer>() {
-            public void _(Integer i) throws Exception {
+        Seq.apply(1, 2, 3).foreach(new VoidF1<Integer>() {
+            public void apply(Integer i) throws Exception {
                 print.apply(i);
             }
         });
@@ -156,8 +156,8 @@ public class Snippets {
      */
     @Test
     public void filter() {
-        assertThat(Seq._(1, 2, 3, 4, 5).filter(new F1<Integer, Boolean>() {
-            public Boolean _(Integer i) {
+        assertThat(Seq.apply(1, 2, 3, 4, 5).filter(new F1<Integer, Boolean>() {
+            public Boolean apply(Integer i) {
                 return i > 2;
             }
         }).mkString(","), is(equalTo("3,4,5")));
@@ -168,8 +168,8 @@ public class Snippets {
      */
     @Test
     public void map() {
-        assertThat(Seq._(1, 2, 3, 4, 5).map(new F1<Integer, Long>() {
-            public Long _(Integer i) {
+        assertThat(Seq.apply(1, 2, 3, 4, 5).map(new F1<Integer, Long>() {
+            public Long apply(Integer i) {
                 return Long.valueOf(i * 2);
             }
         }).mkString(","), is(equalTo("2,4,6,8,10")));
@@ -180,15 +180,15 @@ public class Snippets {
      */
     @Test
     public void flatMap() {
-        assertThat(Seq._(1, 2, 3, 4, 5).flatMap(new FlatMapF1<Integer, Integer>() {
-            public Seq<Integer> _(Integer i) {
-                return SInt._(1).to(i);
+        assertThat(Seq.apply(1, 2, 3, 4, 5).flatMap(new FlatMapF1<Integer, Integer>() {
+            public Seq<Integer> apply(Integer i) {
+                return SInt.apply(1).to(i);
             }
         }).mkString(","), is(equalTo("1,1,2,1,2,3,1,2,3,4,1,2,3,4,5")));
 
-        assertThat(Seq._(1, 2, null, 3, null, null, 4, 5).flatMap(new FlatMapF1<Integer, Integer>() {
-            public Option<Integer> _(Integer i) {
-                return Option._(i);
+        assertThat(Seq.apply(1, 2, null, 3, null, null, 4, 5).flatMap(new FlatMapF1<Integer, Integer>() {
+            public Option<Integer> apply(Integer i) {
+                return Option.apply(i);
             }
         }).mkString(","), is(equalTo("1,2,3,4,5")));
     }
@@ -200,25 +200,25 @@ public class Snippets {
     @Test
     public void fold() throws Exception {
 
-        assertThat(Seq._('b', 'c', 'd').foldLeft("a", new FoldLeftF2<String, Character>() {
-            public String _(String z, Character c) {
+        assertThat(Seq.apply('b', 'c', 'd').foldLeft("a", new FoldLeftF2<String, Character>() {
+            public String apply(String z, Character c) {
                 return z + c;
             }
         }), is(equalTo("abcd")));
-        assertThat(Seq._('b', 'c', 'd').foldRight("a", new FoldRightF2<Character, String>() {
-            public String _(Character c, String z) {
+        assertThat(Seq.apply('b', 'c', 'd').foldRight("a", new FoldRightF2<Character, String>() {
+            public String apply(Character c, String z) {
                 return z + c;
             }
         }), is(equalTo("adcb")));
 
         // curried
-        assertThat(Seq._('b', 'c', 'd').foldLeft("a")._(new FoldLeftF2<String, Character>() {
-            public String _(String z, Character c) {
+        assertThat(Seq.apply('b', 'c', 'd').foldLeft("a").apply(new FoldLeftF2<String, Character>() {
+            public String apply(String z, Character c) {
                 return z + c;
             }
         }), is(equalTo("abcd")));
-        assertThat(Seq._('b', 'c', 'd').foldRight("a")._(new FoldRightF2<Character, String>() {
-            public String _(Character c, String z) {
+        assertThat(Seq.apply('b', 'c', 'd').foldRight("a").apply(new FoldRightF2<Character, String>() {
+            public String apply(Character c, String z) {
                 return z + c;
             }
         }), is(equalTo("adcb")));
@@ -230,13 +230,13 @@ public class Snippets {
      */
     @Test
     public void reduce() {
-        assertThat(Seq._('b', 'c', 'd').reduceLeft(new FoldLeftF2<String, Character>() {
-            public String _(String z, Character c) {
+        assertThat(Seq.apply('b', 'c', 'd').reduceLeft(new FoldLeftF2<String, Character>() {
+            public String apply(String z, Character c) {
                 return z != null ? z + c : c.toString();
             }
         }), is(equalTo("bcd")));
-        assertThat(Seq._('b', 'c', 'd').reduceRight(new FoldRightF2<Character, String>() {
-            public String _(Character c, String z) {
+        assertThat(Seq.apply('b', 'c', 'd').reduceRight(new FoldRightF2<Character, String>() {
+            public String apply(Character c, String z) {
                 return z != null ? z + c : c.toString();
             }
         }), is(equalTo("dcb")));
@@ -247,7 +247,7 @@ public class Snippets {
      */
     @Test
     public void union() {
-        assertThat(Seq._(1, 2, 3).union(Seq._(2, 3, 4)).mkString(","), is(equalTo("1,2,3,2,3,4")));
+        assertThat(Seq.apply(1, 2, 3).union(Seq.apply(2, 3, 4)).mkString(","), is(equalTo("1,2,3,2,3,4")));
     }
 
     /**
@@ -257,31 +257,31 @@ public class Snippets {
     @Test
     public void option() throws Exception {
         // Some
-        Option<Integer> some = Option._(3);
+        Option<Integer> some = Option.apply(3);
         assertThat(some.isDefined(), is(true));
         assertThat(some.getOrNull(), is(3));
 
         some.map(new F1<Integer, String>() {
-            public String _(Integer i) {
+            public String apply(Integer i) {
                 return "found : " + i;
             }
         }).getOrElse(new F0<String>() {
-            public String _() {
+            public String apply() {
                 return "not found";
             }
         }); // -> "found : 3"
 
         // None
-        Option<Integer> none = Option._(null);
+        Option<Integer> none = Option.apply(null);
         assertThat(none.isDefined(), is(false));
         assertThat(none.getOrNull(), is(nullValue()));
 
         none.map(new F1<Integer, String>() {
-            public String _(Integer i) {
+            public String apply(Integer i) {
                 return "found : " + i;
             }
         }).getOrElse(new F0<String>() {
-            public String _() {
+            public String apply() {
                 return "not found";
             }
         }); // -> "not found"
@@ -293,8 +293,8 @@ public class Snippets {
      */
     @Test
     public void sortWith() {
-        Seq<Integer> sorted = Seq._(2, 1, 4, 3, 5).sortWith(new F2<Integer, Integer, Boolean>() {
-            public Boolean _(Integer v1, Integer v2) {
+        Seq<Integer> sorted = Seq.apply(2, 1, 4, 3, 5).sortWith(new F2<Integer, Integer, Boolean>() {
+            public Boolean apply(Integer v1, Integer v2) {
                 return v1 < v2;
             }
         });
@@ -308,7 +308,7 @@ public class Snippets {
     @Test
     public void head() {
         // head
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         Integer h = seq.head();
         assertThat(h, is(equalTo(1)));
 
@@ -320,16 +320,16 @@ public class Snippets {
 
     @Test
     public void corresponds() throws Exception {
-        boolean result = Seq._("a", "ab", "abc").corresponds(Seq._(1, 2, 3), new F2<String, Integer, Boolean>() {
-            public Boolean _(String s, Integer i) {
+        boolean result = Seq.apply("a", "ab", "abc").corresponds(Seq.apply(1, 2, 3), new F2<String, Integer, Boolean>() {
+            public Boolean apply(String s, Integer i) {
                 return s.length() == i;
             }
         });
         assertTrue(result);
 
         // curried
-        boolean result2 = Seq._("a", "ab", "abc").corresponds(Seq._(1, 2, 3))._(new F2<String, Integer, Boolean>() {
-            public Boolean _(String s, Integer i) {
+        boolean result2 = Seq.apply("a", "ab", "abc").corresponds(Seq.apply(1, 2, 3)).apply(new F2<String, Integer, Boolean>() {
+            public Boolean apply(String s, Integer i) {
                 return s.length() == i;
             }
         });
@@ -341,7 +341,7 @@ public class Snippets {
      */
     @Test
     public void tail() {
-        Seq<Integer> t = Seq._(1, 2, 3).tail();
+        Seq<Integer> t = Seq.apply(1, 2, 3).tail();
         assertThat(t.mkString(","), is(equalTo("2,3")));
     }
 
@@ -351,7 +351,7 @@ public class Snippets {
      */
     @Test
     public void last() {
-        Seq<Integer> seq = Seq._(1, 2, 3);
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
         Integer l = seq.last();
         assertThat(l, is(equalTo(3)));
         Option<Integer> lopt = seq.lastOption();
@@ -368,15 +368,15 @@ public class Snippets {
     @Test
     public void range() {
         // SInt
-        Seq<Integer> oneToFive = SInt._(1).to(5);
+        Seq<Integer> oneToFive = SInt.apply(1).to(5);
         assertThat(oneToFive.mkString(","), is(equalTo("1,2,3,4,5")));
-        Seq<Integer> oneUntilFive = SInt._(1).until(5);
+        Seq<Integer> oneUntilFive = SInt.apply(1).until(5);
         assertThat(oneUntilFive.mkString(","), is(equalTo("1,2,3,4")));
 
         // SLong
-        Seq<Long> oneToFiveL = SLong._(1L).to(5L);
+        Seq<Long> oneToFiveL = SLong.apply(1L).to(5L);
         assertThat(oneToFiveL.mkString(","), is(equalTo("1,2,3,4,5")));
-        Seq<Long> oneUntilFiveL = SLong._(1L).until(5L);
+        Seq<Long> oneUntilFiveL = SLong.apply(1L).until(5L);
         assertThat(oneUntilFiveL.mkString(","), is(equalTo("1,2,3,4")));
     }
 
@@ -387,12 +387,12 @@ public class Snippets {
     @Test
     public void reverse() {
         // reverse
-        Seq<Integer> reversed = Seq._(1, 2, 3).reverse();
+        Seq<Integer> reversed = Seq.apply(1, 2, 3).reverse();
         assertThat(reversed.mkString(","), is(equalTo("3,2,1")));
 
         // reverseMap
-        Seq<Long> reversedLong = Seq._(1, 2, 3).reverseMap(new Function1<Integer, Long>() {
-            public Long _(Integer v1) {
+        Seq<Long> reversedLong = Seq.apply(1, 2, 3).reverseMap(new Function1<Integer, Long>() {
+            public Long apply(Integer v1) {
                 return v1.longValue();
             }
         });
@@ -404,7 +404,7 @@ public class Snippets {
      */
     @Test
     public void distinct() {
-        Seq<Integer> distinct = Seq._(1, 3, 2, 2, 2, 1, 3, 3).distinct();
+        Seq<Integer> distinct = Seq.apply(1, 3, 2, 2, 2, 1, 3, 3).distinct();
         assertThat(distinct.mkString(","), is(equalTo("1,3,2")));
     }
 
@@ -416,16 +416,16 @@ public class Snippets {
     @Test
     public void take() {
         // take
-        Seq<Integer> take3 = Seq._(1, 2, 3, 4, 5).take(3);
+        Seq<Integer> take3 = Seq.apply(1, 2, 3, 4, 5).take(3);
         assertThat(take3.mkString(","), is(equalTo("1,2,3")));
 
         // takeRight
-        Seq<Integer> takeRight3 = Seq._(1, 2, 3, 4, 5).takeRight(3);
+        Seq<Integer> takeRight3 = Seq.apply(1, 2, 3, 4, 5).takeRight(3);
         assertThat(takeRight3.mkString(","), is(equalTo("3,4,5")));
 
         // takeWhile
-        Seq<Integer> takeWhile = Seq._(1, 3, 5, 2, 4).takeWhile(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+        Seq<Integer> takeWhile = Seq.apply(1, 3, 5, 2, 4).takeWhile(new F1<Integer, Boolean>() {
+            public Boolean apply(Integer v1) {
                 return v1 < 5;
             }
         });
@@ -441,16 +441,16 @@ public class Snippets {
     @Test
     public void drop() {
         // drop
-        Seq<Integer> drop3 = Seq._(1, 2, 3, 4, 5).drop(3);
+        Seq<Integer> drop3 = Seq.apply(1, 2, 3, 4, 5).drop(3);
         assertThat(drop3.mkString(","), is(equalTo("4,5")));
 
         // dropRight
-        Seq<Integer> dropRight3 = Seq._(1, 2, 3, 4, 5).dropRight(3);
+        Seq<Integer> dropRight3 = Seq.apply(1, 2, 3, 4, 5).dropRight(3);
         assertThat(dropRight3.mkString(","), is(equalTo("1,2")));
 
         // dropWhile
-        Seq<Integer> dropWhile = Seq._(1, 3, 5, 2, 4).dropWhile(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+        Seq<Integer> dropWhile = Seq.apply(1, 3, 5, 2, 4).dropWhile(new F1<Integer, Boolean>() {
+            public Boolean apply(Integer v1) {
                 return v1 < 5;
             }
         });
@@ -471,12 +471,12 @@ public class Snippets {
      */
     @Test
     public void comprehensions() {
-        Seq<String> xs1 = Seq._("a", "b");
-        Seq<Integer> xs2 = Seq._(1, 2, 3, 4, 5);
-        Seq<Long> xs3 = Seq._(10L, 20L);
+        Seq<String> xs1 = Seq.apply("a", "b");
+        Seq<Integer> xs2 = Seq.apply(1, 2, 3, 4, 5);
+        Seq<Long> xs3 = Seq.apply(10L, 20L);
         final Called c = new Called();
-        For._(xs1, xs2, xs3)._(new VoidF1<Tuple3<String, Integer, Long>>() {
-            public void _(Tuple3<String, Integer, Long> t) {
+        For.apply(xs1, xs2, xs3).apply(new VoidF1<Tuple3<String, Integer, Long>>() {
+            public void apply(Tuple3<String, Integer, Long> t) {
                 c.count++;
             }
         });
@@ -485,8 +485,8 @@ public class Snippets {
 
     @Test
     public void stringLike() {
-        Seq<Integer> is = Str._("123").map(new F1<Character, Integer>() {
-            public Integer _(Character c) {
+        Seq<Integer> is = Str.apply("123").map(new F1<Character, Integer>() {
+            public Integer apply(Character c) {
                 return Integer.valueOf(c);
             }
         });
@@ -505,19 +505,19 @@ public class Snippets {
         map.put("Andy", 21);
         map.put("Brian", 18);
         map.put("Charley", 27);
-        SMap<String, Integer> nameAndAge = SMap._(map);
+        SMap<String, Integer> nameAndAge = SMap.apply(map);
         assertThat(nameAndAge.toList().size(), is(equalTo(3)));
 
         // foreach
         nameAndAge.foreach(new VoidF1<Tuple2<String, Integer>>() {
-            public void _(Tuple2<String, Integer> v1) {
+            public void apply(Tuple2<String, Integer> v1) {
                 System.out.println(v1._1());
             }
         });
 
         // filter
         SMap<String, Integer> withoutCharley = nameAndAge.filter(new Function1<Tuple2<String, Integer>, Boolean>() {
-            public Boolean _(Tuple2<String, Integer> v1) {
+            public Boolean apply(Tuple2<String, Integer> v1) {
                 return v1._1().contains("n");
             }
         });
@@ -535,7 +535,7 @@ public class Snippets {
      */
     @Test
     public void slice() {
-        Seq<Integer> seq = Seq._(1, 2, 3, 4, 5);
+        Seq<Integer> seq = Seq.apply(1, 2, 3, 4, 5);
         Seq<Integer> sliced = seq.slice(2, 4);
         assertThat(sliced.mkString(","), is(equalTo("3,4")));
     }
@@ -547,9 +547,9 @@ public class Snippets {
     @Test
     public void partitionAndSpan() {
         // partition
-        Seq<Integer> seq = Seq._(2, 3, 5, 1, 4);
+        Seq<Integer> seq = Seq.apply(2, 3, 5, 1, 4);
         Tuple2<Seq<Integer>, Seq<Integer>> partition = seq.partition(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 < 3;
             }
         });
@@ -558,7 +558,7 @@ public class Snippets {
 
         // span
         Tuple2<Seq<Integer>, Seq<Integer>> span = seq.span(new F1<Integer, Boolean>() {
-            public Boolean _(Integer v1) {
+            public Boolean apply(Integer v1) {
                 return v1 < 3;
             }
         });
@@ -571,7 +571,7 @@ public class Snippets {
      */
     @Test
     public void sliding() {
-        Seq<Integer> seq = Seq._(1, 2, 3, 4, 5);
+        Seq<Integer> seq = Seq.apply(1, 2, 3, 4, 5);
         Seq<Seq<Integer>> sliding = seq.sliding(3, 2);
         assertThat(sliding.size(), is(equalTo(2)));
         assertThat(sliding.toList().get(0).mkString("[", ",", "]"), is(equalTo("[1,2,3]")));
@@ -585,7 +585,7 @@ public class Snippets {
      */
     @Test
     public void number() {
-        Seq<Integer> seq = Seq._(2, 3, 5, 1, 4);
+        Seq<Integer> seq = Seq.apply(2, 3, 5, 1, 4);
         SNum sum = seq.sum();
         assertThat(sum.toInt(), is(equalTo(15)));
         SNum min = seq.min();
@@ -601,8 +601,8 @@ public class Snippets {
     @Test
     public void zip() {
         // zip
-        Seq<Integer> seq = Seq._(1, 2, 3);
-        Seq<Tuple2<Integer, Long>> zipped = seq.zip(Seq._(4L, 5L));
+        Seq<Integer> seq = Seq.apply(1, 2, 3);
+        Seq<Tuple2<Integer, Long>> zipped = seq.zip(Seq.apply(4L, 5L));
 
         assertThat(zipped.size(), is(equalTo(2)));
         assertThat(zipped.toList().get(0)._1(), is(equalTo(1)));
@@ -627,10 +627,10 @@ public class Snippets {
      */
     @Test
     public void groupBy() {
-        Seq<String> domains = Seq._("yahoo.com", "google.com", "amazon.com", "facebook.com", "linkedin.com",
+        Seq<String> domains = Seq.apply("yahoo.com", "google.com", "amazon.com", "facebook.com", "linkedin.com",
                 "twitter.com");
         SMap<Integer, Seq<String>> domainLengthList = domains.groupBy(new F1<String, Integer>() {
-            public Integer _(String v1) {
+            public Integer apply(String v1) {
                 return v1.length();
             }
         });
@@ -646,15 +646,15 @@ public class Snippets {
     public void exceptionControl_catching() throws Exception {
         // catching
         String result = catching(Exception.class).withApply(new F1<Throwable, String>() {
-            public String _(Throwable t) {
+            public String apply(Throwable t) {
                 return "catched";
             }
         }).andFinally(new VoidFunction0() {
-            public void _() {
+            public void apply() {
                 System.out.println("finally called");
             }
         }).apply(new Function0<String>() {
-            public String _() {
+            public String apply() {
                 throw new RuntimeException();// -> result : "catched"
             }
         });
@@ -666,11 +666,11 @@ public class Snippets {
     public void exceptionControl_handlingBy() throws Exception {
         // catching
         String result = handling(Exception.class).by(new F1<Throwable, String>() {
-            public String _(Throwable t) {
+            public String apply(Throwable t) {
                 return "catched";
             }
         }).apply(new Function0<String>() {
-            public String _() {
+            public String apply() {
                 throw new RuntimeException();// -> result : "catched"
             }
         });
@@ -682,7 +682,7 @@ public class Snippets {
     public void exceptionControl_ignoring() throws Exception {
         Catch<String> ignoring = ignoring(Exception.class);
         String result = ignoring.apply(new Function0<String>() {
-            public String _() {
+            public String apply() {
                 throw new RuntimeException();// -> result : null
             }
         });
@@ -692,12 +692,12 @@ public class Snippets {
     @Test
     public void exceptionControl_ultimately() throws Exception {
         Catch<String> ultimately = ultimately(new VoidF0() {
-            public void _() throws Exception {
+            public void apply() throws Exception {
                 System.out.println("every time finally called");
             }
         });
         String result = ultimately.apply(new F0<String>() {
-            public String _() throws Exception {
+            public String apply() throws Exception {
                 return "foo"; // -> result : "foo"
             }
         });
@@ -707,11 +707,11 @@ public class Snippets {
     @Test
     public void exceptionControl_allCatch() throws Exception {
         String result = allCatch().withApply(new F1<Throwable, String>() {
-            public String _(Throwable t) {
+            public String apply(Throwable t) {
                 return "catched";
             }
         }).apply(new Function0<String>() {
-            public String _() {
+            public String apply() {
                 return "ok"; // -> result : "ok"
                 // throw new AException(); -> result : "catched"
                 // throw new IOException(); -> will be thrown
@@ -752,17 +752,17 @@ public class Snippets {
          */
 
         CaseClause<Integer, String> intCase = CaseClause._case(Integer.class)._arrow(new F1<Integer, String>() {
-            public String _(Integer i) throws Exception {
+            public String apply(Integer i) throws Exception {
                 return "int value : " + i;
             }
         });
 
         CaseClause<String, String> largeStrCase = CaseClause._case(String.class)._if(new Guard<String>() {
-            public Boolean _(String str) {
+            public Boolean apply(String str) {
                 return str.length() > 100;
             }
         })._arrow(new F1<String, String>() {
-            public String _(String str) {
+            public String apply(String str) {
                 return "large string : " + str;
             }
         });
@@ -775,18 +775,18 @@ public class Snippets {
                 return null;
             }
         })._arrow(new F1<Name, String>() {
-            public String _(Name name) {
+            public String apply(Name name) {
                 return "name object : " + name;
             }
         });
 
         CaseClause<Object, String> objectCase = CaseClause._case(Object.class)._arrow(new F1<Object, String>() {
-            public String _(Object obj) {
+            public String apply(Object obj) {
                 return "object : " + obj;
             }
         });
 
-        PartialFunction<String> intOnly = PartialF.<String> _(intCase);
+        PartialFunction<String> intOnly = PartialF.<String> apply(intCase);
         intOnly.apply(123); // "int value"
         try {
             intOnly.apply("aaaa......"); // MatchError (RuntimeException)
@@ -794,7 +794,7 @@ public class Snippets {
         } catch (MatchError e) {
         }
 
-        PartialFunction<String> largeStrAndName = PartialF.<String> _(largeStrCase, nameCase);
+        PartialFunction<String> largeStrAndName = PartialF.<String> apply(largeStrCase, nameCase);
         try {
             largeStrAndName.apply(123); // MatchError (RuntimeException)
             fail();
@@ -805,7 +805,7 @@ public class Snippets {
         largeStrAndName.apply(new Name("Martin", "Odersky")); // "name object"
 
         PartialFunction<String> intAndLargeStrAndName = intOnly.orElse(largeStrAndName);
-        PartialFunction<String> all = intAndLargeStrAndName.orElse(PartialF.<String> _(objectCase));
+        PartialFunction<String> all = intAndLargeStrAndName.orElse(PartialF.<String> apply(objectCase));
 
     }
 }

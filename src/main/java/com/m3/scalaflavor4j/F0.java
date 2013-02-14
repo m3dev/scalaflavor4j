@@ -18,6 +18,6 @@ package com.m3.scalaflavor4j;
 /**
  * {@link Function0} alias
  */
-public abstract class F0<R> extends Function0<R> {
+public interface F0<R> extends Function0<R> {
 
 }

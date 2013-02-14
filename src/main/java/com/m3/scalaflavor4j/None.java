@@ -100,7 +100,7 @@ public class None<T> extends Option<T> {
     @Override
     public <U> Function1<Function1<T, U>, U> fold(final U ifEmpty) {
         return new F1<Function1<T, U>, U>() {
-            public U _(Function1<T, U> f) {
+            public U apply(Function1<T, U> f) {
                 return ifEmpty;
             }
         };

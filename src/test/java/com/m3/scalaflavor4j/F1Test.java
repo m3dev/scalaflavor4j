@@ -15,7 +15,7 @@ public class F1Test {
     @Test
     public void instantiation() throws Exception {
         F1<String, Integer> f = new F1<String, Integer>() {
-            public Integer _(String v1) {
+            public Integer apply(String v1) {
                 return v1.length();
             }
         };

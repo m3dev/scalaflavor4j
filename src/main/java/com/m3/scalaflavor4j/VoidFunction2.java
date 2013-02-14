@@ -20,36 +20,11 @@ package com.m3.scalaflavor4j;
  * 
  * @see "http://www.scala-lang.org/api/2.9.1/index.html#scala.Function2"
  */
-public abstract class VoidFunction2<T1, T2> {
-
-    public void apply(T1 v1, T2 v2) throws Exception {
-        _(v1, v2);
-    }
+public interface VoidFunction2<T1, T2> {
 
     /**
      * Apply the body of this function to the arguments.
      */
-    public abstract void _(T1 v1, T2 v2) throws Exception;
-
-    /**
-     * Creates a tupled version of this function: instead of 2 arguments, it
-     * accepts a single Tuple2 argument.
-     */
-    public VoidFunction1<Tuple2<T1, T2>> tupled() {
-        final VoidFunction2<T1, T2> _this = this;
-        return new VoidF1<Tuple2<T1, T2>>() {
-            public void _(Tuple2<T1, T2> tuple) throws Exception {
-                _this.apply(tuple._1(), tuple._2());
-            }
-        };
-    }
-
-    /**
-     * Creates a String representation of this object.
-     */
-    @Override
-    public String toString() {
-        return "<void-function2>";
-    }
+    void apply(T1 v1, T2 v2) throws Exception;
 
 }

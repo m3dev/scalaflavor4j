@@ -27,20 +27,12 @@ public abstract class ParSeq<T> implements CollectionLike<T> {
     private static final long serialVersionUID = 1L;
 
     public static <T> ParSeq<T> apply(T... values) {
-        return _(values);
-    }
-
-    public static <T> ParSeq<T> _(T... values) {
         LinkedList<T> collection = new LinkedList<T>();
         Collections.addAll(collection, values);
         return new ForkJoinParSeq<T>(collection);
     }
 
     public static <T> ParSeq<T> apply(Collection<T> collection) {
-        return _(collection);
-    }
-
-    public static <T> ParSeq<T> _(Collection<T> collection) {
         return new ForkJoinParSeq<T>(collection);
     }
 

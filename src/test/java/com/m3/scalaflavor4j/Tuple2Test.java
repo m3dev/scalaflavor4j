@@ -40,7 +40,7 @@ public class Tuple2Test {
 
     @Test
     public void __A$Object$Object() throws Exception {
-        Tuple2<String, Integer> actual = Tuple2._("a", 1);
+        Tuple2<String, Integer> actual = Tuple2.apply("a", 1);
         assertThat(actual, is(notNullValue()));
     }
 
@@ -67,14 +67,14 @@ public class Tuple2Test {
 
     @Test
     public void toString_A$() throws Exception {
-        String actual = Tuple2._(1, 2).toString();
+        String actual = Tuple2.apply(1, 2).toString();
         String expected = "(1,2)";
         assertThat(actual, is(equalTo(expected)));
     }
 
     @Test
     public void getFirst_A$() throws Exception {
-        Tuple2<Integer, Long> tuple = Tuple2._(1, 2L);
+        Tuple2<Integer, Long> tuple = Tuple2.apply(1, 2L);
         Integer actual = tuple.getFirst();
         Integer expected = 1;
         assertThat(actual, is(equalTo(expected)));
@@ -82,7 +82,7 @@ public class Tuple2Test {
 
     @Test
     public void getSecond_A$() throws Exception {
-        Tuple2<Integer, Long> tuple = Tuple2._(1, 2L);
+        Tuple2<Integer, Long> tuple = Tuple2.apply(1, 2L);
         Long actual = tuple.getSecond();
         Long expected = 2L;
         assertThat(actual, is(equalTo(expected)));

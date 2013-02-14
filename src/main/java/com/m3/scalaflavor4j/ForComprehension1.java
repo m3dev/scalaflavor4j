@@ -25,26 +25,26 @@ public class ForComprehension1<T> {
     private final Generator<T> xs;
 
     public ForComprehension1(CollectionLike<T> xs) {
-        this.xs = Generator._(xs);
+        this.xs = Generator.apply(xs);
     }
 
     @SuppressWarnings("unchecked")
     public ForComprehension1(T x) {
-        this.xs = Generator._(Seq.<T> _(x));
+        this.xs = Generator.apply(Seq.<T> apply(x));
     }
 
     @SuppressWarnings("unchecked")
     public <U, V extends CollectionLike<U>> V yield(final Function1<T, U> f) {
         return (V) xs.map(new F1<T, U>() {
-            public U _(T x) throws Exception {
+            public U apply(T x) throws Exception {
                 return f.apply(x);
             }
         });
     }
 
-    public void _(final VoidFunction1<T> f) {
+    public void apply(final VoidFunction1<T> f) {
         xs.foreach(new VoidF1<T>() {
-            public void _(final T x) throws Exception {
+            public void apply(final T x) throws Exception {
                 f.apply(x);
             }
         });

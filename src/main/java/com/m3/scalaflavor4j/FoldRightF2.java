@@ -18,6 +18,6 @@ package com.m3.scalaflavor4j;
 /**
  * {@link Function2} alias for {@link Seq#foldRight(Object, Function2)}
  */
-public abstract class FoldRightF2<T1, T2> extends Function2<T1, T2, T2> {
+public interface FoldRightF2<T1, T2> extends Function2<T1, T2, T2> {
 
 }

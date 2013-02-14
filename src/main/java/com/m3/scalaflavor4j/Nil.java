@@ -29,10 +29,6 @@ public class Nil<T> extends Seq<T> {
     private Nil() {
     }
 
-    public static <T> Nil<T> _() {
-        return apply();
-    }
-
     public static <T> Nil<T> apply() {
         return new Nil<T>();
     }
@@ -125,7 +121,7 @@ public class Nil<T> extends Seq<T> {
     @Override
     public <U> Function1<Function2<U, T, U>, U> foldLeft(final U z) {
         return new Function1<Function2<U, T, U>, U>() {
-            public U _(Function2<U, T, U> f) {
+            public U apply(Function2<U, T, U> f) {
                 return z;
             }
         };
@@ -139,7 +135,7 @@ public class Nil<T> extends Seq<T> {
     @Override
     public <U> Function1<Function2<T, U, U>, U> foldRight(final U z) {
         return new Function1<Function2<T, U, U>, U>() {
-            public U _(Function2<T, U, U> f) {
+            public U apply(Function2<T, U, U> f) {
                 return z;
             }
         };
@@ -148,7 +144,7 @@ public class Nil<T> extends Seq<T> {
     @Override
     public <U> Function1<Function2<T, U, Boolean>, Boolean> corresponds(final Seq<U> that) {
         return new F1<Function2<T, U, Boolean>, Boolean>() {
-            public Boolean _(Function2<T, U, Boolean> f) throws Exception {
+            public Boolean apply(Function2<T, U, Boolean> f) throws Exception {
                 return that.isEmpty();
             }
         };
@@ -171,7 +167,7 @@ public class Nil<T> extends Seq<T> {
 
     @Override
     public <U> SMap<U, Seq<T>> groupBy(Function1<T, U> f) {
-        return SMap._(new ConcurrentHashMap<U, Seq<T>>());
+        return SMap.apply(new ConcurrentHashMap<U, Seq<T>>());
     }
 
     @Override
@@ -186,52 +182,52 @@ public class Nil<T> extends Seq<T> {
 
     @Override
     public Tuple2<Seq<T>, Seq<T>> partition(Function1<T, Boolean> p) {
-        Seq<T> nil = Seq._((List<T>) null);
-        return Tuple._(nil, nil);
+        Seq<T> nil = Seq.apply((List<T>) null);
+        return Tuple.apply(nil, nil);
     }
 
     @Override
     public Tuple2<Seq<T>, Seq<T>> splitAt(int n) {
-        Seq<T> nil = Seq._((List<T>) null);
-        return Tuple._(nil, nil);
+        Seq<T> nil = Seq.apply((List<T>) null);
+        return Tuple.apply(nil, nil);
     }
 
     @Override
     public Seq<T> reverse() {
-        return Seq._((List<T>) null);
+        return Seq.apply((List<T>) null);
     }
 
     @Override
     public Seq<T> slice(int from, int until) {
-        return Seq._((List<T>) null);
+        return Seq.apply((List<T>) null);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public Seq<Seq<T>> sliding(int size) {
-        return Seq._(Seq._((List<T>) null));
+        return Seq.apply(Seq.apply((List<T>) null));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public Seq<Seq<T>> sliding(int size, int step) {
-        return Seq._(Seq._((List<T>) null));
+        return Seq.apply(Seq.apply((List<T>) null));
     }
 
     @Override
     public Tuple2<Seq<T>, Seq<T>> span(Function1<T, Boolean> p) {
-        Seq<T> nil = Seq._((List<T>) null);
-        return Tuple._(nil, nil);
+        Seq<T> nil = Seq.apply((List<T>) null);
+        return Tuple.apply(nil, nil);
     }
 
     @Override
     public Seq<T> takeRight(int n) {
-        return Seq._((List<T>) null);
+        return Seq.apply((List<T>) null);
     }
 
     @Override
     public Seq<T> takeWhile(Function1<T, Boolean> p) {
-        return Seq._((List<T>) null);
+        return Seq.apply((List<T>) null);
     }
 
     @Override
@@ -251,22 +247,22 @@ public class Nil<T> extends Seq<T> {
 
     @Override
     public Seq<T> drop(int n) {
-        return Seq._((List<T>) null);
+        return Seq.apply((List<T>) null);
     }
 
     @Override
     public Seq<T> dropRight(int n) {
-        return Seq._((List<T>) null);
+        return Seq.apply((List<T>) null);
     }
 
     @Override
     public Seq<T> dropWhile(Function1<T, Boolean> p) {
-        return Seq._((List<T>) null);
+        return Seq.apply((List<T>) null);
     }
 
     @Override
     public <U> Seq<Tuple2<T, U>> zip(Seq<U> that) {
-        return Seq._((List<Tuple2<T, U>>) null);
+        return Seq.apply((List<Tuple2<T, U>>) null);
     }
 
     @Override
@@ -276,7 +272,7 @@ public class Nil<T> extends Seq<T> {
 
     @Override
     public Seq<T> diff(Seq<T> that) {
-        return Seq._((List<T>) null);
+        return Seq.apply((List<T>) null);
     }
 
     @Override
@@ -306,12 +302,12 @@ public class Nil<T> extends Seq<T> {
 
     @Override
     public Seq<Integer> indices() {
-        return Seq._((List<Integer>) null);
+        return Seq.apply((List<Integer>) null);
     }
 
     @Override
     public <U> Seq<U> reverseMap(Function1<T, U> f) {
-        return Seq._((List<U>) null);
+        return Seq.apply((List<U>) null);
     }
 
     @Override
@@ -331,17 +327,17 @@ public class Nil<T> extends Seq<T> {
 
     @Override
     public SNum sum() {
-        return SNum._(0);
+        return SNum.apply(0);
     }
 
     @Override
     public SNum max() {
-        return SNum._(0);
+        return SNum.apply(0);
     }
 
     @Override
     public SNum min() {
-        return SNum._(0);
+        return SNum.apply(0);
     }
 
     @Override
@@ -351,13 +347,13 @@ public class Nil<T> extends Seq<T> {
 
     @Override
     public Seq<T> intersect(Seq<T> that) {
-        return Seq._((List<T>) null);
+        return Seq.apply((List<T>) null);
     }
 
     @Override
     public Seq<T> padTo(int len, final T elem) {
-        return (Seq<T>) SInt._(0).until(len).map(new F1<Integer, T>() {
-            public T _(Integer i) {
+        return (Seq<T>) SInt.apply(0).until(len).map(new F1<Integer, T>() {
+            public T apply(Integer i) {
                 return elem;
             }
         });
@@ -365,35 +361,35 @@ public class Nil<T> extends Seq<T> {
 
     @Override
     public <U> Seq<U> scanLeft(U z, Function2<U, T, U> op) {
-        return Nil._();
+        return Nil.apply();
     }
 
     @Override
     public <U> Function1<Function2<U, T, U>, Seq<U>> scanLeft(U z) {
         return new F1<Function2<U, T, U>, Seq<U>>() {
-            public Seq<U> _(Function2<U, T, U> f) {
-                return Nil._();
+            public Seq<U> apply(Function2<U, T, U> f) {
+                return Nil.apply();
             }
         };
     }
 
     @Override
     public <U> Seq<U> scanRight(U z, Function2<T, U, U> op) {
-        return Nil._();
+        return Nil.apply();
     }
 
     @Override
     public <U> Function1<Function2<T, U, U>, Seq<U>> scanRight(U z) {
         return new F1<Function2<T, U, U>, Seq<U>>() {
-            public Seq<U> _(Function2<T, U, U> f) {
-                return Nil._();
+            public Seq<U> apply(Function2<T, U, U> f) {
+                return Nil.apply();
             }
         };
     }
 
     @Override
     public Seq<T> filterNot(Function1<T, Boolean> f) {
-        return Nil._();
+        return Nil.apply();
     }
 
     @Override
@@ -408,7 +404,7 @@ public class Nil<T> extends Seq<T> {
 
     @Override
     public Seq<T> dropNull() {
-        return Nil._();
+        return Nil.apply();
     }
 
     @Override
@@ -439,12 +435,12 @@ public class Nil<T> extends Seq<T> {
     @Override
     @SuppressWarnings("unchecked")
     public ParSeq<T> par() {
-        return ParSeq.<T>_();
+        return ParSeq.<T>apply();
     }
 
     @Override
     public Seq<T> transpose() {
-        return Nil._();
+        return Nil.apply();
     }
 
 }

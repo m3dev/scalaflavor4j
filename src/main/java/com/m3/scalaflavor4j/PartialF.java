@@ -20,11 +20,11 @@ package com.m3.scalaflavor4j;
  */
 public class PartialF<R> extends PartialFunction<R> {
 
-    public static <R> PartialF<R> _(CaseClause<?, R>... caseClauses) {
+    public static <R> PartialF<R> apply(CaseClause<?, R>... caseClauses) {
         return new PartialF<R>(caseClauses);
     }
 
-    public static <R> PartialF<R> _(Seq<CaseClause<?, R>> caseClauses) {
+    public static <R> PartialF<R> apply(Seq<CaseClause<?, R>> caseClauses) {
         return new PartialF<R>(caseClauses);
     }
 

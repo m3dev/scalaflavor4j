@@ -20,36 +20,11 @@ package com.m3.scalaflavor4j;
  * 
  * @see "http://www.scala-lang.org/api/2.9.1/index.html#scala.Function3"
  */
-public abstract class VoidFunction3<T1, T2, T3> {
-
-    public void apply(T1 v1, T2 v2, T3 v3) throws Exception {
-        _(v1, v2, v3);
-    }
+public interface VoidFunction3<T1, T2, T3> {
 
     /**
      * Apply the body of this function to the arguments.
      */
-    public abstract void _(T1 v1, T2 v2, T3 v3) throws Exception;
-
-    /**
-     * Creates a tupled version of this function: instead of 3 arguments, it
-     * accepts a single Tuple3 argument.
-     */
-    public VoidFunction1<Tuple3<T1, T2, T3>> tupled() {
-        final VoidFunction3<T1, T2, T3> _this = this;
-        return new VoidF1<Tuple3<T1, T2, T3>>() {
-            public void _(Tuple3<T1, T2, T3> tuple) throws Exception {
-                _this.apply(tuple._1(), tuple._2(), tuple._3());
-            }
-        };
-    }
-
-    /**
-     * Creates a String representation of this object.
-     */
-    @Override
-    public String toString() {
-        return "<void-function3>";
-    }
+    void apply(T1 v1, T2 v2, T3 v3) throws Exception;
 
 }

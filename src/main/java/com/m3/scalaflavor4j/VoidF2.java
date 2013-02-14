@@ -18,6 +18,6 @@ package com.m3.scalaflavor4j;
 /**
  * {@link VoidFunction2} alias
  */
-public abstract class VoidF2<T1, T2> extends VoidFunction2<T1, T2> {
+public interface VoidF2<T1, T2> extends VoidFunction2<T1, T2> {
 
 }

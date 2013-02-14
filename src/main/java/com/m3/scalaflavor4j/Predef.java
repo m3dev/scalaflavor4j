@@ -15,12 +15,12 @@
  */
 package com.m3.scalaflavor4j;
 
-import static com.m3.scalaflavor4j.arm.Resource.*;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import static com.m3.scalaflavor4j.arm.Resource.*;
 
 /**
  * * The Predef object provides definitions that are accessible in all Scala *
@@ -49,11 +49,11 @@ public class Predef {
     public static String readLine() {
         try {
             return managed(System.in).map(new F1<InputStream, String>() {
-                public String _(InputStream is) {
+                public String apply(InputStream is) throws IOException {
                     return managed(new InputStreamReader(is)).map(new F1<InputStreamReader, String>() {
-                        public String _(InputStreamReader isr) {
+                        public String apply(InputStreamReader isr) throws IOException {
                             return managed(new BufferedReader(isr)).map(new F1<BufferedReader, String>() {
-                                public String _(BufferedReader br) throws IOException {
+                                public String apply(BufferedReader br) throws IOException {
                                     return br.readLine();
                                 }
                             });

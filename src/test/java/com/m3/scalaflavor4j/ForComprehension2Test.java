@@ -19,8 +19,8 @@ public class ForComprehension2Test {
 
     @Test
     public void instantiation() throws Exception {
-        CollectionLike<String> xs1 = Seq._("aaa");
-        CollectionLike<Integer> xs2 = Seq._(123);
+        CollectionLike<String> xs1 = Seq.apply("aaa");
+        CollectionLike<Integer> xs2 = Seq.apply(123);
         ForComprehension2<String, Integer> target = new ForComprehension2<String, Integer>(xs1, xs2);
         assertThat(target, notNullValue());
     }
@@ -28,10 +28,10 @@ public class ForComprehension2Test {
     @Test
     public void yield_A$Function1() throws Exception {
 
-        Seq<String> xs1 = Seq._("abc", "abcd", "abcde");
-        Seq<Integer> xs2 = Seq._(3, 4, 5);
-        Seq<Boolean> bs = For._(xs1, xs2).yield(new F1<Tuple2<String, Integer>, Boolean>() {
-            public Boolean _(Tuple2<String, Integer> tpl) {
+        Seq<String> xs1 = Seq.apply("abc", "abcd", "abcde");
+        Seq<Integer> xs2 = Seq.apply(3, 4, 5);
+        Seq<Boolean> bs = For.apply(xs1, xs2).yield(new F1<Tuple2<String, Integer>, Boolean>() {
+            public Boolean apply(Tuple2<String, Integer> tpl) {
                 return tpl._1().length() == tpl._2();
             }
         });
@@ -50,10 +50,10 @@ public class ForComprehension2Test {
 
     @Test
     public void yield_A$Function1_emptyGenerator() throws Exception {
-        Seq<String> xs1 = Seq._("abc", "abcd", "abcde");
-        Seq<Integer> xs2 = Seq._();
-        Seq<Boolean> bs = For._(xs1, xs2).yield(new F1<Tuple2<String, Integer>, Boolean>() {
-            public Boolean _(Tuple2<String, Integer> tpl) {
+        Seq<String> xs1 = Seq.apply("abc", "abcd", "abcde");
+        Seq<Integer> xs2 = Seq.apply();
+        Seq<Boolean> bs = For.apply(xs1, xs2).yield(new F1<Tuple2<String, Integer>, Boolean>() {
+            public Boolean apply(Tuple2<String, Integer> tpl) {
                 return tpl._1().length() == tpl._2();
             }
         });
@@ -72,21 +72,21 @@ public class ForComprehension2Test {
     public void __A$VoidFunction1() throws Exception {
 
         final CalledCount c1 = new CalledCount();
-        For._(Seq._("abc", "abcd", "abcde"), Seq._(3, 4, 5))._(new VoidF1<Tuple2<String, Integer>>() {
-            public void _(Tuple2<String, Integer> tpl) {
+        For.apply(Seq.apply("abc", "abcd", "abcde"), Seq.apply(3, 4, 5)).apply(new VoidF1<Tuple2<String, Integer>>() {
+            public void apply(Tuple2<String, Integer> tpl) {
                 c1.value++;
             }
         });
         assertThat(c1.value, is(equalTo(9)));
 
         final Called called = new Called();
-        For._(managed((InputStream) new ByteArrayInputStream(new byte[] { 83, 99, 97, 108, 97 }) {
+        For.apply(managed((InputStream) new ByteArrayInputStream(new byte[] { 83, 99, 97, 108, 97 }) {
             public void close() throws IOException {
                 called.value = true;
                 super.close();
             }
-        }), Seq._(123))._(new VoidF1<Tuple2<InputStream, Integer>>() {
-            public void _(Tuple2<InputStream, Integer> tpl) {
+        }), Seq.apply(123)).apply(new VoidF1<Tuple2<InputStream, Integer>>() {
+            public void apply(Tuple2<InputStream, Integer> tpl) {
             }
         });
         assertThat(called.value, is(true));
@@ -95,8 +95,8 @@ public class ForComprehension2Test {
     @Test
     public void __A$VoidFunction1_emptyGenerator() throws Exception {
         final CalledCount c = new CalledCount();
-        For._(Seq._("abc", "abcd", "abcde"), Seq.<Integer> _())._(new VoidF1<Tuple2<String, Integer>>() {
-            public void _(Tuple2<String, Integer> tpl) {
+        For.apply(Seq.apply("abc", "abcd", "abcde"), Seq.<Integer> apply()).apply(new VoidF1<Tuple2<String, Integer>>() {
+            public void apply(Tuple2<String, Integer> tpl) {
                 c.value++;
             }
         });

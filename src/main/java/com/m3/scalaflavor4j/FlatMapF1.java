@@ -18,6 +18,6 @@ package com.m3.scalaflavor4j;
 /**
  * {@link Function1} alias for {@link Seq#flatMap(F1)}
  */
-public abstract class FlatMapF1<T1, U> extends Function1<T1, CollectionLike<U>> {
+public interface FlatMapF1<T1, U> extends Function1<T1, CollectionLike<U>> {
 
 }

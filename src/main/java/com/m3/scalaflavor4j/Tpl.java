@@ -24,34 +24,18 @@ public class Tpl {
     }
 
     public static <T1, T2> Tpl2<T1, T2> apply(T1 _1, T2 _2) {
-        return _(_1, _2);
-    }
-
-    public static <T1, T2> Tpl2<T1, T2> _(T1 _1, T2 _2) {
         return new Tpl2<T1, T2>(_1, _2);
     }
 
     public static <T1, T2, T3> Tpl3<T1, T2, T3> apply(T1 _1, T2 _2, T3 _3) {
-        return _(_1, _2, _3);
-    }
-
-    public static <T1, T2, T3> Tpl3<T1, T2, T3> _(T1 _1, T2 _2, T3 _3) {
         return new Tpl3<T1, T2, T3>(_1, _2, _3);
     }
 
     public static <T1, T2, T3, T4> Tpl4<T1, T2, T3, T4> apply(T1 _1, T2 _2, T3 _3, T4 _4) {
-        return _(_1, _2, _3, _4);
-    }
-
-    public static <T1, T2, T3, T4> Tpl4<T1, T2, T3, T4> _(T1 _1, T2 _2, T3 _3, T4 _4) {
         return new Tpl4<T1, T2, T3, T4>(_1, _2, _3, _4);
     }
 
     public static <T1, T2, T3, T4, T5> Tpl5<T1, T2, T3, T4, T5> apply(T1 _1, T2 _2, T3 _3, T4 _4, T5 _5) {
-        return _(_1, _2, _3, _4, _5);
-    }
-
-    public static <T1, T2, T3, T4, T5> Tpl5<T1, T2, T3, T4, T5> _(T1 _1, T2 _2, T3 _3, T4 _4, T5 _5) {
         return new Tpl5<T1, T2, T3, T4, T5>(_1, _2, _3, _4, _5);
     }
 

@@ -22,26 +22,18 @@ package com.m3.scalaflavor4j;
  */
 public class Left<L, R> extends Either<L, R> {
 
-    public static <L, R> Either<L, R> apply(L value) {
-        return _(value);
-    }
-
-    public static <L, R> Either<L, R> apply(Option<L> value) {
-        return _(value);
-    }
-
-    public static <L, R> Left<L, R> _(L value) {
+    public static <L, R> Left<L, R> apply(L value) {
         return new Left<L, R>(value);
     }
 
-    public static <L, R> Either<L, R> _(Option<L> value) {
+    public static <L, R> Either<L, R> apply(Option<L> value) {
         return new Left<L, R>(value);
     }
 
     private Option<L> value;
 
     public Left(L value) {
-        this.value = Option._(value);
+        this.value = Option.apply(value);
     }
 
     public Left(Option<L> value) {
