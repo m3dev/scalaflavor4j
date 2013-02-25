@@ -699,7 +699,7 @@ public class IndexedSeq<T> extends Seq<T> {
     @Override
     @SuppressWarnings("unchecked")
     public IndexedSeq<T> slice(int from, int until) {
-        if (from >= size() || until > size()) {
+        if (from >= size()) {
             return IndexedSeq.apply();
         }
         return SInt.apply(from).until(until).foldLeft(IndexedSeq.<T>apply(), new FoldLeftF2<IndexedSeq<T>, Integer>() {
