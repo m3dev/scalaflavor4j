@@ -702,6 +702,9 @@ public class IndexedSeq<T> extends Seq<T> {
         if (from >= size()) {
             return IndexedSeq.apply();
         }
+        if (until > size()) {
+            until = size();
+        }
         return SInt.apply(from).until(until).foldLeft(IndexedSeq.<T>apply(), new FoldLeftF2<IndexedSeq<T>, Integer>() {
             public IndexedSeq<T> apply(IndexedSeq<T> sliced, Integer i) {
                 return sliced.append(list.get(i));

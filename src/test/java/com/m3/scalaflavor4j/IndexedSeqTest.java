@@ -610,6 +610,19 @@ public class IndexedSeqTest {
         assertThat(actual.toList().get(1), is(equalTo(3)));
     }
 
+   @Test
+    public void slice_A$int$int_largerUntilValue() throws Exception {
+        List<Integer> list = Arrays.asList(1, 5, 2, 3, 4);
+        Seq<Integer> seq = IndexedSeq.apply(list);
+        Integer from = 2;
+        Integer until = 100;
+        Seq<Integer> actual = seq.slice(from, until);
+        assertThat(actual.size(), is(equalTo(3)));
+        assertThat(actual.toList().get(0), is(equalTo(2)));
+        assertThat(actual.toList().get(1), is(equalTo(3)));
+        assertThat(actual.toList().get(2), is(equalTo(4)));
+    }
+
     @Test
     public void sliding_A$int_Nil() throws Exception {
         Seq<Integer> seq = IndexedSeq.apply();
