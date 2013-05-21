@@ -2,7 +2,9 @@ package com.m3.scalaflavor4j;
 
 import org.junit.Test;
 
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static com.m3.scalaflavor4j.ConcurrentOps.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -17,13 +19,24 @@ public class ConcurrentOpsTest {
 
     @Test
     public void future_A$Function0() throws Exception {
-        F0<String> f = future(new F0<String>() {
+        Future<String> f = future(new F0<String>() {
             public String apply() throws Exception {
                 Thread.sleep(1000L);
                 return "foo";
             }
         });
-        assertThat(f.apply(), is(equalTo("foo")));
+        assertThat(f.get(), is(equalTo("foo")));
+    }
+
+    @Test(expected = TimeoutException.class)
+    public void future_A$Function0_timeout() throws Exception {
+        Future<String> f = future(new F0<String>() {
+            public String apply() throws Exception {
+                Thread.sleep(1000L);
+                return "foo";
+            }
+        });
+        f.get(1L, TimeUnit.MICROSECONDS);
     }
 
     @Test
@@ -58,58 +71,6 @@ public class ConcurrentOpsTest {
         });
         Thread.sleep(200L);
         assertThat(called.value, is(true));
-    }
-
-    @Test
-    public void future_A$long$Function0() throws Exception {
-        long timeoutMillis = 100L;
-        Function0<String> p = new F0<String>() {
-            public String apply() throws Exception {
-                return "a";
-            }
-        };
-        assertTrue(ConcurrentOps.future(timeoutMillis, p).isDefined());
-        assertThat(ConcurrentOps.future(timeoutMillis, p).getOrNull(), is(equalTo("a")));
-    }
-
-    @Test
-    public void future_A$long$Function0_timeout() throws Exception {
-        long timeoutMillis = 1L;
-        Function0<String> p = new F0<String>() {
-            @Override
-            public String apply() throws Exception {
-                Thread.sleep(100L);
-                return "a";
-            }
-        };
-        assertTrue(ConcurrentOps.future(timeoutMillis, p).isEmpty());
-    }
-
-    @Test
-    public void future_A$long$TimeUnit$Function0() throws Exception {
-        long timeoutMillis = 1L;
-        TimeUnit timeUnit = TimeUnit.SECONDS;
-        Function0<String> p = new F0<String>() {
-            public String apply() throws Exception {
-                Thread.sleep(100L);
-                return "a";
-            }
-        };
-        assertTrue(ConcurrentOps.future(timeoutMillis, timeUnit, p).isDefined());
-        assertThat(ConcurrentOps.future(timeoutMillis, timeUnit, p).getOrNull(), is(equalTo("a")));
-    }
-
-    @Test
-    public void future_A$long$TimeUnit$Function0_timeout() throws Exception {
-        long timeoutMillis = 1L;
-        TimeUnit timeUnit = TimeUnit.SECONDS;
-        Function0<String> p = new F0<String>() {
-            public String apply() throws Exception {
-                Thread.sleep(1500L);
-                return "a";
-            }
-        };
-        assertTrue(ConcurrentOps.future(timeoutMillis, timeUnit, p).isEmpty());
     }
 
 }

@@ -17,7 +17,10 @@ package com.m3.scalaflavor4j;
 
 import jsr166y.ForkJoinPool;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,44 +42,14 @@ public class ConcurrentOps {
      * Evaluates an expression asynchronously, and returns a closure for
      * retrieving the result.
      */
-    public static <R> F0<R> future(final Function0<R> p) {
+    public static <R> Future<R> future(final Function0<R> p) {
         final FutureTask<R> future = new FutureTask<R>(new Callable<R>() {
             public R call() throws Exception {
                 return p.apply();
             }
         });
         forkJoinPool.execute(future);
-        return new F0<R>() {
-            public R apply() throws InterruptedException, ExecutionException {
-                return future.get();
-            }
-        };
-    }
-
-    /**
-     * Evaluates an expression asynchronously, and returns a closure for
-     * retrieving the result.
-     */
-    public static <R> Option<R> future(final long timeoutMillis, final Function0<R> p) throws InterruptedException, ExecutionException {
-        return future(timeoutMillis, TimeUnit.MILLISECONDS, p);
-    }
-
-    /**
-     * Evaluates an expression asynchronously, and returns a closure for
-     * retrieving the result.
-     */
-    public static <R> Option<R> future(final long timeoutMillis, final TimeUnit timeUnit, final Function0<R> p) throws InterruptedException, ExecutionException {
-        final FutureTask<R> future = new FutureTask<R>(new Callable<R>() {
-            public R call() throws Exception {
-                return p.apply();
-            }
-        });
-        forkJoinPool.execute(future);
-        try {
-            return Option.apply(future.get(timeoutMillis, timeUnit));
-        } catch (TimeoutException e) {
-            return Option.none();
-        }
+        return future;
     }
 
     /**
