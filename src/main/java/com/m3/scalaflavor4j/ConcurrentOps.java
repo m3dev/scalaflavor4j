@@ -15,17 +15,15 @@
  */
 package com.m3.scalaflavor4j;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import jsr166y.ForkJoinPool;
+
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jsr166y.ForkJoinPool;
-
 /**
  * scala.concurrent.ops
- * 
+ *
  * @see "http://www.scala-lang.org/api/current/index.html#scala.concurrent.ops$"
  */
 public class ConcurrentOps {
@@ -53,6 +51,32 @@ public class ConcurrentOps {
                 return future.get();
             }
         };
+    }
+
+    /**
+     * Evaluates an expression asynchronously, and returns a closure for
+     * retrieving the result.
+     */
+    public static <R> Option<R> future(final long timeoutMillis, final Function0<R> p) throws InterruptedException, ExecutionException {
+        return future(timeoutMillis, TimeUnit.MILLISECONDS, p);
+    }
+
+    /**
+     * Evaluates an expression asynchronously, and returns a closure for
+     * retrieving the result.
+     */
+    public static <R> Option<R> future(final long timeoutMillis, final TimeUnit timeUnit, final Function0<R> p) throws InterruptedException, ExecutionException {
+        final FutureTask<R> future = new FutureTask<R>(new Callable<R>() {
+            public R call() throws Exception {
+                return p.apply();
+            }
+        });
+        forkJoinPool.execute(future);
+        try {
+            return Option.apply(future.get(timeoutMillis, timeUnit));
+        } catch (TimeoutException e) {
+            return Option.none();
+        }
     }
 
     /**

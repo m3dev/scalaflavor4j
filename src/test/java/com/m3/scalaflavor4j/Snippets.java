@@ -786,7 +786,7 @@ public class Snippets {
             }
         });
 
-        PartialFunction<String> intOnly = PartialF.<String> apply(intCase);
+        PartialFunction<String> intOnly = new PartialFunction<String>(intCase);
         intOnly.apply(123); // "int value"
         try {
             intOnly.apply("aaaa......"); // MatchError (RuntimeException)
@@ -805,7 +805,7 @@ public class Snippets {
         largeStrAndName.apply(new Name("Martin", "Odersky")); // "name object"
 
         PartialFunction<String> intAndLargeStrAndName = intOnly.orElse(largeStrAndName);
-        PartialFunction<String> all = intAndLargeStrAndName.orElse(PartialF.<String> apply(objectCase));
+        PartialFunction<String> all = intAndLargeStrAndName.orElse(new PartialFunction<String>(objectCase));
 
     }
 }
