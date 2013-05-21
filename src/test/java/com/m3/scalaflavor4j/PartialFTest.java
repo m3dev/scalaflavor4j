@@ -30,14 +30,14 @@ public class PartialFTest {
     @Test
     @SuppressWarnings("unchecked")
     public void __A$PatternFunctionArray() throws Exception {
-        PartialF<CSV> pf = PartialF.<CSV> apply(csvCase);
+        PartialF<CSV> pf = new PartialF<CSV>(csvCase);
         assertThat(pf, notNullValue());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void create_A$Seq() throws Exception {
-        PartialF<CSV> pf = PartialF.<CSV> apply(csvCase);
+        PartialF<CSV> pf = new PartialF<CSV>(csvCase);
         assertThat(pf, notNullValue());
         assertThat(pf.apply(new CSV("foo,bar,baz")), is(notNullValue()));
         try {
@@ -57,7 +57,7 @@ public class PartialFTest {
     @Test
     @SuppressWarnings("unchecked")
     public void __A$CaseClauseArray() throws Exception {
-        PartialF<CSV> actual = PartialF.<CSV> apply(csvCase);
+        PartialF<CSV> actual = new PartialF<CSV>(csvCase);
         assertThat(actual, notNullValue());
     }
 

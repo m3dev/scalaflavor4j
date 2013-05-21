@@ -759,7 +759,7 @@ public class IndexedSeq<T> extends Seq<T> {
         Collections.sort(copied, new Comparator<T>() {
             public int compare(T o1, T o2) {
                 try {
-                    return lessThan.apply(o1, o2) ? 0 : 1;
+                    return lessThan.apply(o1, o2) ? -1 : 1;
                 } catch (Throwable e) {
                     throw new ScalaFlavor4JException(e);
                 }
