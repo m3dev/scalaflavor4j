@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class IndexedSeqTest {
 
@@ -230,14 +230,15 @@ public class IndexedSeqTest {
                 return v1 < v2;
             }
         };
-        Seq<Integer> seq = IndexedSeq.apply(3, 4, 2, 0, 5, 1);
+        Seq<Integer> seq = IndexedSeq.apply(3, 4, 2, 0, 5, 2, 1);
         List<Integer> sorted = seq.sortWith(f).toList();
         assertThat(sorted.get(0), is(equalTo(0)));
         assertThat(sorted.get(1), is(equalTo(1)));
         assertThat(sorted.get(2), is(equalTo(2)));
-        assertThat(sorted.get(3), is(equalTo(3)));
-        assertThat(sorted.get(4), is(equalTo(4)));
-        assertThat(sorted.get(5), is(equalTo(5)));
+        assertThat(sorted.get(3), is(equalTo(2)));
+        assertThat(sorted.get(4), is(equalTo(3)));
+        assertThat(sorted.get(5), is(equalTo(4)));
+        assertThat(sorted.get(6), is(equalTo(5)));
     }
 
     @Test
@@ -610,7 +611,7 @@ public class IndexedSeqTest {
         assertThat(actual.toList().get(1), is(equalTo(3)));
     }
 
-   @Test
+    @Test
     public void slice_A$int$int_largerUntilValue() throws Exception {
         List<Integer> list = Arrays.asList(1, 5, 2, 3, 4);
         Seq<Integer> seq = IndexedSeq.apply(list);
