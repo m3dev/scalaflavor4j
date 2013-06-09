@@ -486,6 +486,7 @@ You can read more details abouts ScalaFlavor4J in [Cookbook](https://github.com/
 
 # License
 
+Copyright 2012 M3, Inc.
 
 Apache License, Version 2.0 
 
