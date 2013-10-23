@@ -776,8 +776,21 @@ public class IndexedSeqTest {
     }
 
     @Test
-    public void exists_A$Function1() throws Exception {
+    public void exists_A$Function1_1() throws Exception {
         List<Integer> list = Arrays.asList(1, 5, 2, 3, 4);
+        Seq<Integer> seq = IndexedSeq.apply(list);
+        boolean actual = seq.exists(new F1<Integer, Boolean>() {
+            public Boolean apply(Integer v1) {
+                return v1 < 3;
+            }
+        });
+        boolean expected = true;
+        assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void exists_A$Function1_2() throws Exception {
+        List<Integer> list = Arrays.asList(5, 2, 3, 4, 1);
         Seq<Integer> seq = IndexedSeq.apply(list);
         boolean actual = seq.exists(new F1<Integer, Boolean>() {
             public Boolean apply(Integer v1) {
