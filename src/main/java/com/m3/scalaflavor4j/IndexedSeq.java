@@ -184,7 +184,7 @@ public class IndexedSeq<T> extends Seq<T> {
 
     @Override
     public boolean exists(Function1<T, Boolean> predicate) {
-        return span(predicate)._1().size() > 0;
+        return filter(predicate).size() > 0;
     }
 
     @Override
