@@ -413,11 +413,11 @@ val f = future { Thread.sleep(1000L); "foo" }
 ScalaFlavor4J on Java 8:
 
 ```java
-Function0<String> f = future(() -> {
+java.util.concurrent.Future<String> f = future(() -> {
   Thread.sleep(1000L);
   return "foo";
 });
-f.apply(); // -> "foo"
+f.get(); // -> "foo"
 ```
 
 
