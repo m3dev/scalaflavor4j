@@ -19,7 +19,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Enumeration;
+import java.util.Iterator;
 
+import com.m3.scalaflavor4j.Seq;
 import static com.m3.scalaflavor4j.arm.Resource.*;
 
 /**
@@ -100,5 +103,19 @@ public class Predef {
 
     public static Short readShort() {
         return Short.valueOf(readLine());
+    }
+
+    public static <T> Seq<T> seq(T... values) {
+        return Seq.apply(values);
+    }
+
+    public static <T> Seq<T> seq(Enumeration<T> e) {
+        return Seq.apply(e);
+    }
+    public static <T> Seq<T> seq(Iterator<T> iter) {
+        return Seq.apply(iter);
+    }
+    public static <T> Seq<T> seq(Iterable<T> iterable) {
+        return Seq.apply(iterable);
     }
 }

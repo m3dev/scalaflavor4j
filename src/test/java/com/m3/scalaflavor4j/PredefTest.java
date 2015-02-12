@@ -4,7 +4,11 @@ import static com.m3.scalaflavor4j.Predef.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.StringTokenizer;
 import java.util.MissingFormatArgumentException;
+import java.util.Enumeration;
+import java.util.Iterator;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -114,4 +118,32 @@ public class PredefTest {
         println(readShort());
     }
 
+    @Test
+    public void seq_variable_arguments() throws Exception {
+        Seq<String> actual = seq("a", "b", "c");
+        assertThat(actual.isEmpty(), is(false));
+        assertThat(actual.size(), is(3));
+    }
+
+    @Test
+    public void seq_Enumeration() throws Exception {
+        Enumeration<Object> e = new StringTokenizer("a,b, c", ",");
+        Seq<Object> actual = seq(e);
+        assertThat(actual.isEmpty(), is(false));
+        assertThat(actual.size(), is(3));
+    }
+
+    @Test
+    public void seq_Iterator() throws Exception {
+        Iterator<Integer> iter = Arrays.asList(1, 2, 3).iterator();
+        Seq<Integer> seq = seq(iter);
+        assertThat(seq.size(), is(equalTo(3)));
+    }
+
+    @Test
+    public void seq_Iterable() throws Exception {
+        Iterable<Integer> iterable = Arrays.asList(2, 3, 4);
+        Seq<Integer> seq = seq(iterable);
+        assertThat(seq.size(), is(equalTo(3)));
+    }
 }
