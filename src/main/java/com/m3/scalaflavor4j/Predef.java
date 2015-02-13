@@ -112,9 +112,11 @@ public class Predef {
     public static <T> Seq<T> seq(Enumeration<T> e) {
         return Seq.apply(e);
     }
+
     public static <T> Seq<T> seq(Iterator<T> iter) {
         return Seq.apply(iter);
     }
+   
     public static <T> Seq<T> seq(Iterable<T> iterable) {
         return Seq.apply(iterable);
     }
